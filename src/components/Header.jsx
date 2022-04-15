@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { gql } from '@apollo/client';
+import { graphql } from '@apollo/react-hoc';
 
 import myImage from '../assets/icons/header/Brand_icon.png';
 import emptyCart from '../assets/icons/header/svg/Vector.svg';
@@ -65,6 +67,11 @@ const ItemIconCart = styled.div`
 `;
 
 export default class Header extends Component {
+  constructor(props) {
+    super(props)
+    const categories = props.categories
+    this.state = {categories}
+  }
   render() {
     return (
       <Nav>
@@ -87,3 +94,4 @@ export default class Header extends Component {
     );
   }
 }
+

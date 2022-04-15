@@ -6,6 +6,7 @@ import GlobalStyles from './styles/global'
 const AppWrapper = styled.div`
   position: relative;
   max-width: 1440px;
+  height: 1513px;
   width: 100%;
   margin: 0 auto;
 `;
