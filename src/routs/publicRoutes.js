@@ -1,12 +1,12 @@
 import MainWithData from "../pages/Main";
-import Product from "../components/Product";
 import { CART_ROUTE, CATEGORY_ID_KIDS_ROUTE, CATEGORY_ID_MEN_ROUTE, CATEGORY_ID_WOMEN_ROUTE, CATEGORY_KIDS_ROUTE, CATEGORY_MEN_ROUTE, CATEGORY_WOMEN_ROUTE, PRODUCT_ROUTE } from "../utils/consts";
 import CartPage from "../pages/CartPage";
+import ProductPage from "../pages/ProductPage";
 
 export const publicRoutes = [
     {
         path: PRODUCT_ROUTE,
-        Component: Product
+        Component: ProductPage
     },
     {
         path: CART_ROUTE,
@@ -26,14 +26,14 @@ export const publicRoutes = [
     },
     {
         path: CATEGORY_ID_WOMEN_ROUTE,
-        Component: Product
+        Component: ProductPage
     },
     {
         path: CATEGORY_ID_MEN_ROUTE,
-        Component: Product
+        Component: ProductPage
     },
     {
         path: CATEGORY_ID_KIDS_ROUTE,
-        Component: Product
+        Component: ProductPage
     },
 ]

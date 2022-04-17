@@ -4,7 +4,6 @@
   "private": true,
   "dependencies": {
     "@apollo/client": "^3.5.10",
-    "@apollo/react-hoc": "^4.0.0",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^12.1.5",
     "@testing-library/user-event": "^13.5.0",

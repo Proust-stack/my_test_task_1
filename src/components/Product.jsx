@@ -1,25 +1,26 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { gql } from '@apollo/client';
-import { graphql } from '@apollo/react-hoc';
 
 const ProductItem = styled.div`
-  width: 386px;
-  height: 444px;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-  cursor: pointer;
-  
+  justify-content: flex-start;
+  align-items: center;
 `;
 
 const ProductImageWrapper = styled.div`
-  height: 330px;
-  margin: 16px;
-  width: 354px;
-  background-color: #C4C4C4;
+  height: 500px;
+  margin-right: 100px;
+  width: 600px;
+  background-color: #c4c4c4;
+  position: relative;
+  overflow: hidden;
+`;
+const ProductImageWrapperSmall = styled.div`
+  height: 80px;
+  margin-right: 40px;
+  width: 80px;
+  background-color: #c4c4c4;
   position: relative;
   overflow: hidden;
 `;
@@ -28,19 +29,20 @@ const ProductImage = styled.img`
   left: 0%;
   top: 0%;
   width: 100%;
-	height: 100%;
+  height: 100%;
   object-fit: cover;
 `;
 
-const ProductFooter = styled.div`
-  height: 50px;
+const ProductInfo = styled.div`
+  height: 500px;
+  width: 300px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
   margin: 16px;
 `;
-const ProductTitle = styled.div`
+const ProductInfoTitle = styled.div`
   width: 100%;
   font-size: 18px;
   color: black;
@@ -48,57 +50,126 @@ const ProductTitle = styled.div`
   font-weight: 300;
   line-height: 160%;
 `;
+const ProductInfoSize = styled.div`
+  width: 100%;
+  font-size: 18px;
+  color: black;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 160%;
+  display: flex;
+  justify-content: flex-start;
+`;
+const ProductInfoSizeTitle = styled.div`
+  width: 100%;
+  font-size: 18px;
+  color: black;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 160%;
+`;
+const ProductInfoSizeBlocks = styled.div`
+  width: 63px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: black;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 160%;
+`;
+const ProductInfoPrice = styled.div`
+  width: 100%;
+  font-size: 18px;
+  color: black;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 160%;
+  display: flex;
+  justify-content: flex-start;
+`;
+const ProductInfoPriceTitle = styled.div`
+  width: 100%;
+  font-size: 18px;
+  color: black;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 160%;
+`;
+const ProductInfoPriceValue = styled.div`
+  width: 63px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: black;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 160%;
+`;
+const Button = styled.button`
+  width: 100%;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 32px;
+  background: #5ece7b;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 120%;
+  color: #ffffff;
+  text-transform: uppercase;
+`;
+const ProductFooter = styled.div`
+  height: 50px;
+`;
 
 class Product extends Component {
-  
+  componentDidMount() {
+    this.getData()
+  }
+  async getData() {
+    
+  }
   render() {
-    const {id, name, gallery} = this.props.post;
+    // const {
+    //   imageBig,
+    //   imagesSmall,
+    //   brand,
+    //   name,
+    //   sizes,
+    //   prices,
+    //   description,
+    // } = this.props.productAttributes 
     return (
-      <ProductItem key={id}>
+    <ProductItem>
+        <ProductImageWrapperSmall>
+            <ProductImage/>
+        </ProductImageWrapperSmall>
         <ProductImageWrapper>
-          <ProductImage src={gallery[0]}/>
+            <ProductImage/>
         </ProductImageWrapper>
-        <ProductFooter>
-          <ProductTitle>{name}</ProductTitle>
-          <ProductTitle>{id}</ProductTitle>
-        </ProductFooter>
-      </ProductItem>
-    );
+        <ProductInfo>
+            <ProductInfoTitle/>
+            <ProductInfoSize>
+                <ProductInfoSizeTitle/>
+                <ProductInfoSizeBlocks/>
+            </ProductInfoSize>
+            <ProductInfoPrice>
+                <ProductInfoPriceTitle/>
+                <ProductInfoPriceValue/>
+            </ProductInfoPrice>
+            <Button>button</Button>
+            <ProductFooter>text</ProductFooter>
+        </ProductInfo>
+    </ProductItem>
+    )
   }
 }
 
-const withProductQuery = graphql(gql`
-query getProduct {
-  product(id: 
-     "huarache-x-stussy-le"
-  ) {
-    id, 
-    name, 
-    inStock, 
-    gallery, 
-    description, 
-    category, 
-    attributes {
-      id,
-      name, 
-      type, 
-      items {
-        displayValue,
-        value,
-        id
-      }
-    }, 
-    prices {
-      currency {
-        label,
-        symbol
-      },
-      amount
-    }, 
-    brand
-  }
-}
-`);
-const ProductWithData = withProductQuery(Product);
-export default ProductWithData;
-
+export default Product;

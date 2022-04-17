@@ -6,8 +6,6 @@ import MainWithData from '../pages/Main';
 class AppRouter extends Component {
   render() {
     return (
-      <>
-        
         <Routes>
           <Route path="/" element={<MainWithData />}>
             {publicRoutes.map(({ path, Component }) => (
@@ -15,7 +13,6 @@ class AppRouter extends Component {
             ))}
           </Route>
         </Routes>
-      </>
     );
   }
 }

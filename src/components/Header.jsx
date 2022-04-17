@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { gql } from '@apollo/client';
-import { graphql } from '@apollo/react-hoc';
+import { graphql } from '@apollo/client/react/hoc';
 
 import myImage from '../assets/icons/header/Brand_icon.png';
 import emptyCart from '../assets/icons/header/svg/Vector.svg';
@@ -26,6 +26,18 @@ const LeftPart = styled.div`
 
 const NavUnlisted = styled.ul`
   text-decoration: none;
+  li {
+    margin: 0 0.8rem;
+    font-size: 1.3rem;
+    position: relative;
+    list-style: none;
+  }
+
+  .current {
+    li {
+      border-bottom: 2px solid green;
+    }
+  }
 `;
 const StyledLink = styled(Link)`
   color: black;
@@ -65,22 +77,25 @@ const ItemIconCart = styled.div`
   height: 20px;
   cursor: pointer;
 `;
-
-export default class Header extends Component {
+class Header extends Component {
   constructor(props) {
     super(props)
-    const categories = props.categories
-    this.state = {categories}
   }
   render() {
+    const {data: {categories}} = this.props
     return (
       <Nav>
         <NavbarItem>
           <LeftPart>
             <NavUnlisted>
-              <StyledLink to="/women">WOMEN</StyledLink>
-              <StyledLink to="/men">MEN</StyledLink>
-              <StyledLink to="/kids">KIDS</StyledLink>
+              {
+                categories && categories.map(({name}) => {
+                  return (
+                    <StyledLink key={name} to={`/${name}`}>{name}</StyledLink>
+                  )
+                })
+              }
+              
             </NavUnlisted>
           </LeftPart>
           <ItemIconCompany />
@@ -95,3 +110,13 @@ export default class Header extends Component {
   }
 }
 
+
+const withHeaderQuery = graphql(gql`
+query getCategoriesNames {
+  categories {
+    name
+  }
+}
+`);
+const HeaderWithData = withHeaderQuery(Header);
+export default HeaderWithData;

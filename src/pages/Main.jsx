@@ -2,31 +2,22 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { gql } from '@apollo/client';
-import { graphql } from '@apollo/react-hoc';
-import ProductWithData from '../components/Product';
-import Header from '../components/Header';
+import { graphql } from '@apollo/client/react/hoc';
+import ProductWithData from '../components/ProductItem';
+import HeaderWithData from '../components/Header';
+
 
 const Wrapper = styled.main`
   min-height: 100vh;
   height: 100%;
 `;
-const ItemsWrapper = styled.div`
+const ItemsWrapper = styled.main`
   display: grid;
   flex-wrap: wrap;
   gap: 40px 119px;
   grid-template-columns: repeat(3, 1fr);
   margin-top: 50px;
 `;
-
-const posts = [
-  { id: 2, title: 'Apollo Running Short', urlImage: "https://cdn.shopify.com/s/files/1/0087/6193/3920/products/DD1381200_DEOA_2_720x.jpg?v=1612816087" },
-  { id: 3, title: 'Apollo Running Short', urlImage: "https://cdn.shopify.com/s/files/1/0087/6193/3920/products/DD1381200_DEOA_1_720x.jpg?v=1612816087" },
-  { id: 4, title: 'Apollo Running Short', urlImage: "https://cdn.shopify.com/s/files/1/0087/6193/3920/products/DD1381200_DEOA_1_720x.jpg?v=1612816087" },
-  { id: 5, title: 'Apollo Running Short', urlImage: "https://cdn.shopify.com/s/files/1/0087/6193/3920/products/DD1381200_DEOA_1_720x.jpg?v=1612816087" },
-  { id: 6, title: 'Apollo Running Short', urlImage: "https://cdn.shopify.com/s/files/1/0087/6193/3920/products/DD1381200_DEOA_1_720x.jpg?v=1612816087" },
-  { id: 7, title: 'Apollo Running Short', urlImage: "https://cdn.shopify.com/s/files/1/0087/6193/3920/products/DD1381200_DEOA_1_720x.jpg?v=1612816087" },
-];
-
 class Main extends Component {
   constructor(props) {
     super(props);
@@ -34,6 +25,7 @@ class Main extends Component {
   render() {
     const {data, error, loading} = this.props;
     const itemsArray = data.category?.products;
+    console.log(data);
     if (loading) {
       return <p>Loading...</p>;
     }
@@ -43,8 +35,8 @@ class Main extends Component {
     
     
     return (
-      <Wrapper>
-        <Header />
+      <>
+        <HeaderWithData />
         <ItemsWrapper>
           {itemsArray && itemsArray.map((post) => {
             return (
@@ -52,7 +44,7 @@ class Main extends Component {
             );
           })}
         </ItemsWrapper>
-      </Wrapper>
+      </>
     );
   }
 }
