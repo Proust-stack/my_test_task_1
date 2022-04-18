@@ -2,60 +2,50 @@ import React, { Component } from 'react';
 import HeaderWithData from '../components/Header';
 import ProductCart from '../components/ProductCart';
 import styled from 'styled-components';
-import { gql } from '@apollo/client';
-import { graphql } from '@apollo/client/react/hoc';
+import { client } from '../index';
+import { GET_PRODUCT } from '../utils/graphQLqueries';
 
 const Wrapper = styled.div`
-  min-height: 100vh;
-  height: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
 `;
 
-class CartPage extends Component {
+export default class CartPageWithData extends Component {
+  constructor(props) {
+    super(props);
+    this.state = null;
+  }
+  componentDidMount = async () => {
+    const response = await client.query({
+      query: GET_PRODUCT
+    })
+    const { product } = await response.data;
+      this.setState({
+        productProperties: {
+        imageBig: product.gallery[0],
+        imagesSmall: product.gallery.slice(1),
+        brand: product.brand,
+        name: product.name,
+        sizes: product.attributes.items,
+        prices: product.prices,
+        description: product.description,
+        }
+    });
+}
   render() {
+    if (!this.state) return <p>loading...</p>
     return (
       <>
       <HeaderWithData />
       <Wrapper>
-        <ProductCart/>
+        <ProductCart productProperties={this.state.productProperties}/>
+        <ProductCart productProperties={this.state.productProperties}/>
+        <ProductCart productProperties={this.state.productProperties}/>
+        <ProductCart productProperties={this.state.productProperties}/>
+        <ProductCart productProperties={this.state.productProperties}/>
       </Wrapper>
       </>
     )
   }
 }
-
-const withCartQuery = graphql(gql`
-query getCategory {
-  category(input: {
-    title: "all"
-  }) {
-  products {
-    id, 
-    name, 
-    inStock, 
-    gallery, 
-    description, 
-    category, 
-    attributes {
-      id,
-      name, 
-      type, 
-      items {
-        displayValue,
-        value,
-        id
-      }
-    }, 
-    prices {
-      currency {
-        label,
-        symbol
-      },
-      amount
-    }, 
-    brand
-  }
-}
-}
-`);
-const CartPageWithData = withCartQuery(CartPage);
-export default CartPageWithData;

@@ -16,9 +16,16 @@ const ProductImageWrapper = styled.div`
   position: relative;
   overflow: hidden;
 `;
+const ProductImageSmall = styled.div`
+  margin-right: 40px;
+  width: 80px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+`;
 const ProductImageWrapperSmall = styled.div`
   height: 80px;
-  margin-right: 40px;
+  margin-bottom: 40px;
   width: 80px;
   background-color: #c4c4c4;
   position: relative;
@@ -131,44 +138,42 @@ const ProductFooter = styled.div`
 
 class Product extends Component {
   componentDidMount() {
-    this.getData()
+    this.setState({ ...this.props.productProperties });
   }
-  async getData() {
-    
-  }
+
   render() {
-    // const {
-    //   imageBig,
-    //   imagesSmall,
-    //   brand,
-    //   name,
-    //   sizes,
-    //   prices,
-    //   description,
-    // } = this.props.productAttributes 
+    if (!this.state) return <p>loading</p>;
+    const { imageBig, imagesSmall, brand, name, sizes, prices, description } =
+      this.state;
     return (
-    <ProductItem>
-        <ProductImageWrapperSmall>
-            <ProductImage/>
-        </ProductImageWrapperSmall>
+      <ProductItem>
+        <ProductImageSmall>
+          {imagesSmall.map((image) => {
+            return (
+              <ProductImageWrapperSmall  key={image}>
+                <ProductImage src={image} />
+              </ProductImageWrapperSmall>
+            );
+          })}
+        </ProductImageSmall>
         <ProductImageWrapper>
-            <ProductImage/>
+          <ProductImage src={imageBig} />
         </ProductImageWrapper>
         <ProductInfo>
-            <ProductInfoTitle/>
-            <ProductInfoSize>
-                <ProductInfoSizeTitle/>
-                <ProductInfoSizeBlocks/>
-            </ProductInfoSize>
-            <ProductInfoPrice>
-                <ProductInfoPriceTitle/>
-                <ProductInfoPriceValue/>
-            </ProductInfoPrice>
-            <Button>button</Button>
-            <ProductFooter>text</ProductFooter>
+          <ProductInfoTitle>{brand}</ProductInfoTitle>
+          <ProductInfoSize>
+            <ProductInfoSizeTitle>Size:</ProductInfoSizeTitle>
+            <ProductInfoSizeBlocks></ProductInfoSizeBlocks>
+          </ProductInfoSize>
+          <ProductInfoPrice>
+            <ProductInfoPriceTitle>$</ProductInfoPriceTitle>
+            <ProductInfoPriceValue>{prices[0].amount}</ProductInfoPriceValue>
+          </ProductInfoPrice>
+          <Button>button</Button>
+          <ProductFooter>{description}</ProductFooter>
         </ProductInfo>
-    </ProductItem>
-    )
+      </ProductItem>
+    );
   }
 }
 

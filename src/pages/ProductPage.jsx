@@ -4,24 +4,29 @@ import HeaderWithData from '../components/Header';
 import Product from '../components/Product';
 import { gql } from '@apollo/client';
 import { graphql } from '@apollo/client/react/hoc';
+import { client } from '../index';
+import { GET_PRODUCT } from '../utils/graphQLqueries';
+import ProductCart from '../components/ProductCart';
 
 const Wrapper = styled.main`
   min-height: 100vh;
   height: 100%;
 `;
+const Title = styled.div`
+  font-size: 18px;
+`;
 
-class ProductPage extends Component {
+export default class ProductPageWithData extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            value: null,
-          };
+        this.state = null;
       }
-      componentDidMount() {
-        const {data} = this.props;
-        if (data.product) {
-        const { product } = data;
-        this.setState = {
+      componentDidMount = async () => {
+        const response = await client.query({
+          query:GET_PRODUCT
+        })
+        const { product } = await response.data;
+          this.setState({
             productProperties: {
             imageBig: product.gallery[0],
             imagesSmall: product.gallery.slice(1),
@@ -31,56 +36,20 @@ class ProductPage extends Component {
             prices: product.prices,
             description: product.description,
             }
-        };
-        }
+        });
     }
   render() {
-    const {data, error, loading} = this.props;
-    console.log(this.state);
-    if (loading) {
-        return <p>Loading...</p>;
-      }
-      if (error) {
-        return <p>Error!</p>;
-      }
+    if (!this.state) return <p>loading...</p>
     return (
       <>
         <HeaderWithData />
-        <Product />
+        <Wrapper>
+          <Title>{this.state.name}</Title>
+          <ProductCart productProperties={this.state.productProperties}/>
+        </Wrapper>
+        
       </>
     );
   }
 }
 
-const withMainQuery = graphql(gql`
-  query getProduct {
-    product(id: "huarache-x-stussy-le") {
-      id
-      name
-      inStock
-      gallery
-      description
-      category
-      attributes {
-        id
-        name
-        type
-        items {
-          displayValue
-          value
-          id
-        }
-      }
-      prices {
-        currency {
-          label
-          symbol
-        }
-        amount
-      }
-      brand
-    }
-  }
-`);
-const ProductPageWithData = withMainQuery(ProductPage);
-export default ProductPageWithData;
