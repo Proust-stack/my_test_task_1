@@ -1,87 +1,62 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { client } from '../index';
 import styled from 'styled-components';
-import { gql } from '@apollo/client';
-import { graphql } from '@apollo/client/react/hoc';
 import ProductWithData from '../components/ProductItem';
-import HeaderWithData from '../components/Header';
+import { GET_CATEGORY } from '../utils/graphQLqueries';
+import { useParams } from "react-router-dom";
+import Modal from '../components/Modal';
 
 
 const Wrapper = styled.main`
-  min-height: 100vh;
-  height: 100%;
 `;
 const ItemsWrapper = styled.main`
   display: grid;
   flex-wrap: wrap;
   gap: 40px 119px;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(386px, 1fr));
   margin-top: 50px;
 `;
-class Main extends Component {
+
+function withParams(Component) {
+  return props => <Component {...props} params={useParams()} />;
+}
+class MainWithData extends Component {
   constructor(props) {
     super(props);
+    this.state = null;
   }
+  componentDidMount = async () => {
+    const response = await client.query({
+      query:GET_CATEGORY
+    })
+    const { category } = await response.data;
+      this.setState({
+        modalOpened: true,
+        category: category.products
+    });
+}
+  toggleModal() {
+    this.setState(prevState => ({ modalOpened: !prevState.modalOpened }));
+  }
+
   render() {
-    const {data, error, loading} = this.props;
-    const itemsArray = data.category?.products;
-    console.log(data);
-    if (loading) {
-      return <p>Loading...</p>;
-    }
-    if (error) {
-      return <p>Error!</p>;
-    }
-    
-    
+    if (!this.state) return <p>loading...</p>
+    console.log(this.props);
     return (
       <>
-        <HeaderWithData />
+        
         <ItemsWrapper>
-          {itemsArray && itemsArray.map((post) => {
+          {this.state.category && this.state.category.map((post) => {
             return (
               <ProductWithData post={post} key={post.id}/>
             );
           })}
         </ItemsWrapper>
+        {this.state.modalOpened && <Modal />}
       </>
     );
   }
 }
 
-const withMainQuery = graphql(gql`
-query getCategory {
-  category(input: {
-    title: "all"
-  }) {
-  products {
-    id, 
-    name, 
-    inStock, 
-    gallery, 
-    description, 
-    category, 
-    attributes {
-      id,
-      name, 
-      type, 
-      items {
-        displayValue,
-        value,
-        id
-      }
-    }, 
-    prices {
-      currency {
-        label,
-        symbol
-      },
-      amount
-    }, 
-    brand
-  }
-}
-}
-`);
-const MainWithData = withMainQuery(Main);
-export default MainWithData;
+export default withParams(MainWithData);

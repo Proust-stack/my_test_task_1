@@ -1,22 +1,37 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import HeaderWithData from '../components/Header';
 import Product from '../components/Product';
-import { gql } from '@apollo/client';
-import { graphql } from '@apollo/client/react/hoc';
 import { client } from '../index';
 import { GET_PRODUCT } from '../utils/graphQLqueries';
-import ProductCart from '../components/ProductCart';
+import { useParams } from "react-router-dom";
 
 const Wrapper = styled.main`
-  min-height: 100vh;
-  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  margin-top: 80px;
 `;
 const Title = styled.div`
-  font-size: 18px;
+  width: 84px;
+  height: 40px;
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 40px;
+  text-transform: uppercase;
+  color: #1d1f22;
+`;
+const Divider = styled.div`
+    background: #E5E5E5;
+    width: 100%;
+    height: 1px;
+    margin: 2px 0;
 `;
 
-export default class ProductPageWithData extends Component {
+function withParams(Component) {
+  return props => <Component {...props} params={useParams()} />;
+}
+
+class ProductPageWithData extends Component {
     constructor(props) {
         super(props);
         this.state = null;
@@ -32,7 +47,7 @@ export default class ProductPageWithData extends Component {
             imagesSmall: product.gallery.slice(1),
             brand: product.brand,
             name: product.name,
-            sizes: product.attributes.items,
+            sizes: product.attributes[0].items,
             prices: product.prices,
             description: product.description,
             }
@@ -40,16 +55,18 @@ export default class ProductPageWithData extends Component {
     }
   render() {
     if (!this.state) return <p>loading...</p>
+    console.log(this.props);
     return (
       <>
-        <HeaderWithData />
         <Wrapper>
           <Title>{this.state.name}</Title>
-          <ProductCart productProperties={this.state.productProperties}/>
+          <Product productProperties={this.state.productProperties}/>
         </Wrapper>
         
       </>
     );
   }
 }
+
+export default withParams(ProductPageWithData);
 

@@ -4,28 +4,18 @@ import Carousel from './Carousel';
 
 const ProductItem = styled.div`
   width: 100%;
-  height: 186px;
+  height: 137px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
   position: relative;
   cursor: pointer;
-  ::before {
-    position: absolute;
-    display: block;
-    width: 100%;
-    height: 2px;
-    background: #E5E5E5;
-    margin-bottom: 2px;
-    content: '';
-  }
 `;
 
 const LeftPart = styled.div`
-  width: 300px;
+  width: 40%;
   height: 100%;
-  padding: 20px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -33,24 +23,20 @@ const LeftPart = styled.div`
 `;
 
 const ProductBrand = styled.div`
-  font-size: 30px;
-  line-height: 27px;
+  font-size: 16px;
+  line-height: 16px;
   font-style: normal;
-  font-weight: 600;
+  font-weight: 300;
 `;
 const ProductName = styled.div`
-  width: 100%;
-  font-size: 18px;
-  color: black;
+  font-size: 16px;
   font-style: normal;
-  font-weight: 400;
-  line-height: 27px;
+  font-weight: 300;
+  line-height: 16px;
 `;
 
 const ProductPrice = styled.div`
-  width: 100%;
   font-size: 18px;
-  color: black;
   font-style: normal;
   font-weight: 700;
   line-height: 18px;
@@ -64,30 +50,31 @@ const ProductSizeWrapper = styled.div`
   
 `;
 const ProductSize = styled.div`
-  width: 63px;
-  height: 45px;
+  width: 24px;
+  height: 24px;
   text-align: center;
-  line-height: 45px;
+  line-height: 24px;
   font-size: 18px;
   font-style: normal;
   font-weight: 400;
   border: 1px solid black;
-  margin-right: 12px;
+  margin-right: 8px;
 `;
 
 const RightPart = styled.div`
-  width: 300px;
+  width: 40%;
   height: 100%;
-  padding: 20px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 `;
 const Quantity = styled.div`
   display: flex;
+  width: 24px;
+  height: 100%;
   flex-direction: column;
   justify-content: space-between;
-  margin-right: 12px;
+  margin-right: 10px;
 `;
 const QuantityValue = styled.div`
   display: flex;
@@ -95,16 +82,16 @@ const QuantityValue = styled.div`
   justify-content: center;
   align-items: center;
   font-weight: 500;
-  font-size: 24px;
-  line-height: 160%;
+  font-size: 16px;
+  line-height: 16%;
 `;
 const IncreaseQuantity = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 45px;
-  height: 45px;
+  width: 100%;
+  height: 24px;
   border: 1px solid black;
 `;
 const DecreaseQuantity = styled.div`
@@ -112,13 +99,13 @@ const DecreaseQuantity = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 45px;
-  height: 45px;
+  width: 100%;
+  height: 24px;
   border: 1px solid black;
 `;
 const ImageWrapper = styled.div`
   position: relative;
-  width: 100%;
+  width: 105px;
   height: 100%;
   overflow: hidden;
 `;
@@ -133,7 +120,7 @@ const ProductImage = styled.img`
   
 `;
 
-export default class ProductCart extends Component {
+export default class ProductModal extends Component {
   componentDidMount() {
     this.setState({ ...this.props.productProperties });
   }

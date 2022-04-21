@@ -6,6 +6,7 @@ import { graphql } from '@apollo/client/react/hoc';
 
 import myImage from '../assets/icons/header/Brand_icon.png';
 import emptyCart from '../assets/icons/header/svg/Vector.svg';
+import Popup from './Modal';
 
 const Nav = styled.nav`
   background: #fff;
@@ -95,14 +96,15 @@ class Header extends Component {
                   )
                 })
               }
-              
             </NavUnlisted>
           </LeftPart>
           <ItemIconCompany />
           <RightPart>
             <ItemIconCurr>$</ItemIconCurr>
           <ItemIconVector>&#65088;</ItemIconVector>
-          <ItemIconCart />
+          <ItemIconCart>
+            
+          </ItemIconCart>
           </RightPart>
         </NavbarItem>
       </Nav>

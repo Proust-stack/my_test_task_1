@@ -27,7 +27,7 @@ export default class CartPageWithData extends Component {
         imagesSmall: product.gallery.slice(1),
         brand: product.brand,
         name: product.name,
-        sizes: product.attributes.items,
+        sizes: product.attributes[0].items,
         prices: product.prices,
         description: product.description,
         }
@@ -35,9 +35,9 @@ export default class CartPageWithData extends Component {
 }
   render() {
     if (!this.state) return <p>loading...</p>
+    
     return (
       <>
-      <HeaderWithData />
       <Wrapper>
         <ProductCart productProperties={this.state.productProperties}/>
         <ProductCart productProperties={this.state.productProperties}/>

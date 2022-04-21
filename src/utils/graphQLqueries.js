@@ -30,3 +30,37 @@ query getProduct {
   }
 }
 `
+export const GET_CATEGORY = gql`
+query getCategory {
+  category(input: {
+    title: "all"
+  }) {
+  products {
+    id, 
+    name, 
+    inStock, 
+    gallery, 
+    description, 
+    category, 
+    attributes {
+      id,
+      name, 
+      type, 
+      items {
+        displayValue,
+        value,
+        id
+      }
+    }, 
+    prices {
+      currency {
+        label,
+        symbol
+      },
+      amount
+    }, 
+    brand
+  }
+}
+}
+`

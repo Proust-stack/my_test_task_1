@@ -21,12 +21,9 @@ const ProductImageWrapper = styled.div`
   height: 330px;
   margin: 16px;
   width: 354px;
-  background-color: #C4C4C4;
+  background: #C4C4C4;
   position: relative;
   overflow: hidden;
-  ::before {
-    background-color: #C4C4C4;
-  }
 `;
 const ProductImage = styled.img`
   position: absolute;
