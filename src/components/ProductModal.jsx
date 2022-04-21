@@ -11,6 +11,7 @@ const ProductItem = styled.div`
   align-items: center;
   position: relative;
   cursor: pointer;
+  margin-bottom: 40px;
 `;
 
 const LeftPart = styled.div`
@@ -117,7 +118,6 @@ const ProductImage = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
-  
 `;
 
 export default class ProductModal extends Component {

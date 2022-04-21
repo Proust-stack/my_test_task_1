@@ -9,6 +9,7 @@ import Modal from '../components/Modal';
 
 
 const Wrapper = styled.main`
+
 `;
 const ItemsWrapper = styled.main`
   display: grid;
@@ -45,7 +46,6 @@ class MainWithData extends Component {
     console.log(this.props);
     return (
       <>
-        
         <ItemsWrapper>
           {this.state.category && this.state.category.map((post) => {
             return (

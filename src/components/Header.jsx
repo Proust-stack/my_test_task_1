@@ -11,7 +11,7 @@ import Popup from './Modal';
 const Nav = styled.nav`
   background: #fff;
   padding: 17px 0;
-  height: 6vh;
+  min-height: 80px;
 `;
 const NavbarItem = styled.div`
   width: 100%;
