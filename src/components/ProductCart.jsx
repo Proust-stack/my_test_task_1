@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import Carousel from './Carousel';
 
 const ProductItem = styled.div`
-  width: 100%;
   height: 186px;
   display: flex;
   flex-direction: row;
@@ -118,18 +117,13 @@ const DecreaseQuantity = styled.div`
 `;
 const ImageWrapper = styled.div`
   position: relative;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
+  
+  
 `;
 
 const ProductImage = styled.img`
-  position: absolute;
-  left: 0%;
-  top: 0%;
   width: 100%;
   height: 100%;
-  object-fit: cover;
   
 `;
 
@@ -163,7 +157,7 @@ export default class ProductCart extends Component {
             <Carousel >
               {imagesSmall.map(image => {
                 return (
-                  <ProductImage src={image} key={image}/>
+                     <ProductImage src={image} key={image}/>
                 )
               })}
             </Carousel>

@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
-import { gql } from '@apollo/client';
-import { graphql } from '@apollo/client/react/hoc';
-
+import { client } from '../index';
 import myImage from '../assets/icons/header/Brand_icon.png';
 import emptyCart from '../assets/icons/header/svg/Vector.svg';
-import Popup from './Modal';
+import { GET_CATEGORY_NAME } from '../utils/graphQLqueries';
+import { useParams } from "react-router-dom";
+import CurrenciesModal from './CurrenciesModal';
 
 const Nav = styled.nav`
   background: #fff;
@@ -25,26 +25,18 @@ const LeftPart = styled.div`
   color: black;
 `;
 
-const NavUnlisted = styled.ul`
+const StyledLink = styled(NavLink)`
   text-decoration: none;
-  li {
-    margin: 0 0.8rem;
-    font-size: 1.3rem;
-    position: relative;
-    list-style: none;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 120%;
+  text-transform: uppercase;
+  margin-right: 16px;
+  &.active {
+    padding-bottom: 30px;
+    color: green;
+    border-bottom: 2px solid green;
   }
-
-  .current {
-    li {
-      border-bottom: 2px solid green;
-    }
-  }
-`;
-const StyledLink = styled(Link)`
-  color: black;
-  text-decoration: none;
-  margin: 1rem;
-  border: none;
 `;
 
 const ItemIconCompany = styled.div`
@@ -78,32 +70,47 @@ const ItemIconCart = styled.div`
   height: 20px;
   cursor: pointer;
 `;
+
+function withParams(Component) {
+  return props => <Component {...props} params={useParams()} />;
+}
 class Header extends Component {
   constructor(props) {
-    super(props)
+    super(props);
+    this.state = null;
   }
+  componentDidMount = async () => {
+    const response = await client.query({
+      query:GET_CATEGORY_NAME
+    })
+    const {categories} = await response.data;
+      this.setState({
+        categories: categories,
+    });
+}
   render() {
-    const {data: {categories}} = this.props
+    if (!this.state) return <p>loading...</p>
     return (
       <Nav>
         <NavbarItem>
           <LeftPart>
-            <NavUnlisted>
               {
-                categories && categories.map(({name}) => {
+                this.state.categories && Array.from(this.state.categories).map(({name}) => {
                   return (
-                    <StyledLink key={name} to={`/${name}`}>{name}</StyledLink>
+                    <StyledLink 
+                    key={name} 
+                    to={`/${name}`} 
+                    >{name}</StyledLink>
                   )
                 })
               }
-            </NavUnlisted>
           </LeftPart>
           <ItemIconCompany />
           <RightPart>
-            <ItemIconCurr>$</ItemIconCurr>
-          <ItemIconVector>&#65088;</ItemIconVector>
-          <ItemIconCart>
-            
+          <CurrenciesModal/>
+          <ItemIconCart 
+          onMouseEnter={() => this.props.toggleModal('cartModalOpened')}
+          >
           </ItemIconCart>
           </RightPart>
         </NavbarItem>
@@ -112,13 +119,5 @@ class Header extends Component {
   }
 }
 
+export default withParams(Header);
 
-const withHeaderQuery = graphql(gql`
-query getCategoriesNames {
-  categories {
-    name
-  }
-}
-`);
-const HeaderWithData = withHeaderQuery(Header);
-export default HeaderWithData;

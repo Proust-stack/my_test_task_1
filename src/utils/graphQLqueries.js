@@ -31,9 +31,9 @@ query getProduct {
 }
 `
 export const GET_CATEGORY = gql`
-query getCategory {
+query getCategory($title: String!) {
   category(input: {
-    title: "all"
+    title: $title
   }) {
   products {
     id, 
@@ -62,5 +62,20 @@ query getCategory {
     brand
   }
 }
+}
+`
+
+export const GET_CATEGORY_NAME = gql`
+query getCategoriesNames {
+  categories {
+    name
+  }
+}
+`
+export const GET_CURRENCIES = gql`
+query getCurrencies {
+  currencies {
+    label, symbol
+  }
 }
 `

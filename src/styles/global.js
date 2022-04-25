@@ -23,6 +23,7 @@ export default createGlobalStyle`
   padding: 0;
   font-family: 'Raleway', sans-serif;
   font-family: 'Roboto Condensed', sans-serif;
+  color: #1D1F22;
 }
 
 a {

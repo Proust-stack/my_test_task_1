@@ -1,20 +1,23 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
+import { css } from 'styled-components';
 import leftArrowIcon from '../assets/icons/carousel/chevron-left.png';
 import rightArrowIcon from '../assets/icons/carousel/chevron-right.png';
 
 const ContentWrapper = styled.div`
+  overflow: hidden;
   width: 100%;
   height: 100%;
-  overflow: hidden;
-  position: relative;
 `;
 const Content = styled.div`
   display: flex;
   transition: all 250ms linear;
   -ms-overflow-style: none; /* hide scrollbar in IE and Edge */
-  scrollbar-width: none; /* hide scrollbar in Firefox */
+  scrollbar-width: none;
+  transform: ${props => `translateX(-${props.currentIndex * 100}%)`};
+  
 `;
+
 const LeftArrow = styled.div`
   position: absolute;
   z-index: 1;
@@ -34,62 +37,54 @@ const RightArrow = styled.div`
   height: 24px;
   right: 24px;
   background: url('${(props) => props.img}') center / cover no-repeat;
-`;
-
-const SCarouselSlide = styled.div`
-  flex: 0 0 auto;
-  opacity: ${(props) => (props.active ? 1 : 0)};
-  transition: all 0.5s ease;
-  width: 100%;
-`;
-
-const SCarouselSlides = styled.div`
-  display: flex;
-  ${(props) =>
-    props.currentSlide &&
-    `
-          transform: translateX(-${props.currentSlide * 100}%);
-        `};
-  transition: all 0.5s ease;
+  
 `;
 
 
 export default class Carousel extends Component {
-  state = {
-    currentSlide: 0
-  };
-
-  activeSlide = this.props.children.map((slide, index) => (
-    <SCarouselSlide active={this.state.currentSlide === index} key={index}>
-      {slide}
-    </SCarouselSlide>
-  ));
-
+  constructor(props) {
+    super(props);
+    this.state = {
+      currentIndex: 0
+    };
+  }
+  componentDidMount () {
+      this.setState({
+        length: this.props.children.length
+    });
+  }
   next = () => {
-      this.setState({ currentSlide:  (this.state.currentSlide + 1) % this.activeSlide.length });
-  };
+    console.log('work');
+    console.log(this.state.currentIndex);
+    if (this.state.currentIndex < (this.state.length - 1)) {
+        this.setState({currentIndex: this.state.currentIndex + 1})
+    }
+}
 
   prev = () => {
-      this.setState({ currentSlide: (this.state.currentSlide - 1 + this.activeSlide.length) % this.activeSlide.length });
-  };
+    console.log('work');
+    if (this.state.currentIndex > 0) {
+      this.setState({currentIndex: this.state.currentIndex - 1})
+    }
+}
   render() {
-    console.log(this.props.children);
     
     return (
       <>
-          <LeftArrow
+        <ContentWrapper>
+          <Content currentIndex={this.state.currentIndex}>
+            {this.props.children}
+          </Content>
+        </ContentWrapper>
+        <LeftArrow
             img={leftArrowIcon}
-            onClick={() => this.next()}
+            onClick={() => this.prev()}
           ></LeftArrow>
           <RightArrow
             img={rightArrowIcon}
-            onClick={() => this.prev()}
-          ></RightArrow>
-        <Content>
-          <SCarouselSlides currentSlide={this.state.currentSlide}>
-            {this.activeSlide}
-          </SCarouselSlides>
-        </Content>
+            onClick={() => this.next()}
+          >
+          </RightArrow>
       </>
     );
   }

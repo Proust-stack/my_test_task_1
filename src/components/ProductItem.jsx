@@ -1,30 +1,50 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { gql } from '@apollo/client';
-import { graphql } from '@apollo/client/react/hoc';
+import cartIcon from '../assets/icons/cart_green.png';
+
+const ItemCart = styled.div`
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  position: absolute;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  background-image: url(${cartIcon});
+  bottom: 70px;
+  left: 60%;
+`;
 
 const ProductItem = styled.div`
-  width: 386px;
-  height: 444px;
+  min-width: 386px;
+  min-height: 444px;
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
+  margin-right: 40px;
+  margin-bottom: 100px;
+  padding: 16px;
   cursor: pointer;
-  :hover {
-    filter: drop-shadow(0px 4px 35px rgba(168, 172, 176, 0.19));
+  &:hover  ${ItemCart} {
+      display: flex;
+  }
+  &:hover {
+    box-shadow: 0px 4px 35px rgba(168, 172, 176, 0.19);
   }
 `;
 
 const ProductImageWrapper = styled.div`
   height: 330px;
-  margin: 16px;
-  width: 354px;
+  width: 100%;
   background: #C4C4C4;
   position: relative;
   overflow: hidden;
+  margin-bottom: 24px;
 `;
+
 const ProductImage = styled.img`
   position: absolute;
   left: 0%;
@@ -32,8 +52,9 @@ const ProductImage = styled.img`
   width: 100%;
 	height: 100%;
   object-fit: cover;
- 
 `;
+
+
 
 const ProductFooter = styled.div`
   height: 50px;
@@ -41,67 +62,41 @@ const ProductFooter = styled.div`
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
-  margin: 16px;
+  
 `;
 const ProductTitle = styled.div`
-  width: 100%;
-  font-size: 18px;
-  color: black;
   font-style: normal;
   font-weight: 300;
-  line-height: 160%;
+  font-size: 18px;
+  color: #1D1F22;
+  line-height: 18px;
+  margin-bottom: 2px;
+`;
+const ProductPrice = styled.div`
+  font-style: normal;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 18px;
 `;
 
-class Product extends Component {
+export default class ProductWithData extends Component {
   
   render() {
-    const {id, name, gallery} = this.props.post;
+    const {id, name, gallery, inStock, prices} = this.props.category;
     return (
       <ProductItem key={id}>
         <ProductImageWrapper>
+          
           <ProductImage src={gallery[0]}/>
         </ProductImageWrapper>
         <ProductFooter>
           <ProductTitle>{name}</ProductTitle>
-          <ProductTitle>{id}</ProductTitle>
+          <ProductPrice>{prices[0].currency.symbol}{Math.round(prices[0].amount).toFixed(2)}</ProductPrice>
         </ProductFooter>
+        <ItemCart className='icon'/>
       </ProductItem>
     );
   }
 }
 
-const withProductQuery = graphql(gql`
-query getProduct {
-  product(id: 
-     "huarache-x-stussy-le"
-  ) {
-    id, 
-    name, 
-    inStock, 
-    gallery, 
-    description, 
-    category, 
-    attributes {
-      id,
-      name, 
-      type, 
-      items {
-        displayValue,
-        value,
-        id
-      }
-    }, 
-    prices {
-      currency {
-        label,
-        symbol
-      },
-      amount
-    }, 
-    brand
-  }
-}
-`);
-const ProductWithData = withProductQuery(Product);
-export default ProductWithData;
 

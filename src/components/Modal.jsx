@@ -83,6 +83,7 @@ const Button = styled.button`
   color: ${(props) => (props.primary ? 'black' : 'white')};
   text-transform: uppercase;
   border: ${(props) => (props.primary ? '1px solid black' : 'none')};
+  cursor: pointer;
 `;
 
 export default class Modal extends Component {
@@ -109,10 +110,9 @@ export default class Modal extends Component {
   };
   render() {
     if (!this.state) return <p>loading...</p>;
-    console.log(this.props);
     return (
       <Wrapper>
-        <Content>
+        <Content onMouseLeave={() => {this.props.toggleModal('cartModalOpened')}}>
           <Title>My bag</Title>
           <ProductModal productProperties={this.state.productProperties} />
           <ProductModal productProperties={this.state.productProperties} />
