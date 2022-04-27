@@ -7,6 +7,8 @@ import {
   ApolloProvider,
 } from '@apollo/client';
 import { BrowserRouter } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import store from './store';
 
 export const client = new ApolloClient({
   uri: 'http://localhost:4000',
@@ -17,7 +19,9 @@ export const client = new ApolloClient({
 ReactDOM.createRoot(document.getElementById('root')).render(
   <ApolloProvider client={client}>
     <BrowserRouter>
-      <App />
+      <Provider store={store}>
+        <App />
+      </Provider>
     </BrowserRouter>
   </ApolloProvider>
 );

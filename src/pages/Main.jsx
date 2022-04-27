@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import { client } from '../index';
 import styled from 'styled-components';
 import ProductWithData from '../components/ProductItem';
-import { GET_CATEGORY } from '../utils/graphQLqueries';
 import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchCategory } from '../store/categorySlice';
 
 
 const Wrapper = styled.main`
@@ -26,52 +25,37 @@ const Title = styled.div`
   line-height: 1.25;
 `;
 
-
 function withParams(Component) {
-  return props => <Component {...props} params={useParams()} />;
-}
-
-const fetchData = async (title = 'all') => {
-  const response = await client.query({
-    query:GET_CATEGORY,
-      variables: {
-        title
-      }
-  })
-  .catch(error => console.log(error))
-  const { category } = await response.data;
-  return category
+  return props => <Component 
+  {...props} 
+  params={useParams()} 
+  category={useSelector(state => state.category)}
+  dispatch={useDispatch()}
+  />;
 }
 class MainWithData extends Component {
-  constructor(props) {
-    super(props);
-    this.state = null
-  }
+  update = () => {
+    this.props.dispatch(fetchCategory(this.props.params.categoryId))
+  };
+  componentDidMount()  {
+    this.update()
+  };
 
-  update = async () => {
-    const category = await fetchData(this.props.params.category);
-    this.setState({
-      category: category.products,
-    });
-  };
-  componentDidMount = async () => {
-    const category = await fetchData();
-    this.setState({
-      category: category.products,
-    });
-  };
   componentDidUpdate(prevProps) {
-    if (this.props.params.category !== prevProps.params.category) this.update();
+    if (this.props.params.categoryId !== prevProps.params.categoryId) this.update();
   }
 
+  componentDidCatch(error) {console.log(error)}
   render() {
-    if (!this.state) return <p>loading...</p>;
+    const {category, error, loading} = this.props.category
+    if (loading) return <p>loading...</p>;
+    if (error) return <p>error...</p>;
     return (
       <Wrapper>
         <Title>{this.props.params.category}</Title>
         <ItemsWrapper>
-          {this.state.category &&
-            this.state.category.map((category) => {
+          {category.products &&
+            category.products.map((category) => {
               return <ProductWithData category={category} key={category.id} />;
             })}
         </ItemsWrapper>

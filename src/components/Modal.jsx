@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { client } from '../index';
 import { GET_PRODUCT } from '../utils/graphQLqueries';
@@ -67,7 +68,7 @@ const ButonsWrapper = styled.div`
   justify-content: space-between;
 `;
 
-const Button = styled.button`
+const Button = styled(Link)`
   width: 48%;
   height: 50px;
   display: flex;
@@ -91,38 +92,22 @@ export default class Modal extends Component {
     super(props);
     this.state = null;
   }
-  componentDidMount = async () => {
-    const response = await client.query({
-      query: GET_PRODUCT,
-    });
-    const { product } = await response.data;
-    this.setState({
-      productProperties: {
-        imageBig: product.gallery[0],
-        imagesSmall: product.gallery.slice(1),
-        brand: product.brand,
-        name: product.name,
-        sizes: product.attributes[0].items,
-        prices: product.prices,
-        description: product.description,
-      },
-    });
+  componentDidMount = () => {
+    
   };
   render() {
-    if (!this.state) return <p>loading...</p>;
+    // if (!this.state) return <p>loading...</p>;
     return (
       <Wrapper>
-        <Content onMouseLeave={() => {this.props.toggleModal('cartModalOpened')}}>
+        <Content onMouseLeave={() => {this.props.toggleModal()}}>
           <Title>My bag</Title>
-          <ProductModal productProperties={this.state.productProperties} />
-          <ProductModal productProperties={this.state.productProperties} />
           <Total>
             <TotalTitle>total</TotalTitle>
             <TotalPrice>100$</TotalPrice>
           </Total>
           <ButonsWrapper>
-            <Button primary>VIEW BAG</Button>
-            <Button>CHECK OUT</Button>
+            <Button primary="true" to={`/cart`}>VIEW BAG</Button>
+            <Button to={`/`}>CHECK OUT</Button>
           </ButonsWrapper>
         </Content>
       </Wrapper>

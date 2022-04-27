@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { addItem } from '../store/cartSlice';
 
 const ProductItem = styled.div`
   display: flex;
@@ -18,32 +20,32 @@ const ProductImageWrapper = styled.div`
 `;
 const ProductImageSmall = styled.div`
   margin-right: 40px;
-  width: 80px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  flex-wrap: wrap;
 `;
 const ProductImageWrapperSmall = styled.div`
   height: 80px;
   margin-bottom: 40px;
   width: 80px;
-  background-color: #c4c4c4;
   position: relative;
   overflow: hidden;
-  
+  cursor: pointer;
+ 
 `;
 const ProductImage = styled.img`
   position: absolute;
   left: 0%;
   top: 0%;
-  width: 100%;
-  height: 100%;
+  width: ${(props) => (props.big ? '100%' : '100%;')} center / cover no-repeat;
+  height: ${(props) => (props.big ? '100%' : '100%;')} center / cover  no-repeat;
   object-fit: cover;
+  cursor: pointer;  
+  
 `;
 
 const ProductInfo = styled.div`
-  height: 500px;
-  width: 300px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -91,7 +93,7 @@ const ProductInfoSizeWrapper = styled.div`
   justify-content: flex-start;
 `;
 
-const ProductSize = styled.div`
+const ProductParametr = styled.div`
   width: 63px;
   height: 45px;
   text-align: center;
@@ -99,9 +101,11 @@ const ProductSize = styled.div`
   font-size: 18px;
   font-style: normal;
   font-weight: 400;
-  border: 1px solid black;
+  border: ${(props) => (props.selected  ? '2px solid blue' : '1px solid black')};
   margin-right: 12px;
-  margin-bottom: 40px;
+  margin-bottom: 20px;
+  background-color: ${(props) => (props.parametresName === 'Color' ? props.key : '')};
+  cursor: pointer;
 `;
 
 const ProductInfoPrice = styled.div`
@@ -144,6 +148,7 @@ const Button = styled.button`
   text-transform: uppercase;
   margin-bottom: 40px;
   border: none;
+  cursor: pointer;
 `;
 const ProductFooter = styled.div`
   height: 100px;
@@ -155,48 +160,94 @@ const ProductFooter = styled.div`
   line-height: 16px;
 `;
 
+function withParams(Component) {
+  return props => <Component 
+  {...props}  
+  dispatch={useDispatch()}
+  navigate={useNavigate()}
+  />;
+}
 class Product extends Component {
+
   componentDidMount() {
-    this.setState({ ...this.props.productProperties });
+    this.setState({ imageCoord: {x: 0, y: 0} });
   }
   adjustHTML() {
     return {__html: this.state.description};
   }
 
+  changeImage = (e) => {
+    e.stopPropagation()
+    this.setState({
+      currentImageSrc: e.target.src,
+  });
+  }
+
+  _onMouseMove = (e) => {
+    this.setState({ imageCoord: {x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY}});
+  }
+  addToCart = (item) => e => {
+    e.stopPropagation()
+    return this.props.dispatch(addItem(item))
+  }
+
+  parameterHandler = (parametresName, parameter) => e => {
+    e.preventDefault()
+    this.setState({item: {[parametresName]: parameter.value}})
+    this.setState({currentProperty: {[parametresName]: parameter.value}})
+  }
+
   render() {
     if (!this.state) return <p>loading</p>;
-    const { imageBig, imagesSmall, brand, name, sizes, prices } =
-      this.state;
+    const { gallery, brand, name, prices, attributes, id } =
+    this.props.productProperties;
     return (
       <ProductItem>
         <ProductImageSmall>
-          {imagesSmall.map((image) => {
+          {gallery.map((image) => {
             return (
-              <ProductImageWrapperSmall  key={image}>
-                <ProductImage src={image} />
+              <ProductImageWrapperSmall  key={image} >
+                <ProductImage 
+                src={image} 
+                onClick={this.changeImage}
+                current={this.state.currentImageSrc}
+                />
               </ProductImageWrapperSmall>
             );
           })}
         </ProductImageSmall>
         <ProductImageWrapper>
-          <ProductImage src={imageBig} />
+          <ProductImage 
+          src={this.state.currentImageSrc || gallery[0]} 
+          // onMouseMove={this._onMouseMove}
+          />
         </ProductImageWrapper>
         <ProductInfo>
           <ProductInfoBrand>{brand}</ProductInfoBrand>
           <ProductInfoName>{name}</ProductInfoName>
-          <ProductInfoSize>
-            <ProductInfoSizeTitle>Size:</ProductInfoSizeTitle>
+          { attributes?.map((attr) => {
+            return (<ProductInfoSize key={attr.id}>
+            <ProductInfoSizeTitle>{attr.name}:</ProductInfoSizeTitle>
             <ProductInfoSizeWrapper>
-            {sizes?.map((size) => {
-              return <ProductSize key={size.value}>{size.value}</ProductSize>;
+            {attr.items.map((parameter) => {
+              return <ProductParametr 
+              parametresName={attr.name} 
+              key={parameter.value}
+              selected={(this.state.currentProperty && this.state.currentProperty[`${attr.name}`]) === `${parameter.value}`}
+              onClick={this.parameterHandler(attr.name, parameter)}
+              >
+                {parameter.value}
+                </ProductParametr>; 
             })}
             </ProductInfoSizeWrapper>
-          </ProductInfoSize>
+          </ProductInfoSize>)
+          })
+          }
           <ProductInfoPrice>
             <ProductInfoPriceTitle>PRICE</ProductInfoPriceTitle>
             <ProductInfoPriceValue>$ {prices[0].amount}</ProductInfoPriceValue>
           </ProductInfoPrice>
-          <Button>button</Button>
+          <Button onClick={this.addToCart({id, gallery, prices, ...this.state.item})}>ADD TO CART</Button>
           <ProductFooter dangerouslySetInnerHTML={this.adjustHTML()}></ProductFooter>
         </ProductInfo>
       </ProductItem>
@@ -204,4 +255,4 @@ class Product extends Component {
   }
 }
 
-export default Product;
+export default withParams(Product);

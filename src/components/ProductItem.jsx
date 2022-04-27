@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import cartIcon from '../assets/icons/cart_green.png';
+import { useDispatch, useSelector } from 'react-redux';
+import { addItem } from '../store/cartSlice';
 
 const ItemCart = styled.div`
   height: 50px;
@@ -43,6 +45,7 @@ const ProductImageWrapper = styled.div`
   position: relative;
   overflow: hidden;
   margin-bottom: 24px;
+  
 `;
 
 const ProductImage = styled.img`
@@ -52,9 +55,21 @@ const ProductImage = styled.img`
   width: 100%;
 	height: 100%;
   object-fit: cover;
+  opacity: ${props => (props.inStock ? '1' : '.5')};
 `;
-
-
+const ProductOutOfStock = styled.div`
+  position: absolute;
+  z-index:1;
+  left: 0%;
+  top: 0%;
+  width: 100%;
+	height: 100%;
+  object-fit: cover;
+  color: #8D8F9A;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 
 const ProductFooter = styled.div`
   height: 50px;
@@ -79,24 +94,40 @@ const ProductPrice = styled.div`
   line-height: 18px;
 `;
 
-export default class ProductWithData extends Component {
-  
+function withParams(Component) {
+  return props => <Component 
+  {...props}  
+  cart={useSelector(state => state.cart)} 
+  dispatch={useDispatch()}
+  navigate={useNavigate()}
+  />;
+}
+class ProductWithData extends Component {
+
+  addToCart = (item) => e => {
+    e.stopPropagation()
+    return this.props.dispatch(addItem(item))
+  }
+  getProduct = (address) => {
+    this.props.navigate(address)
+  }
+
   render() {
-    const {id, name, gallery, inStock, prices} = this.props.category;
+    const {id, name, gallery, inStock, prices, attributes} = this.props.category;
     return (
-      <ProductItem key={id}>
-        <ProductImageWrapper>
-          
-          <ProductImage src={gallery[0]}/>
+      <ProductItem key={id} onClick={() => this.getProduct(`/product/${id}`)}>
+        <ProductImageWrapper >
+          <ProductImage src={gallery[0]} inStock/>
+          {!inStock && <ProductOutOfStock>OUT OF STOCK</ProductOutOfStock>}
         </ProductImageWrapper>
         <ProductFooter>
           <ProductTitle>{name}</ProductTitle>
           <ProductPrice>{prices[0].currency.symbol}{Math.round(prices[0].amount).toFixed(2)}</ProductPrice>
         </ProductFooter>
-        <ItemCart className='icon'/>
+        {inStock && <ItemCart  onClick={this.addToCart({id, gallery, prices, attributes})}/>}
       </ProductItem>
     );
   }
 }
 
-
+export default withParams(ProductWithData);

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import Product from '../components/Product';
-import { client } from '../index';
-import { GET_PRODUCT } from '../utils/graphQLqueries';
 import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchProduct } from '../store/productSlice';
 
 const Wrapper = styled.main`
   display: flex;
@@ -28,34 +28,38 @@ const Divider = styled.div`
 `;
 
 function withParams(Component) {
-  return props => <Component {...props} params={useParams()} />;
+  return props => <Component 
+  {...props} 
+  params={useParams()} 
+  product={useSelector(state => state.product)}
+  dispatch={useDispatch()}
+  />;
 }
 
 class ProductPageWithData extends Component {
-    constructor(props) {
-        super(props);
-        this.state = null;
-      }
-      componentDidMount = async () => {
-        const response = await client.query({
-          query:GET_PRODUCT
-        })
-        const { product } = await response.data;
+      componentDidMount() {
+        this.props.dispatch(fetchProduct(this.props.params.productId))
+        const {product} = this.props.product
           this.setState({
             productProperties: {
-            imageBig: product.gallery[0],
-            imagesSmall: product.gallery.slice(1),
+            gallery: product.gallery,
             brand: product.brand,
             name: product.name,
-            sizes: product.attributes[0].items,
+            attributes: product?.attributes,
             prices: product.prices,
             description: product.description,
+            id: product.id
             }
         });
     }
   render() {
-    if (!this.state) return <p>loading...</p>
-    console.log(this.props);
+    const {error, loading} = this.props.product
+    const {gallery, brand, name, attributes, prices, description, id}  = this.props.product.product
+    if (loading) return <p>loading...</p>;
+    if (error) return <p>error...</p>;
+    if (!this.state) return <p>error...</p>;
+    console.log(this.props.product);
+    console.log(this.state);
     return (
       <>
         <Wrapper>

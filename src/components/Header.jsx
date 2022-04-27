@@ -6,7 +6,7 @@ import myImage from '../assets/icons/header/Brand_icon.png';
 import emptyCart from '../assets/icons/header/svg/Vector.svg';
 import { GET_CATEGORY_NAME } from '../utils/graphQLqueries';
 import { useParams } from "react-router-dom";
-import CurrenciesModal from './CurrenciesModal';
+import CustomSelect from './CustomSelect';
 
 const Nav = styled.nav`
   background: #fff;
@@ -99,7 +99,7 @@ class Header extends Component {
                   return (
                     <StyledLink 
                     key={name} 
-                    to={`/${name}`} 
+                    to={`category/${name}`} 
                     >{name}</StyledLink>
                   )
                 })
@@ -107,9 +107,10 @@ class Header extends Component {
           </LeftPart>
           <ItemIconCompany />
           <RightPart>
-          <CurrenciesModal/>
+          <CustomSelect/>
+          {/* <CurrenciesModal/> */}
           <ItemIconCart 
-          onMouseEnter={() => this.props.toggleModal('cartModalOpened')}
+          onMouseEnter={() => this.props.toggleModal()}
           >
           </ItemIconCart>
           </RightPart>
