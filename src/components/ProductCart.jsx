@@ -133,7 +133,7 @@ export default class ProductCart extends Component {
   }
   render() {
     if (!this.state) return <p>loading</p>;
-    const { imageBig, imagesSmall, brand, name, sizes, prices, description } =
+    const { id, gallery, prices, brand,  name, properties} =
       this.state;
     return (
       <ProductItem>
@@ -142,8 +142,8 @@ export default class ProductCart extends Component {
           <ProductName>{name}</ProductName>
           <ProductPrice>{prices[0].amount}</ProductPrice>
           <ProductSizeWrapper>
-            {sizes?.map((size) => {
-              return <ProductSize key={size.value}>{size.value}</ProductSize>;
+            {properties && properties.map((property) => {
+              return <ProductSize key={property.value}>{property.value}</ProductSize>;
             })}
           </ProductSizeWrapper>
         </LeftPart>
@@ -155,7 +155,7 @@ export default class ProductCart extends Component {
           </Quantity>
           <ImageWrapper>
             <Carousel >
-              {imagesSmall.map(image => {
+              {gallery.map(image => {
                 return (
                      <ProductImage src={image} key={image}/>
                 )

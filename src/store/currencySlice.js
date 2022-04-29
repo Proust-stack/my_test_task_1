@@ -27,13 +27,13 @@ const currencySlice = createSlice({
     name: 'currency',
     initialState: {
         currencies: [],
-        currency: {},
+        currentCurrency: 0,
         loading: false,
         error: null
     },
     reducers: {
         changeCurrency(state, action) {
-            state.currency = action.payload
+            state.currentCurrency = action.payload.index
         }
     },
     extraReducers: {
@@ -49,5 +49,5 @@ const currencySlice = createSlice({
         [fetchCurrencies.rejected]: setError,
     }
 })
-
+export const {changeCurrency} = currencySlice.actions
 export default currencySlice.reducer

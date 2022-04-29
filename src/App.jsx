@@ -10,16 +10,25 @@ import NotFound from './components/NotFound';
 import CartPageWithData from './pages/CartPage';
 import HeaderWithData from './components/Header';
 import Modal from './components/Modal';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchCurrencies } from './store/currencySlice';
 
 const AppWrapper = styled.div`
   max-width: 1440px;
   margin: 0 auto;
 `;
 
-
-export default class App extends Component {
+function withParams(Component) {
+  return props => <Component 
+  {...props} 
+  category={useSelector(state => state.category)}
+  dispatch={useDispatch()}
+  />;
+}
+class App extends Component {
   constructor(props) {
     super(props);
+    this.props.dispatch(fetchCurrencies())
     this.state = {
       cartModalOpened: false,
       currenciesModalOpened: false,
@@ -28,7 +37,6 @@ export default class App extends Component {
   }
   toggleModal = () => {
     this.setState(prevState => ({ cartModalOpened: !prevState.cartModalOpened}));
-    console.log(this.state);
   }
   setCurrencyIndex = (currencyIndex) => {
     this.setState({ currency: currencyIndex});
@@ -55,3 +63,5 @@ export default class App extends Component {
     );  
   }
 }
+
+export default withParams(App);

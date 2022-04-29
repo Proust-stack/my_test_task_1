@@ -54,15 +54,12 @@ export default class Carousel extends Component {
     });
   }
   next = () => {
-    console.log('work');
-    console.log(this.state.currentIndex);
     if (this.state.currentIndex < (this.state.length - 1)) {
         this.setState({currentIndex: this.state.currentIndex + 1})
     }
 }
 
   prev = () => {
-    console.log('work');
     if (this.state.currentIndex > 0) {
       this.setState({currentIndex: this.state.currentIndex - 1})
     }
@@ -79,7 +76,9 @@ export default class Carousel extends Component {
         <LeftArrow
             img={leftArrowIcon}
             onClick={() => this.prev()}
-          ></LeftArrow>
+          >
+            
+          </LeftArrow>
           <RightArrow
             img={rightArrowIcon}
             onClick={() => this.next()}

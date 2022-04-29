@@ -16,6 +16,7 @@ export const client = new ApolloClient({
   connectToDevTools: true,
 });
 
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <ApolloProvider client={client}>
     <BrowserRouter>

@@ -77,7 +77,7 @@ const ProductInfoSize = styled.div`
   flex-direction: column;
   margin-bottom: 50px;
 `;
-const ProductInfoSizeTitle = styled.div`
+const ProductInfoPropertyTitle = styled.div`
   width: 100%;
   height: 18px;
   font-family: 'Roboto Condensed';
@@ -88,7 +88,7 @@ const ProductInfoSizeTitle = styled.div`
   margin-bottom: 8px;
 `;
 
-const ProductInfoSizeWrapper = styled.div`
+const ProductInfoPropertyWrapper = styled.div`
   display: flex;
   justify-content: flex-start;
 `;
@@ -101,10 +101,10 @@ const ProductParametr = styled.div`
   font-size: 18px;
   font-style: normal;
   font-weight: 400;
-  border: ${(props) => (props.selected  ? '2px solid blue' : '1px solid black')};
+  border: ${(props) => (props.selected  ? '2px solid green' : '1px solid black')};
   margin-right: 12px;
   margin-bottom: 20px;
-  background-color: ${(props) => (props.parametresName === 'Color' ? props.key : '')};
+  background-color: ${(props) => (props.type === 'swatch' ? props.data : '')};
   cursor: pointer;
 `;
 
@@ -149,6 +149,9 @@ const Button = styled.button`
   margin-bottom: 40px;
   border: none;
   cursor: pointer;
+  &:active {
+    box-shadow: 0px 4px 35px rgba(168, 172, 176, 0.19);
+  }
 `;
 const ProductFooter = styled.div`
   height: 100px;
@@ -165,12 +168,13 @@ function withParams(Component) {
   {...props}  
   dispatch={useDispatch()}
   navigate={useNavigate()}
+  currentCurrencyIndex={useSelector(state => state.currencies.currentCurrency)} 
   />;
 }
 class Product extends Component {
 
   componentDidMount() {
-    this.setState({ imageCoord: {x: 0, y: 0} });
+    this.setState({ imageCoord: {x: 0, y: 0}, properties: [], quantity: 1 });
   }
   adjustHTML() {
     return {__html: this.state.description};
@@ -191,16 +195,17 @@ class Product extends Component {
     return this.props.dispatch(addItem(item))
   }
 
-  parameterHandler = (parametresName, parameter) => e => {
+  parameterHandler = (parametresName, item) => e => {
     e.preventDefault()
-    this.setState({item: {[parametresName]: parameter.value}})
-    this.setState({currentProperty: {[parametresName]: parameter.value}})
+    // this.setState({properties: [...this.state.properties, {[parametresName]: item.value}]})
+    this.setState((prevState) => ({currentProperty: {...prevState.currentProperty , [parametresName]: item.value}}))
   }
 
   render() {
     if (!this.state) return <p>loading</p>;
     const { gallery, brand, name, prices, attributes, id } =
     this.props.productProperties;
+    const index = this.props.currentCurrencyIndex
     return (
       <ProductItem>
         <ProductImageSmall>
@@ -225,29 +230,31 @@ class Product extends Component {
         <ProductInfo>
           <ProductInfoBrand>{brand}</ProductInfoBrand>
           <ProductInfoName>{name}</ProductInfoName>
-          { attributes?.map((attr) => {
+          { attributes.map((attr) => {
             return (<ProductInfoSize key={attr.id}>
-            <ProductInfoSizeTitle>{attr.name}:</ProductInfoSizeTitle>
-            <ProductInfoSizeWrapper>
-            {attr.items.map((parameter) => {
+            <ProductInfoPropertyTitle>{attr.name}:</ProductInfoPropertyTitle>
+            <ProductInfoPropertyWrapper>
+            {attr.items.map((item) => {
               return <ProductParametr 
-              parametresName={attr.name} 
-              key={parameter.value}
-              selected={(this.state.currentProperty && this.state.currentProperty[`${attr.name}`]) === `${parameter.value}`}
-              onClick={this.parameterHandler(attr.name, parameter)}
+              parametresName={attr.name} //name of characteristic (for example "size")
+              type={attr.type} 
+              key={item.value}
+              data={item.value}
+              selected={(this.state.currentProperty && this.state.currentProperty[`${attr.name}`]) === `${item.value}`} // current  choice of this characteristic (for example  size "M")
+              onClick={this.parameterHandler(attr.name, item)}
               >
-                {parameter.value}
+                {attr.type !== 'swatch' && item.value}
                 </ProductParametr>; 
             })}
-            </ProductInfoSizeWrapper>
+            </ProductInfoPropertyWrapper>
           </ProductInfoSize>)
           })
           }
           <ProductInfoPrice>
             <ProductInfoPriceTitle>PRICE</ProductInfoPriceTitle>
-            <ProductInfoPriceValue>$ {prices[0].amount}</ProductInfoPriceValue>
+            <ProductInfoPriceValue>{prices[index].currency.symbol} {prices[index].amount}</ProductInfoPriceValue>
           </ProductInfoPrice>
-          <Button onClick={this.addToCart({id, gallery, prices, ...this.state.item})}>ADD TO CART</Button>
+          <Button onClick={this.addToCart({id, gallery, prices, brand, name, attributes, ...this.state})}>ADD TO CART</Button>
           <ProductFooter dangerouslySetInnerHTML={this.adjustHTML()}></ProductFooter>
         </ProductInfo>
       </ProductItem>

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import Carousel from './Carousel';
+import { useDispatch, useSelector } from 'react-redux';
+import {increaseQuantity} from '../store/cartSlice';
+import {decreaseQuantity} from '../store/cartSlice';
 
 const ProductItem = styled.div`
   width: 100%;
@@ -45,21 +47,30 @@ const ProductPrice = styled.div`
   justify-content: flex-start;
 `;
 
-const ProductSizeWrapper = styled.div`
+const ProductPropertiesWrapper = styled.div`
   display: flex;
   justify-content: flex-start;
-  
+  flex-direction: column;
 `;
-const ProductSize = styled.div`
-  width: 24px;
+
+const ProductPropertyWrapper = styled.div`
+  display: flex;
+  justify-content: flex-start;
+`;
+
+const ProductProperty = styled.div`
+  min-width: 24px;
   height: 24px;
   text-align: center;
   line-height: 24px;
-  font-size: 18px;
+  font-size: 14px;
   font-style: normal;
   font-weight: 400;
-  border: 1px solid black;
-  margin-right: 8px;
+  border: ${(props) => (props.selected  ? '2px solid green' : '1px solid black')};
+  margin-right: 12px;
+  margin-bottom: 20px;
+  background-color: ${(props) => (props.type === 'swatch' ? props.data : '')};
+  cursor: pointer;
 `;
 
 const RightPart = styled.div`
@@ -120,43 +131,67 @@ const ProductImage = styled.img`
   object-fit: cover;
 `;
 
-export default class ProductModal extends Component {
+function withParams(Component) {
+  return props => <Component 
+  {...props}  
+  dispatch={useDispatch()}
+  currentCurrencyIndex={useSelector(state => state.currencies.currentCurrency)}
+  />;
+}
+class ProductModal extends Component {
   componentDidMount() {
-    this.setState({ ...this.props.productProperties });
+    this.setState({currentProperty: this.props.productProperties.currentProperty});
+  }
+
+  parameterHandler = (parametresName, item) => e => {
+    e.preventDefault()
+    this.setState((prevState) => ({currentProperty: {...prevState.currentProperty , [parametresName]: item.value}}))
   }
   render() {
-    if (!this.state) return <p>loading</p>;
-    const { imageBig, imagesSmall, brand, name, sizes, prices, description } =
-      this.state;
+    const { id, gallery, prices, brand,  name, attributes, currentProperty, quantity}  =
+      this.props.productProperties;
+      const index = this.props.currentCurrencyIndex
     return (
       <ProductItem>
         <LeftPart>
           <ProductBrand>{brand}</ProductBrand>
           <ProductName>{name}</ProductName>
-          <ProductPrice>{prices[0].amount}</ProductPrice>
-          <ProductSizeWrapper>
-            {sizes?.map((size) => {
-              return <ProductSize key={size.value}>{size.value}</ProductSize>;
+          <ProductPrice>{prices[index].currency.symbol} {prices[index].amount}</ProductPrice>
+          <ProductPropertiesWrapper>
+          { attributes.map((attr) => {
+            return (
+            <ProductPropertyWrapper key={attr.id}>
+            {attr.items.map((item) => {
+              return <ProductProperty 
+              parametresName={attr.name} //name of characteristic (for example "size")
+              type={attr.type} 
+              key={item.value}
+              data={item.value}
+              selected={(currentProperty && currentProperty[`${attr.name}`]) === `${item.value}`} // current  choice of this characteristic (for example  size "M")
+              onClick={this.parameterHandler(attr.name, item)}
+              >
+                {attr.type !== 'swatch' && item.value}
+                </ProductProperty>; 
             })}
-          </ProductSizeWrapper>
+            </ProductPropertyWrapper>
+          )
+          })
+          }
+          </ProductPropertiesWrapper>
         </LeftPart>
         <RightPart>
           <Quantity>
-            <IncreaseQuantity>+</IncreaseQuantity>
-            <QuantityValue>10</QuantityValue>
-            <DecreaseQuantity>-</DecreaseQuantity>
+            <IncreaseQuantity onClick={() => this.props.dispatch(increaseQuantity({id}))}>+</IncreaseQuantity>
+            <QuantityValue>{quantity}</QuantityValue>
+            <DecreaseQuantity onClick={() => this.props.dispatch(decreaseQuantity({id}))}>-</DecreaseQuantity>
           </Quantity>
           <ImageWrapper>
-            <Carousel >
-              {imagesSmall.map(image => {
-                return (
-                  <ProductImage src={image} key={image}/>
-                )
-              })}
-            </Carousel>
+                  <ProductImage src={gallery[0]} />
           </ImageWrapper>
         </RightPart>
       </ProductItem>
     );
   }
 }
+
+export default withParams(ProductModal);

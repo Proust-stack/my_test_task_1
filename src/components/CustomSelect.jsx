@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import { GET_CURRENCIES } from '../utils/graphQLqueries';
-import { client } from '../index';
 import arrowDown from '../assets/icons/header/svg/options.svg';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCurrencies } from '../store/currencySlice';
+import {changeCurrency} from '../store/currencySlice';
 
 const DropDownContainer = styled('div')``;
 
@@ -64,35 +63,25 @@ class CustomSelect extends Component {
     super(props);
     this.state = {
       isOpen: false,
-      currentCurrency: 0,
     };
   }
 
-  componentDidMount = async () => {
-    this.props.dispatch(fetchCurrencies())
-    const response = await client.query({
-      query: GET_CURRENCIES,
-    });
-    const { currencies } = await response.data;
-    this.setState({
-      currencies: currencies,
-    });
+  componentDidMount = () => {
   };
   toggling = () =>
     this.setState({
       isOpen: !this.state.isOpen,
     });
 
-  onOptionClicked = (value) => (e) => {
+  onOptionClicked = (index) => (e) => {
     e.stopPropagation();
-    this.setState({
-      currentCurrency: value,
-    });
     this.toggling();
+    this.props.dispatch(changeCurrency({index}))
   };
 
   render() {
-    if (!this.state?.currencies) return <p>loading...</p>;
+    
+    const {currencies, currentCurrency} = this.props.currencies
     return (
       <DropDownContainer>
         <DropDownHeader
@@ -100,20 +89,20 @@ class CustomSelect extends Component {
           img={arrowDown}
           isOpen={this.state.isOpen}
         >
-          {this.state.currentCurrency.symbol}
+          {currencies[currentCurrency].symbol}
         </DropDownHeader>
         {this.state.isOpen && (
           <DropDownListContainer>
             <DropDownList>
-              {this.state.currencies &&
-                Array.from(this.state.currencies).map(
-                  ({ label, symbol }) => {
+              {currencies &&
+                currencies.map(
+                  (item, index) => {
                     return (
                       <ListItem
-                        key={symbol}
-                        onClick={this.onOptionClicked({ label, symbol })}
+                        key={item.symbol}
+                        onClick={this.onOptionClicked(index)}
                       >
-                        {symbol} {label}
+                        {item.symbol} {item.label}
                       </ListItem>
                     );
                   }

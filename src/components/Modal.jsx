@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { client } from '../index';
-import { GET_PRODUCT } from '../utils/graphQLqueries';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import ProductModal from './ProductModal';
 
 const Wrapper = styled.div`
@@ -87,20 +87,28 @@ const Button = styled(Link)`
   cursor: pointer;
 `;
 
-export default class Modal extends Component {
-  constructor(props) {
-    super(props);
-    this.state = null;
-  }
+function withParams(Component) {
+  return props => <Component 
+  {...props}  
+  dispatch={useDispatch()}
+  cart={useSelector(state => state.cart.items)}
+  currentCurrencyIndex={useSelector(state => state.currencies.currentCurrency)}
+  navigate={useNavigate()}
+  />;
+}
+class Modal extends Component {
+
   componentDidMount = () => {
     
   };
   render() {
+    const cart = this.props.cart
     // if (!this.state) return <p>loading...</p>;
     return (
       <Wrapper>
         <Content onMouseLeave={() => {this.props.toggleModal()}}>
           <Title>My bag</Title>
+          {cart.map(item => <ProductModal productProperties={item} key={item.id}/>)}
           <Total>
             <TotalTitle>total</TotalTitle>
             <TotalPrice>100$</TotalPrice>
@@ -114,3 +122,5 @@ export default class Modal extends Component {
     );
   }
 }
+
+export default withParams(Modal);

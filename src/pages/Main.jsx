@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import ProductWithData from '../components/ProductItem';
+import ProductItem from '../components/ProductItem';
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCategory } from '../store/categorySlice';
@@ -56,7 +56,7 @@ class MainWithData extends Component {
         <ItemsWrapper>
           {category.products &&
             category.products.map((category) => {
-              return <ProductWithData category={category} key={category.id} />;
+              return <ProductItem category={category} key={category.id} />;
             })}
         </ItemsWrapper>
       </Wrapper>

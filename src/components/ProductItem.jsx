@@ -59,7 +59,6 @@ const ProductImage = styled.img`
 `;
 const ProductOutOfStock = styled.div`
   position: absolute;
-  z-index:1;
   left: 0%;
   top: 0%;
   width: 100%;
@@ -98,6 +97,7 @@ function withParams(Component) {
   return props => <Component 
   {...props}  
   cart={useSelector(state => state.cart)} 
+  currentCurrencyIndex={useSelector(state => state.currencies.currentCurrency)} 
   dispatch={useDispatch()}
   navigate={useNavigate()}
   />;
@@ -114,6 +114,7 @@ class ProductWithData extends Component {
 
   render() {
     const {id, name, gallery, inStock, prices, attributes} = this.props.category;
+    const index = this.props.currentCurrencyIndex
     return (
       <ProductItem key={id} onClick={() => this.getProduct(`/product/${id}`)}>
         <ProductImageWrapper >
@@ -122,7 +123,7 @@ class ProductWithData extends Component {
         </ProductImageWrapper>
         <ProductFooter>
           <ProductTitle>{name}</ProductTitle>
-          <ProductPrice>{prices[0].currency.symbol}{Math.round(prices[0].amount).toFixed(2)}</ProductPrice>
+          <ProductPrice>{prices[index].currency.symbol}{Math.round(prices[index].amount).toFixed(2)}</ProductPrice>
         </ProductFooter>
         {inStock && <ItemCart  onClick={this.addToCart({id, gallery, prices, attributes})}/>}
       </ProductItem>
