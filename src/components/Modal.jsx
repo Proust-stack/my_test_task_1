@@ -102,13 +102,13 @@ class Modal extends Component {
     
   };
   render() {
-    const cart = this.props.cart
+    const cartItems = this.props.cart
     // if (!this.state) return <p>loading...</p>;
     return (
       <Wrapper>
-        <Content onMouseLeave={() => {this.props.toggleModal()}}>
+        <Content onMouseLeave={() => this.props.toggleModal()}>
           <Title>My bag</Title>
-          {cart.map(item => <ProductModal productProperties={item} key={item.id}/>)}
+          {cartItems.map(item => <ProductModal productProperties={item} key={item.id}/>)}
           <Total>
             <TotalTitle>total</TotalTitle>
             <TotalPrice>100$</TotalPrice>

@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import arrowDown from '../assets/icons/header/svg/options.svg';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchCurrencies } from '../store/currencySlice';
 import {changeCurrency} from '../store/currencySlice';
 
 const DropDownContainer = styled('div')``;
@@ -92,7 +91,7 @@ class CustomSelect extends Component {
           {currencies[currentCurrency].symbol}
         </DropDownHeader>
         {this.state.isOpen && (
-          <DropDownListContainer>
+          <DropDownListContainer onMouseLeave={this.toggling}>
             <DropDownList>
               {currencies &&
                 currencies.map(

@@ -70,7 +70,7 @@ const ProductInfoName = styled.div`
   line-height: 27px;
   margin-bottom: 43px;
 `;
-const ProductInfoSize = styled.div`
+const ProductInfoProperties = styled.div`
   width: 100%;
   display: flex;
   justify-content: flex-start;
@@ -101,10 +101,11 @@ const ProductParametr = styled.div`
   font-size: 18px;
   font-style: normal;
   font-weight: 400;
-  border: ${(props) => (props.selected  ? '2px solid green' : '1px solid black')};
   margin-right: 12px;
   margin-bottom: 20px;
   background-color: ${(props) => (props.type === 'swatch' ? props.data : '')};
+  box-shadow:  ${(props) => (props.selected  ? '0px 4px 20px rgba(168, 172, 176, 0.6)' : '')};
+  transform: scale(1.2);
   cursor: pointer;
 `;
 
@@ -172,9 +173,35 @@ function withParams(Component) {
   />;
 }
 class Product extends Component {
-
+  constructor(props) {
+    super(props)
+     this.state = {
+    quantity: 1
+  }
+  }
+  fetchInitialProperties = () => {
+    const { attributes} = this.props.productProperties;
+    const obj = {}
+    attributes.forEach(attr => {
+      obj[attr.name] = attr.items[0].value
+    })
+    this.setState({ currentProperty: obj, currentImageSrc: this.props.productProperties.gallery[0]});
+  }
+ 
   componentDidMount() {
-    this.setState({ imageCoord: {x: 0, y: 0}, properties: [], quantity: 1 });
+    if (this.props.productProperties) {
+      this.fetchInitialProperties()
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.productProperties !== prevProps.productProperties) {
+      this.fetchInitialProperties()
+    }
+  }
+
+  componentDidCatch(error) {
+    console.log(error.message);
   }
   adjustHTML() {
     return {__html: this.state.description};
@@ -195,21 +222,19 @@ class Product extends Component {
     return this.props.dispatch(addItem(item))
   }
 
-  parameterHandler = (parametresName, item) => e => {
-    e.preventDefault()
-    // this.setState({properties: [...this.state.properties, {[parametresName]: item.value}]})
-    this.setState((prevState) => ({currentProperty: {...prevState.currentProperty , [parametresName]: item.value}}))
+  parameterHandler = (parameterName, item) => e => {
+    e.stopPropagation()
+    this.setState((prevState) => ({currentProperty: {...prevState.currentProperty , [parameterName]: item.value}}))
   }
 
   render() {
-    if (!this.state) return <p>loading</p>;
-    const { gallery, brand, name, prices, attributes, id } =
+    const { gallery, brand, name, prices, attributes, id, inStock } =
     this.props.productProperties;
-    const index = this.props.currentCurrencyIndex
+    const index = this.props.currentCurrencyIndex;
     return (
       <ProductItem>
         <ProductImageSmall>
-          {gallery.map((image) => {
+          {gallery && gallery.map((image) => {
             return (
               <ProductImageWrapperSmall  key={image} >
                 <ProductImage 
@@ -231,7 +256,7 @@ class Product extends Component {
           <ProductInfoBrand>{brand}</ProductInfoBrand>
           <ProductInfoName>{name}</ProductInfoName>
           { attributes.map((attr) => {
-            return (<ProductInfoSize key={attr.id}>
+            return (<ProductInfoProperties key={attr.id}>
             <ProductInfoPropertyTitle>{attr.name}:</ProductInfoPropertyTitle>
             <ProductInfoPropertyWrapper>
             {attr.items.map((item) => {
@@ -247,14 +272,17 @@ class Product extends Component {
                 </ProductParametr>; 
             })}
             </ProductInfoPropertyWrapper>
-          </ProductInfoSize>)
+          </ProductInfoProperties>)
           })
           }
           <ProductInfoPrice>
             <ProductInfoPriceTitle>PRICE</ProductInfoPriceTitle>
             <ProductInfoPriceValue>{prices[index].currency.symbol} {prices[index].amount}</ProductInfoPriceValue>
           </ProductInfoPrice>
-          <Button onClick={this.addToCart({id, gallery, prices, brand, name, attributes, ...this.state})}>ADD TO CART</Button>
+          { inStock && <Button 
+          onClick={this.addToCart({id, gallery, prices, brand, name, attributes, ...this.state})}
+          
+          >ADD TO CART</Button>}
           <ProductFooter dangerouslySetInnerHTML={this.adjustHTML()}></ProductFooter>
         </ProductInfo>
       </ProductItem>

@@ -123,7 +123,7 @@ class ProductWithData extends Component {
         </ProductImageWrapper>
         <ProductFooter>
           <ProductTitle>{name}</ProductTitle>
-          <ProductPrice>{prices[index].currency.symbol}{Math.round(prices[index].amount).toFixed(2)}</ProductPrice>
+          <ProductPrice>{prices[index].currency.symbol}{prices[index].amount.toFixed(2)}</ProductPrice>
         </ProductFooter>
         {inStock && <ItemCart  onClick={this.addToCart({id, gallery, prices, attributes})}/>}
       </ProductItem>

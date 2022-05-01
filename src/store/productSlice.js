@@ -29,7 +29,7 @@ const setError =  (state, action) => {
 const productSlice = createSlice({
     name: 'product',
     initialState: {
-        product: {},
+        product: null,
         loading: false,
         error: null
     },

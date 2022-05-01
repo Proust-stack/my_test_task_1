@@ -7,7 +7,7 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   margin-bottom: 20px;
-  justify-content: flex-start;
+  justify-content: space-around;
 `;
 
 const CartTitle = styled.div`
@@ -19,6 +19,17 @@ const CartTitle = styled.div`
   color: #1d1f22;
   text-align: start;
   margin:  80px 0 60px 0;
+`;
+const ItemsWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 40px;
+`;
+const Divider = styled.div`
+    width: 100%;
+    height: 2px;
+    background: #E5E5E5;
+    margin-bottom: 10px;
 `;
 
 const Total = styled.div`
@@ -55,47 +66,63 @@ function withParams(Component) {
   {...props}  
   dispatch={useDispatch()}
   items={useSelector(state => state.cart.items)}
-  currencies={useSelector(state => state.currencies)}
+  currencies={useSelector(state => state.currencies.currencies)}
+  currentCurrencyIndex={useSelector(state => state.currencies.currentCurrency)}
   />;
 }
 class CartPageWithData extends PureComponent {
   state = {
     totalCost: 0,
-    currencySymbol: '$'
+    currencySymbol: '$',
+  };
+
+  getTotalCost = () => {
+    const items = this.props.items;
+      const currencies = this.props.currencies; // array of currencies
+      const currencyIndex = this.props.currentCurrencyIndex; // get index current currency (number)
+      let totalCost = 0;
+      items.forEach((item) => {
+        totalCost += item.prices[currencyIndex].amount * item.quantity;
+      });
+      this.setState({
+        totalCost: totalCost.toFixed(2),
+        currencySymbol: currencies[currencyIndex].symbol,
+      });
   }
-  
+
+
   componentDidMount() {
-    const items = this.props.items
-    const {currencies, currentCurrency} = this.props.currencies // get index current currency (number)
-    let totalCost = 0;
-    items.forEach(item => {
-      totalCost += item.prices[currentCurrency].amount
-    });
-    console.log(this.state);
-    this.setState({totalCost: totalCost, currencySymbol: currencies[currentCurrency].symbol })
+    this.getTotalCost();
   }
-  componentDidUpdate() {
-    
+  componentDidUpdate(prevProps) {
+    if (this.props.currentCurrencyIndex !== prevProps.currentCurrencyIndex || this.props.items !== prevProps.items) {
+      this.getTotalCost();
+    }
   }
   render() {
-    const {currencies, currentCurrency} = this.props.currencies
-    if (!this.state) return <p>loading</p>
-    const items = this.props.items
-    if (items.length === 0) return <p>Nothing is added yet..</p>
+    if (!this.state) return <p>loading</p>;
+    console.log(this.state);
+    const items = this.props.items;
+    if (items.length === 0) return <p>Nothing is added yet..</p>;
     return (
-      <>
-      <Wrapper>
-        <CartTitle>Cart</CartTitle>
-        {
-        items.map(item => <ProductCart productProperties={item} key={item.id}/>)
-        }
-        <Total>
+        <Wrapper>
+          <CartTitle>Cart</CartTitle>
+          <ItemsWrapper>
+            {items.map((item) => (
+              <div  key={item.id}>
+              <Divider/>
+              <ProductCart productProperties={item} />
+              </div>
+            ))}
+          </ItemsWrapper>
+          <Total>
             <TotalTitle>total</TotalTitle>
-            <TotalPrice>{currencies[currentCurrency].symbol || this.state.currencySymbol} {this.state.totalCost}</TotalPrice>
+            <TotalPrice>
+              {this.state.currencySymbol} {this.state.totalCost}
+            </TotalPrice>
           </Total>
-      </Wrapper>
-      </>
-    )
+        </Wrapper>
+    );
   }
 }
 

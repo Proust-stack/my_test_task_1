@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import {increaseQuantity} from '../store/cartSlice';
 import {decreaseQuantity} from '../store/cartSlice';
+import {changeProperties} from '../store/cartSlice';
+import { useNavigate } from 'react-router-dom';
 
 const ProductItem = styled.div`
   width: 100%;
@@ -135,58 +137,101 @@ function withParams(Component) {
   return props => <Component 
   {...props}  
   dispatch={useDispatch()}
+  navigate={useNavigate()}
   currentCurrencyIndex={useSelector(state => state.currencies.currentCurrency)}
   />;
 }
 class ProductModal extends Component {
   componentDidMount() {
-    this.setState({currentProperty: this.props.productProperties.currentProperty});
+    this.setState({
+      currentProperty: this.props.productProperties.currentProperty,
+    });
   }
 
-  parameterHandler = (parametresName, item) => e => {
-    e.preventDefault()
-    this.setState((prevState) => ({currentProperty: {...prevState.currentProperty , [parametresName]: item.value}}))
+  parameterHandler = (id, parametresName, item) => (e) => {
+    e.stopPropagation();
+    this.props.dispatch(changeProperties({ id, currentProperty: {parametresName: item.value} }))
+    this.setState((prevState) => ({
+      currentProperty: {
+        ...prevState.currentProperty,
+        [parametresName]: item.value,
+      },
+    }));
+    console.log(this.state);
+  };
+  toProduct = (address) => {
+    this.props.navigate(address);
+  };
+  increase = (id) => (e) => {
+    e.stopPropagation()
+    this.props.dispatch(increaseQuantity({id}))
+  }
+  decrease = (id) => (e) => {
+    e.stopPropagation()
+    this.props.dispatch(decreaseQuantity({id}))
   }
   render() {
-    const { id, gallery, prices, brand,  name, attributes, currentProperty, quantity}  =
-      this.props.productProperties;
-      const index = this.props.currentCurrencyIndex
+    const {
+      id,
+      gallery,
+      prices,
+      brand,
+      name,
+      attributes,
+      currentProperty,
+      quantity,
+    } = this.props.productProperties;
+    const index = this.props.currentCurrencyIndex;
     return (
-      <ProductItem>
+      <ProductItem onClick={() => this.toProduct(`/product/${id}`)}>
         <LeftPart>
           <ProductBrand>{brand}</ProductBrand>
           <ProductName>{name}</ProductName>
-          <ProductPrice>{prices[index].currency.symbol} {prices[index].amount}</ProductPrice>
+          <ProductPrice>
+            {prices[index].currency.symbol} {prices[index].amount}
+          </ProductPrice>
           <ProductPropertiesWrapper>
-          { attributes.map((attr) => {
-            return (
-            <ProductPropertyWrapper key={attr.id}>
-            {attr.items.map((item) => {
-              return <ProductProperty 
-              parametresName={attr.name} //name of characteristic (for example "size")
-              type={attr.type} 
-              key={item.value}
-              data={item.value}
-              selected={(currentProperty && currentProperty[`${attr.name}`]) === `${item.value}`} // current  choice of this characteristic (for example  size "M")
-              onClick={this.parameterHandler(attr.name, item)}
-              >
-                {attr.type !== 'swatch' && item.value}
-                </ProductProperty>; 
+            {attributes.map((attr) => {
+              return (
+                <ProductPropertyWrapper key={attr.id}>
+                  {attr.items.map((item) => {
+                    return (
+                      <ProductProperty
+                        parametresName={attr.name} //name of characteristic (for example "size")
+                        type={attr.type}
+                        key={item.value}
+                        data={item.value}
+                        selected={
+                          (currentProperty &&
+                            currentProperty[`${attr.name}`]) === `${item.value}`
+                        } // current  choice of this characteristic (for example  size "M")
+                        onClick={this.parameterHandler(id, attr.name, item)}
+                      >
+                        {attr.type !== 'swatch' && item.value}
+                      </ProductProperty>
+                    );
+                  })}
+                </ProductPropertyWrapper>
+              );
             })}
-            </ProductPropertyWrapper>
-          )
-          })
-          }
           </ProductPropertiesWrapper>
         </LeftPart>
         <RightPart>
           <Quantity>
-            <IncreaseQuantity onClick={() => this.props.dispatch(increaseQuantity({id}))}>+</IncreaseQuantity>
+            <IncreaseQuantity
+              onClick={this.increase(id)}
+            >
+              +
+            </IncreaseQuantity>
             <QuantityValue>{quantity}</QuantityValue>
-            <DecreaseQuantity onClick={() => this.props.dispatch(decreaseQuantity({id}))}>-</DecreaseQuantity>
+            <DecreaseQuantity
+              onClick={this.decrease(id)}
+            >
+              -
+            </DecreaseQuantity>
           </Quantity>
           <ImageWrapper>
-                  <ProductImage src={gallery[0]} />
+            <ProductImage src={gallery[0]} />
           </ImageWrapper>
         </RightPart>
       </ProductItem>

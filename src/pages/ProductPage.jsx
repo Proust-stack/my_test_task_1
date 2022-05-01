@@ -22,22 +22,28 @@ function withParams(Component) {
 }
 
 class ProductPageWithData extends Component {
-      constructor(props) {
-        super(props)
-        this.props.dispatch(fetchProduct(this.props.params.productId))
-      }
-      componentDidMount() {
+  constructor(props) {
+    super(props);
+    
+    this.state = {product: this.props.product.product}
+  }
+  componentDidMount() {
+    this.props.dispatch(fetchProduct(this.props.params.productId));
+  }
+  componentDidUpdate(prevProps) {
+    if (this.props.params !== prevProps.params || this.props.product.product !== prevProps.product.product) {
+      this.props.dispatch(fetchProduct(this.props.params.productId));
+      this.setState({product: this.props.product.product})
     }
+  }
   render() {
-    const {error, loading} = this.props.product
-    const {gallery, brand, name, attributes, prices, description, id}  = this.props.product.product
-    const productProperties = {gallery, brand, name, attributes, prices, description, id}
-    if (loading) return <p>loading...</p>;
+    const { product, error, loading } = this.props.product;
+    if (loading || !this.state.product) return <p>loading...</p>;
     if (error) return <p>error...</p>;
     return (
-        <Wrapper>
-          <Product productProperties={productProperties}/>
-        </Wrapper>
+      <Wrapper>
+        <Product productProperties={product} />
+      </Wrapper>
     );
   }
 }
