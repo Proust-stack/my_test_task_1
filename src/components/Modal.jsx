@@ -22,7 +22,9 @@ const Content = styled.div`
   right: 250px;
   position: absolute;
   padding: 16px;
-  
+  overflow-y: auto;
+  min-width: 325px;
+  max-height: 540px;
 `;
 
 const Title = styled.div`
@@ -36,29 +38,29 @@ const Title = styled.div`
   margin-bottom: 23px;
 `;
 const Total = styled.div`
-  height: 40px;
+  max-height: 30px;
   font-weight: 700;
-  text-transform: uppercase;
   color: #1d1f22;
   display: flex;
   justify-content: space-between;
+  align-items: center;
   margin-bottom: 30px;
+  margin-top: 40px;
 `;
+
 const TotalTitle = styled.div`
-  font-weight: 700;
-  font-size: 32px;
-  line-height: 40px;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.25;
   text-transform: uppercase;
   color: #1d1f22;
-  text-align: start;
 `;
 const TotalPrice = styled.div`
   font-weight: 700;
-  font-size: 32px;
-  line-height: 40px;
+  font-size: 16px;
+  line-height: 1.25;
   text-transform: uppercase;
   color: #1d1f22;
-  margin-bottom: 30px;
 `;
 
 const ButonsWrapper = styled.div`
@@ -68,7 +70,7 @@ const ButonsWrapper = styled.div`
   justify-content: space-between;
 `;
 
-const Button = styled(Link)`
+const Button = styled.button`
   width: 48%;
   height: 50px;
   display: flex;
@@ -91,31 +93,59 @@ function withParams(Component) {
   return props => <Component 
   {...props}  
   dispatch={useDispatch()}
-  cart={useSelector(state => state.cart.items)}
+  items={useSelector(state => state.cart.items)}
+  currencies={useSelector(state => state.currencies.currencies)}
   currentCurrencyIndex={useSelector(state => state.currencies.currentCurrency)}
   navigate={useNavigate()}
   />;
 }
 class Modal extends Component {
-
-  componentDidMount = () => {
-    
+  state = {
+    totalCost: 0,
+    currencySymbol: '$',
   };
+
+  getTotalCost = () => {
+      const currencies = this.props.currencies; // array of currencies
+      const currencyIndex = this.props.currentCurrencyIndex; // get index current currency (number)
+      let totalCost = 0;
+      this.props.items.forEach((item) => {
+        totalCost += item.prices[currencyIndex].amount * item.quantity;
+      });
+      this.setState({
+        totalCost: totalCost.toFixed(2),
+        currencySymbol: currencies[currencyIndex].symbol,
+      });
+  }
+
+  componentDidMount() {
+    this.getTotalCost();
+  }
+  componentDidUpdate(prevProps) {
+    if (this.props.currentCurrencyIndex !== prevProps.currentCurrencyIndex || this.props.items !== prevProps.items) {
+      this.getTotalCost();
+    }
+  }
+  toLink = (address) => (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    this.props.navigate(address)
+    this.props.toggleModal()
+  }
+
   render() {
-    const cartItems = this.props.cart
-    // if (!this.state) return <p>loading...</p>;
     return (
       <Wrapper>
         <Content onMouseLeave={() => this.props.toggleModal()}>
           <Title>My bag</Title>
-          {cartItems.map(item => <ProductModal productProperties={item} key={item.id}/>)}
+          {this.props.items.map(item => <ProductModal productProperties={item} key={item.id}/>)}
           <Total>
             <TotalTitle>total</TotalTitle>
-            <TotalPrice>100$</TotalPrice>
+            <TotalPrice>{this.state.currencySymbol} {Math.trunc(this.state.totalCost).toFixed(2)}</TotalPrice>
           </Total>
           <ButonsWrapper>
-            <Button primary="true" to={`/cart`}>VIEW BAG</Button>
-            <Button to={`/`}>CHECK OUT</Button>
+            <Button primary="true" onClick={this.toLink(`/cart`)}>VIEW BAG</Button>
+            <Button onClick={this.toLink(`/`)}>CHECK OUT</Button>
           </ButonsWrapper>
         </Content>
       </Wrapper>

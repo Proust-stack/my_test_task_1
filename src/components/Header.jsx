@@ -7,6 +7,8 @@ import emptyCart from '../assets/icons/header/svg/Vector.svg';
 import { GET_CATEGORY_NAME } from '../utils/graphQLqueries';
 import { useParams } from "react-router-dom";
 import CustomSelect from './CustomSelect';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchCategoriesNames } from '../store/categorySlice';
 
 const Nav = styled.nav`
   background: #fff;
@@ -53,49 +55,53 @@ const RightPart = styled.div`
   width: 200px;
 `;
 
-const ItemIconCurr = styled.div`
-  width: 20px;
-  height: 20px;
-`;
-const ItemIconVector = styled.div`
-  width: 20px;
-  height: 20px;
-  margin-right: 22px;
-  cursor: pointer;
-`;
-
 const ItemIconCart = styled.div`
   background-image: url(${emptyCart});
   width: 20px;
   height: 20px;
   cursor: pointer;
+  position: relative;
+`;
+const Badge = styled.div`
+  position: absolute;
+  border-radius: 100%;
+  width: 15px;
+  height: 15px;
+  top: -5px;
+  left: 10px;
+  background-color: black;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  font-size: 10px;
 `;
 
 function withParams(Component) {
-  return props => <Component {...props} params={useParams()} />;
+  return props => <Component 
+  {...props} 
+  params={useParams()} 
+  dispatch={useDispatch()}
+  categories={useSelector(state => state.category.categoriesNames)}
+  items={useSelector(state => state.cart.items)}
+  />;
 }
 class Header extends Component {
   constructor(props) {
     super(props);
-    this.state = null;
+    this.props.dispatch(fetchCategoriesNames())
   }
-  componentDidMount = async () => {
-    const response = await client.query({
-      query:GET_CATEGORY_NAME
-    })
-    const {categories} = await response.data;
-      this.setState({
-        categories: categories,
-    });
+  componentDidMount = () => {
+
 }
   render() {
-    if (!this.state) return <p>loading...</p>
     return (
       <Nav>
         <NavbarItem>
           <LeftPart>
               {
-                this.state.categories && Array.from(this.state.categories).map(({name}) => {
+                Array.from(this.props.categories).map(({name}) => {
                   return (
                     <StyledLink 
                     key={name} 
@@ -108,10 +114,10 @@ class Header extends Component {
           <ItemIconCompany />
           <RightPart>
           <CustomSelect/>
-          {/* <CurrenciesModal/> */}
           <ItemIconCart 
           onMouseEnter={() => this.props.toggleModal()}
           >
+            <Badge>{this.props.items.length}</Badge>
           </ItemIconCart>
           </RightPart>
         </NavbarItem>

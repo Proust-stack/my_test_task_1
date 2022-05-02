@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
+import { css } from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { addItem } from '../store/cartSlice';
@@ -42,7 +43,10 @@ const ProductImage = styled.img`
   height: ${(props) => (props.big ? '100%' : '100%;')} center / cover  no-repeat;
   object-fit: cover;
   cursor: pointer;  
-  
+  transition: all 300ms 0ms ease-in-out;
+  &:hover {
+    transform: scale(1.1);
+}
 `;
 
 const ProductInfo = styled.div`
@@ -94,18 +98,23 @@ const ProductInfoPropertyWrapper = styled.div`
 `;
 
 const ProductParametr = styled.div`
-  width: 63px;
-  height: 45px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 43px;
+  min-height: 25px;
   text-align: center;
-  line-height: 45px;
+  line-height: 1.25;
   font-size: 18px;
   font-style: normal;
   font-weight: 400;
-  margin-right: 12px;
-  margin-bottom: 20px;
+  margin-right: 10px;
   background-color: ${(props) => (props.type === 'swatch' ? props.data : '')};
-  box-shadow:  ${(props) => (props.selected  ? '0px 4px 20px rgba(168, 172, 176, 0.6)' : '')};
-  transform: scale(1.2);
+  box-shadow:  ${(props) => (props.selected  ? '0px 4px 15px rgba(168, 172, 176, 0.8)' : '')};
+  transform: scale(1);
+  ${ props => props.expanded && css`
+    transform: scale(1.1);
+  `};
   cursor: pointer;
 `;
 
@@ -150,9 +159,12 @@ const Button = styled.button`
   margin-bottom: 40px;
   border: none;
   cursor: pointer;
-  &:active {
-    box-shadow: 0px 4px 35px rgba(168, 172, 176, 0.19);
+  &:hover {
+    box-shadow: 0px 4px 35px rgba(168, 172, 176, 0.6);
   }
+  &:active{
+   transform: scale(1.3);
+}
 `;
 const ProductFooter = styled.div`
   height: 100px;
@@ -228,6 +240,7 @@ class Product extends Component {
   }
 
   render() {
+    if (!this.props.productProperties) return <p>loading...</p>;
     const { gallery, brand, name, prices, attributes, id, inStock } =
     this.props.productProperties;
     const index = this.props.currentCurrencyIndex;
@@ -277,7 +290,7 @@ class Product extends Component {
           }
           <ProductInfoPrice>
             <ProductInfoPriceTitle>PRICE</ProductInfoPriceTitle>
-            <ProductInfoPriceValue>{prices[index].currency.symbol} {prices[index].amount}</ProductInfoPriceValue>
+            <ProductInfoPriceValue>{prices[index].currency.symbol} {Math.trunc(prices[index].amount).toFixed(2)}</ProductInfoPriceValue>
           </ProductInfoPrice>
           { inStock && <Button 
           onClick={this.addToCart({id, gallery, prices, brand, name, attributes, ...this.state})}

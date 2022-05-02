@@ -17,9 +17,8 @@ const cartSlice = createSlice({
             state.items = state.items.filter(item => item.id !== action.payload.id)
         },
         changeProperties(state, action) {
-            const item = state.items.filter(item => item.id === action.payload.id)
-           
-
+            const item = state.items.find(item => item.id === action.payload.id)
+            item.currentProperty = action.payload.currentProperty
         },
         increaseQuantity(state, action) {
             const item = state.items.find(item => item.id === action.payload.id)

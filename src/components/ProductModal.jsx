@@ -7,13 +7,11 @@ import {changeProperties} from '../store/cartSlice';
 import { useNavigate } from 'react-router-dom';
 
 const ProductItem = styled.div`
-  width: 100%;
   height: 137px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  position: relative;
   cursor: pointer;
   margin-bottom: 40px;
 `;
@@ -32,12 +30,14 @@ const ProductBrand = styled.div`
   line-height: 16px;
   font-style: normal;
   font-weight: 300;
+  margin-bottom: 5px;
 `;
 const ProductName = styled.div`
   font-size: 16px;
   font-style: normal;
   font-weight: 300;
   line-height: 16px;
+  margin-bottom: 10px;
 `;
 
 const ProductPrice = styled.div`
@@ -47,32 +47,36 @@ const ProductPrice = styled.div`
   line-height: 18px;
   display: flex;
   justify-content: flex-start;
+  margin-bottom: 5px;
 `;
 
 const ProductPropertiesWrapper = styled.div`
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
   flex-direction: column;
+  margin-bottom: 5px;
 `;
 
 const ProductPropertyWrapper = styled.div`
   display: flex;
   justify-content: flex-start;
+  margin-bottom: 10px;
 `;
 
 const ProductProperty = styled.div`
   min-width: 24px;
-  height: 24px;
+  min-height: 24px;
   text-align: center;
-  line-height: 24px;
+  line-height: 1.25;
   font-size: 14px;
   font-style: normal;
   font-weight: 400;
-  border: ${(props) => (props.selected  ? '2px solid green' : '1px solid black')};
   margin-right: 12px;
-  margin-bottom: 20px;
   background-color: ${(props) => (props.type === 'swatch' ? props.data : '')};
   cursor: pointer;
+  box-shadow:  ${(props) => (props.selected  ? '4px 4px 10px rgba(168, 172, 176, 0.9)' : '')};
+  padding: 5px;
+  transform: scale(1.2);
 `;
 
 const RightPart = styled.div`
@@ -133,6 +137,39 @@ const ProductImage = styled.img`
   object-fit: cover;
 `;
 
+const Close = styled.div`
+    /*position: absolute;
+    top: 5px;
+    right: 5px;
+    border: 4px solid #e62f57;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;*/
+    cursor: pointer;
+    float: right;
+
+.close:before,
+.close:after {
+    content: "";
+    position: absolute;
+    /*top: 21px;
+    left: 10px;*/
+    width: 32px;
+    height: 2px;
+    background: #555;
+}
+
+.close:before {
+    webkit-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+
+.close:after {
+    webkit-transform: rotate(-45deg);
+    transform: rotate(-45deg);
+}
+`
+
 function withParams(Component) {
   return props => <Component 
   {...props}  
@@ -142,30 +179,25 @@ function withParams(Component) {
   />;
 }
 class ProductModal extends Component {
-  componentDidMount() {
-    this.setState({
-      currentProperty: this.props.productProperties.currentProperty,
-    });
-  }
 
+  componentDidMount() {}
+  
   parameterHandler = (id, parametresName, item) => (e) => {
+
     e.stopPropagation();
-    this.props.dispatch(changeProperties({ id, currentProperty: {parametresName: item.value} }))
-    this.setState((prevState) => ({
-      currentProperty: {
-        ...prevState.currentProperty,
-        [parametresName]: item.value,
-      },
-    }));
-    console.log(this.state);
+    const {currentProperty} = this.props.productProperties;
+    this.props.dispatch(changeProperties({ id, currentProperty: {...currentProperty, [parametresName]: item.value}}))
   };
+
   toProduct = (address) => {
     this.props.navigate(address);
   };
+
   increase = (id) => (e) => {
     e.stopPropagation()
     this.props.dispatch(increaseQuantity({id}))
   }
+  
   decrease = (id) => (e) => {
     e.stopPropagation()
     this.props.dispatch(decreaseQuantity({id}))
@@ -188,7 +220,7 @@ class ProductModal extends Component {
           <ProductBrand>{brand}</ProductBrand>
           <ProductName>{name}</ProductName>
           <ProductPrice>
-            {prices[index].currency.symbol} {prices[index].amount}
+            {prices[index].currency.symbol} {Math.trunc(prices[index].amount).toFixed(2)}
           </ProductPrice>
           <ProductPropertiesWrapper>
             {attributes.map((attr) => {
@@ -202,8 +234,7 @@ class ProductModal extends Component {
                         key={item.value}
                         data={item.value}
                         selected={
-                          (currentProperty &&
-                            currentProperty[`${attr.name}`]) === `${item.value}`
+                          (currentProperty && currentProperty[`${attr.name}`]) === `${item.value}`
                         } // current  choice of this characteristic (for example  size "M")
                         onClick={this.parameterHandler(id, attr.name, item)}
                       >
