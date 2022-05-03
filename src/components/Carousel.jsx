@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import { css } from 'styled-components';
 import leftArrowIcon from '../assets/icons/carousel/chevron-left.png';
 import rightArrowIcon from '../assets/icons/carousel/chevron-right.png';
 
@@ -8,6 +7,7 @@ const ContentWrapper = styled.div`
   overflow: hidden;
   width: 100%;
   height: 100%;
+  position: relative;
 `;
 const Content = styled.div`
   display: flex;
@@ -53,38 +53,31 @@ export default class Carousel extends Component {
         length: this.props.children.length
     });
   }
-  next = () => {
+  next = (e) => {
+    e.stopPropagation();
     if (this.state.currentIndex < (this.state.length - 1)) {
         this.setState({currentIndex: this.state.currentIndex + 1})
     }
 }
 
-  prev = () => {
+  prev = (e) => {
+    e.stopPropagation();
     if (this.state.currentIndex > 0) {
       this.setState({currentIndex: this.state.currentIndex - 1})
     }
 }
   render() {
-    
     return (
-      <>
-        <ContentWrapper>
-          <Content currentIndex={this.state.currentIndex}>
-            {this.props.children}
-          </Content>
-        </ContentWrapper>
-        <LeftArrow
-            img={leftArrowIcon}
-            onClick={() => this.prev()}
-          >
-            
-          </LeftArrow>
-          <RightArrow
-            img={rightArrowIcon}
-            onClick={() => this.next()}
-          >
-          </RightArrow>
-      </>
+      <ContentWrapper>
+        <Content currentIndex={this.state.currentIndex}>
+          {this.props.children}
+        </Content>
+        <LeftArrow img={leftArrowIcon} onClick={this.prev}></LeftArrow>
+        <RightArrow
+          img={rightArrowIcon}
+          onClick={this.next}
+        ></RightArrow>
+      </ContentWrapper>
     );
   }
 }

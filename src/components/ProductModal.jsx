@@ -4,16 +4,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import {increaseQuantity} from '../store/cartSlice';
 import {decreaseQuantity} from '../store/cartSlice';
 import {changeProperties} from '../store/cartSlice';
+import { removeItem } from '../store/cartSlice';
 import { useNavigate } from 'react-router-dom';
 
 const ProductItem = styled.div`
-  height: 137px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  align-items: center;
   cursor: pointer;
   margin-bottom: 40px;
+  position: relative;
 `;
 
 const LeftPart = styled.div`
@@ -54,7 +54,21 @@ const ProductPropertiesWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   flex-direction: column;
-  margin-bottom: 5px;
+`;
+
+const ProductProperties = styled.div`
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+`;
+
+const ProductPropertyTitle = styled.div`
+  font-family: 'Roboto Condensed';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.25;
+  margin-bottom: 10px;
 `;
 
 const ProductPropertyWrapper = styled.div`
@@ -74,9 +88,9 @@ const ProductProperty = styled.div`
   margin-right: 12px;
   background-color: ${(props) => (props.type === 'swatch' ? props.data : '')};
   cursor: pointer;
-  box-shadow:  ${(props) => (props.selected  ? '4px 4px 10px rgba(168, 172, 176, 0.9)' : '')};
+  box-shadow:  ${(props) => (props.selected  ? '4px 4px 8px rgba(168, 172, 176, 0.8)' : '')};
   padding: 5px;
-  transform: scale(1.2);
+  transform: ${(props) => (props.selected  ? 'scale(1.3)' : '')};
 `;
 
 const RightPart = styled.div`
@@ -89,7 +103,7 @@ const RightPart = styled.div`
 const Quantity = styled.div`
   display: flex;
   width: 24px;
-  height: 100%;
+  height: 137px;
   flex-direction: column;
   justify-content: space-between;
   margin-right: 10px;
@@ -124,7 +138,7 @@ const DecreaseQuantity = styled.div`
 const ImageWrapper = styled.div`
   position: relative;
   width: 105px;
-  height: 100%;
+  height: 137px;
   overflow: hidden;
 `;
 
@@ -138,34 +152,32 @@ const ProductImage = styled.img`
 `;
 
 const Close = styled.div`
-    /*position: absolute;
+    position: absolute;
     top: 5px;
     right: 5px;
-    border: 4px solid #e62f57;
     border-radius: 50%;
     width: 32px;
-    height: 32px;*/
+    height: 32px;
     cursor: pointer;
-    float: right;
 
-.close:before,
-.close:after {
-    content: "";
+&:before {
+  content: "";
     position: absolute;
-    /*top: 21px;
-    left: 10px;*/
-    width: 32px;
+    top: 2px;
+    left: 15px;
+    width: 15px;
     height: 2px;
-    background: #555;
-}
-
-.close:before {
-    webkit-transform: rotate(45deg);
+    background: #1D1F22;
     transform: rotate(45deg);
 }
-
-.close:after {
-    webkit-transform: rotate(-45deg);
+&:after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 15px;
+    width: 15px;
+    height: 2px;
+    background: #555;
     transform: rotate(-45deg);
 }
 `
@@ -202,6 +214,10 @@ class ProductModal extends Component {
     e.stopPropagation()
     this.props.dispatch(decreaseQuantity({id}))
   }
+  remove = (id) => (e) => {
+    e.stopPropagation()
+    this.props.dispatch(removeItem({id}))
+  }
   render() {
     const {
       id,
@@ -220,51 +236,52 @@ class ProductModal extends Component {
           <ProductBrand>{brand}</ProductBrand>
           <ProductName>{name}</ProductName>
           <ProductPrice>
-            {prices[index].currency.symbol} {Math.trunc(prices[index].amount).toFixed(2)}
+            {prices[index].currency.symbol}{' '}
+            {Math.trunc(prices[index].amount).toFixed(2)}
           </ProductPrice>
           <ProductPropertiesWrapper>
             {attributes.map((attr) => {
               return (
-                <ProductPropertyWrapper key={attr.id}>
-                  {attr.items.map((item) => {
-                    return (
-                      <ProductProperty
-                        parametresName={attr.name} //name of characteristic (for example "size")
-                        type={attr.type}
-                        key={item.value}
-                        data={item.value}
-                        selected={
-                          (currentProperty && currentProperty[`${attr.name}`]) === `${item.value}`
-                        } // current  choice of this characteristic (for example  size "M")
-                        onClick={this.parameterHandler(id, attr.name, item)}
-                      >
-                        {attr.type !== 'swatch' && item.value}
-                      </ProductProperty>
-                    );
-                  })}
-                </ProductPropertyWrapper>
+                <ProductProperties key={attr.id}>
+                  <ProductPropertyTitle>
+                    {attr.name}:
+                  </ProductPropertyTitle>
+                  <ProductPropertyWrapper>
+                    {attr.items.map((item) => {
+                      return (
+                        <ProductProperty
+                          parametresName={attr.name} //name of characteristic (for example "size")
+                          type={attr.type}
+                          key={item.value}
+                          data={item.value}
+                          selected={
+                            (currentProperty &&
+                              currentProperty[`${attr.name}`]) ===
+                            `${item.value}`
+                          } // current  choice of this characteristic (for example  size "M")
+                          onClick={this.parameterHandler(id, attr.name, item)}
+                        >
+                          {attr.type !== 'swatch' && item.value}
+                        </ProductProperty>
+                      );
+                    })}
+                  </ProductPropertyWrapper>
+                </ProductProperties>
               );
             })}
           </ProductPropertiesWrapper>
         </LeftPart>
         <RightPart>
           <Quantity>
-            <IncreaseQuantity
-              onClick={this.increase(id)}
-            >
-              +
-            </IncreaseQuantity>
+            <IncreaseQuantity onClick={this.increase(id)}>+</IncreaseQuantity>
             <QuantityValue>{quantity}</QuantityValue>
-            <DecreaseQuantity
-              onClick={this.decrease(id)}
-            >
-              -
-            </DecreaseQuantity>
+            <DecreaseQuantity onClick={this.decrease(id)}>-</DecreaseQuantity>
           </Quantity>
           <ImageWrapper>
             <ProductImage src={gallery[0]} />
           </ImageWrapper>
         </RightPart>
+        <Close onClick={this.remove(id)} />
       </ProductItem>
     );
   }

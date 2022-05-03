@@ -101,7 +101,6 @@ class CartPageWithData extends PureComponent {
   }
   render() {
     if (!this.state) return <p>loading</p>;
-    console.log(this.state);
     const items = this.props.items;
     if (items.length === 0) return <p>Nothing is added yet..</p>;
     return (

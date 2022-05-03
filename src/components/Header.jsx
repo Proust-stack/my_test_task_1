@@ -16,22 +16,20 @@ const Nav = styled.nav`
   min-height: 80px;
 `;
 const NavbarItem = styled.div`
-  width: 100%;
-  height: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
 `;
 const LeftPart = styled.div`
   text-decoration: none;
-  color: black;
+  display: flex;
+  justify-content: flex-start;
 `;
 
 const StyledLink = styled(NavLink)`
   text-decoration: none;
   font-weight: 600;
   font-size: 16px;
-  line-height: 120%;
   text-transform: uppercase;
   margin-right: 16px;
   &.active {
@@ -45,14 +43,12 @@ const ItemIconCompany = styled.div`
   background-image: url(${myImage});
   width: 40px;
   height: 40px;
-  cursor: pointer;
 `;
 
 const RightPart = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  width: 200px;
 `;
 
 const ItemIconCart = styled.div`
@@ -100,25 +96,20 @@ class Header extends Component {
       <Nav>
         <NavbarItem>
           <LeftPart>
-              {
-                Array.from(this.props.categories).map(({name}) => {
-                  return (
-                    <StyledLink 
-                    key={name} 
-                    to={`category/${name}`} 
-                    >{name}</StyledLink>
-                  )
-                })
-              }
+            {Array.from(this.props.categories).map(({ name }) => {
+              return (
+                <StyledLink key={name} to={`category/${name}`}>
+                  {name}
+                </StyledLink>
+              );
+            })}
           </LeftPart>
           <ItemIconCompany />
           <RightPart>
-          <CustomSelect/>
-          <ItemIconCart 
-          onMouseEnter={() => this.props.toggleModal()}
-          >
-            <Badge>{this.props.items.length}</Badge>
-          </ItemIconCart>
+            <CustomSelect />
+            <ItemIconCart onMouseEnter={() => this.props.toggleModal()}>
+              <Badge>{this.props.items.length}</Badge>
+            </ItemIconCart>
           </RightPart>
         </NavbarItem>
       </Nav>

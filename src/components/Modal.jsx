@@ -23,8 +23,14 @@ const Content = styled.div`
   position: absolute;
   padding: 16px;
   overflow-y: auto;
-  min-width: 325px;
   max-height: 540px;
+`;
+
+const TitleWrapper = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 23px;
 `;
 
 const Title = styled.div`
@@ -35,6 +41,17 @@ const Title = styled.div`
   font-weight: 700;
   font-size: 16px;
   text-align: left;
+  margin-right: 5px;
+`;
+
+const ItemsTitle = styled(Title)`
+  font-weight: 500;
+`;
+const PropertiesWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start ;
   margin-bottom: 23px;
 `;
 const Total = styled.div`
@@ -45,7 +62,6 @@ const Total = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 30px;
-  margin-top: 40px;
 `;
 
 const TotalTitle = styled.div`
@@ -64,7 +80,6 @@ const TotalPrice = styled.div`
 `;
 
 const ButonsWrapper = styled.div`
-  width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -134,17 +149,30 @@ class Modal extends Component {
   }
 
   render() {
+    const itemsQuantity = this.props.items.length;
     return (
       <Wrapper>
         <Content onMouseLeave={() => this.props.toggleModal()}>
-          <Title>My bag</Title>
-          {this.props.items.map(item => <ProductModal productProperties={item} key={item.id}/>)}
+          <TitleWrapper>
+            <Title>My bag,</Title>
+            <ItemsTitle>{itemsQuantity} {itemsQuantity === 1 ? 'item' : 'items'}</ItemsTitle>
+          </TitleWrapper>
+          <PropertiesWrapper>
+            {this.props.items.map((item) => (
+              <ProductModal productProperties={item} key={item.id} />
+            ))}
+          </PropertiesWrapper>
           <Total>
             <TotalTitle>total</TotalTitle>
-            <TotalPrice>{this.state.currencySymbol} {Math.trunc(this.state.totalCost).toFixed(2)}</TotalPrice>
+            <TotalPrice>
+              {this.state.currencySymbol}{' '}
+              {Math.trunc(this.state.totalCost).toFixed(2)}
+            </TotalPrice>
           </Total>
           <ButonsWrapper>
-            <Button primary="true" onClick={this.toLink(`/cart`)}>VIEW BAG</Button>
+            <Button primary="true" onClick={this.toLink(`/cart`)}>
+              VIEW BAG
+            </Button>
             <Button onClick={this.toLink(`/`)}>CHECK OUT</Button>
           </ButonsWrapper>
         </Content>

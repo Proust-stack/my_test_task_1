@@ -21,8 +21,7 @@ export default createGlobalStyle`
     body {
   margin: 0;
   padding: 0;
-  font-family: 'Raleway', sans-serif;
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: 'Raleway', 'Roboto Condensed', sans-serif;
   color: #1D1F22;
 }
 

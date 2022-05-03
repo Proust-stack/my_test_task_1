@@ -8,25 +8,24 @@ import { addItem } from '../store/cartSlice';
 const ProductItem = styled.div`
   display: flex;
   justify-content: flex-start;
-  align-items: center;
+  align-items: flex-start;
 `;
 
 const ProductImageWrapper = styled.div`
   height: 500px;
   margin-right: 100px;
   width: 600px;
-  background-color: #c4c4c4;
   position: relative;
   overflow: hidden;
 `;
-const ProductImageSmall = styled.div`
+const ProductImageSmallContainer = styled.div`
   margin-right: 40px;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
+  width: 200px;
 `;
-const ProductImageWrapperSmall = styled.div`
+const ProductImageSmallWrapper = styled.div`
   height: 80px;
   margin-bottom: 40px;
   width: 80px;
@@ -35,18 +34,35 @@ const ProductImageWrapperSmall = styled.div`
   cursor: pointer;
  
 `;
-const ProductImage = styled.img`
+const ProductImageSmall = styled.img`
   position: absolute;
   left: 0%;
   top: 0%;
-  width: ${(props) => (props.big ? '100%' : '100%;')} center / cover no-repeat;
-  height: ${(props) => (props.big ? '100%' : '100%;')} center / cover  no-repeat;
+  width: 100%;
   object-fit: cover;
   cursor: pointer;  
   transition: all 300ms 0ms ease-in-out;
   &:hover {
     transform: scale(1.1);
 }
+`;
+const ProductImageBig = styled.img.attrs(
+  (props) => ({
+    style: {
+      left: 150 -props.coord.x / 1.2 + 'px',
+      top:  150 -props.coord.y / 1.2 + 'px',
+    }
+  })
+)`
+  position: absolute;
+  left: 0;
+  top: 0;
+  object-fit: auto;
+  object-position: center;
+  transition: all 300ms 0 linear;
+  &:hover {
+    transform: scale(1.5);
+  }
 `;
 
 const ProductInfo = styled.div`
@@ -89,7 +105,7 @@ const ProductInfoPropertyTitle = styled.div`
   font-weight: 700;
   font-size: 18px;
   line-height: 18px;
-  margin-bottom: 8px;
+  margin-bottom: 15px;
 `;
 
 const ProductInfoPropertyWrapper = styled.div`
@@ -108,13 +124,11 @@ const ProductParametr = styled.div`
   font-size: 18px;
   font-style: normal;
   font-weight: 400;
-  margin-right: 10px;
+  margin-right: 15px;
+  padding: 5px;
   background-color: ${(props) => (props.type === 'swatch' ? props.data : '')};
-  box-shadow:  ${(props) => (props.selected  ? '0px 4px 15px rgba(168, 172, 176, 0.8)' : '')};
-  transform: scale(1);
-  ${ props => props.expanded && css`
-    transform: scale(1.1);
-  `};
+  box-shadow:  ${(props) => (props.selected  ? '0px 4px 15px rgba(168, 172, 176, 0.5)' : '')};
+  transform: ${(props) => (props.selected  ? 'scale(1.3)' : '')};
   cursor: pointer;
 `;
 
@@ -188,7 +202,8 @@ class Product extends Component {
   constructor(props) {
     super(props)
      this.state = {
-    quantity: 1
+    quantity: 1,
+    imageCoord: {x: 0, y: 0}
   }
   }
   fetchInitialProperties = () => {
@@ -244,25 +259,27 @@ class Product extends Component {
     const { gallery, brand, name, prices, attributes, id, inStock } =
     this.props.productProperties;
     const index = this.props.currentCurrencyIndex;
+    const {currentProperty, quantity} = this.state
     return (
       <ProductItem>
-        <ProductImageSmall>
+        <ProductImageSmallContainer>
           {gallery && gallery.map((image) => {
             return (
-              <ProductImageWrapperSmall  key={image} >
-                <ProductImage 
+              <ProductImageSmallWrapper  key={image} >
+                <ProductImageSmall 
                 src={image} 
                 onClick={this.changeImage}
                 current={this.state.currentImageSrc}
                 />
-              </ProductImageWrapperSmall>
+              </ProductImageSmallWrapper>
             );
           })}
-        </ProductImageSmall>
+        </ProductImageSmallContainer>
         <ProductImageWrapper>
-          <ProductImage 
+          <ProductImageBig 
           src={this.state.currentImageSrc || gallery[0]} 
-          // onMouseMove={this._onMouseMove}
+          coord={this.state.imageCoord}
+          onMouseMove={this._onMouseMove}
           />
         </ProductImageWrapper>
         <ProductInfo>
@@ -293,7 +310,7 @@ class Product extends Component {
             <ProductInfoPriceValue>{prices[index].currency.symbol} {Math.trunc(prices[index].amount).toFixed(2)}</ProductInfoPriceValue>
           </ProductInfoPrice>
           { inStock && <Button 
-          onClick={this.addToCart({id, gallery, prices, brand, name, attributes, ...this.state})}
+          onClick={this.addToCart({id, gallery, prices, brand, name, attributes, currentProperty, quantity})}
           
           >ADD TO CART</Button>}
           <ProductFooter dangerouslySetInnerHTML={this.adjustHTML()}></ProductFooter>

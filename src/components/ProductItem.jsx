@@ -104,6 +104,23 @@ function withParams(Component) {
 }
 class ProductWithData extends Component {
 
+  fetchInitialProperties = () => {
+    const { attributes} = this.props.product;
+    const obj = {}
+    attributes.forEach(attr => {
+      obj[attr.name] = attr.items[0].value
+    })
+    this.setState({ currentProperty: obj, quantity: 1});
+  }
+
+  componentDidMount() {
+      this.fetchInitialProperties()
+  }
+
+  componentDidCatch(error) {
+    console.log(error.message);
+  }
+
   addToCart = (item) => e => {
     e.stopPropagation()
     return this.props.dispatch(addItem(item))
@@ -113,7 +130,7 @@ class ProductWithData extends Component {
   }
 
   render() {
-    const {id, name, gallery, inStock, prices, attributes} = this.props.category;
+    const {id, name, gallery, brand, inStock, prices, attributes} = this.props.product;
     const index = this.props.currentCurrencyIndex
     return (
       <ProductItem key={id} onClick={() => this.getProduct(`/product/${id}`)}>
@@ -125,7 +142,7 @@ class ProductWithData extends Component {
           <ProductTitle>{name}</ProductTitle>
           <ProductPrice>{prices[index].currency.symbol}{Math.trunc(prices[index].amount).toFixed(2)}</ProductPrice>
         </ProductFooter>
-        {inStock && <ItemCart  onClick={this.addToCart({id, gallery, prices, attributes})}/>}
+        {inStock && <ItemCart  onClick={this.addToCart({id, gallery, prices, brand, name, attributes, ...this.state})}/>}
       </ProductItem>
     );
   }

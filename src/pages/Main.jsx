@@ -52,11 +52,11 @@ class MainWithData extends Component {
     if (error) return <p>error...</p>;
     return (
       <Wrapper>
-        <Title>{this.props.params.category}</Title>
+        <Title>{this.props.params.categoryId}</Title>
         <ItemsWrapper>
           {category.products &&
-            category.products.map((category) => {
-              return <ProductItem category={category} key={category.id} />;
+            category.products.map((product) => {
+              return <ProductItem product={product} key={product.id} />;
             })}
         </ItemsWrapper>
       </Wrapper>

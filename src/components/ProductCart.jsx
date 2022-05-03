@@ -4,14 +4,14 @@ import Carousel from './Carousel';
 import { useDispatch, useSelector } from 'react-redux';
 import {increaseQuantity} from '../store/cartSlice';
 import {decreaseQuantity} from '../store/cartSlice';
+import {changeProperties} from '../store/cartSlice';
 import { useNavigate } from 'react-router-dom';
 
 const ProductItem = styled.div`
-  width: 100%;
+  padding: 20px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  align-items: center;
   cursor: pointer;
   &:hover {
     box-shadow: 0px 4px 35px rgba(168, 172, 176, 0.19);
@@ -19,39 +19,30 @@ const ProductItem = styled.div`
 `;
 
 const LeftPart = styled.div`
-  width: 300px;
-  height: 100%;
-  padding: 20px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  justify-content: space-between;
+  justify-content: space-around;
 `;
 
 const ProductBrand = styled.div`
   font-size: 30px;
-  line-height: 27px;
   font-style: normal;
   font-weight: 600;
 `;
 const ProductName = styled.div`
-  width: 100%;
   font-size: 18px;
   color: black;
   font-style: normal;
   font-weight: 400;
-  line-height: 27px;
 `;
 
 const ProductPrice = styled.div`
-  width: 100%;
   font-size: 18px;
   color: black;
   font-style: normal;
   font-weight: 700;
-  line-height: 18px;
   display: flex;
-  justify-content: flex-start;
 `;
 
 const ProductPropertiesWrapper = styled.div`
@@ -60,6 +51,20 @@ const ProductPropertiesWrapper = styled.div`
   flex-direction: column;
 `;
 
+const ProductProperties = styled.div`
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+`;
+
+const ProductPropertyTitle = styled.div`
+  font-family: 'Roboto Condensed';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 1.25;
+  margin-bottom: 10px;
+`;
 
 const ProductPropertyWrapper = styled.div`
   display: flex;
@@ -74,10 +79,11 @@ const ProductProperty = styled.div`
   font-size: 16px;
   font-style: normal;
   font-weight: 400;
-  border: ${(props) => (props.selected  ? '2px solid green' : '1px solid black')};
   margin-right: 12px;
   margin-bottom: 20px;
   background-color: ${(props) => (props.type === 'swatch' ? props.data : '')};
+  transform: ${(props) => (props.selected  ? 'scale(1.2)' : '')};
+  box-shadow:  ${(props) => (props.selected  ? '4px 4px 8px rgba(168, 172, 176, 0.8)' : '')};
   cursor: pointer;
 `;
 
@@ -122,16 +128,12 @@ const DecreaseQuantity = styled.div`
   height: 45px;
   border: 1px solid black;
 `;
-const ImageWrapper = styled.div`
-  position: relative;
-  
-  
-`;
 
 const ProductImage = styled.img`
   width: 100%;
   height: 100%;
-  
+  object-fit: cover;
+  object-position: center;
 `;
 
 function withParams(Component) {
@@ -143,9 +145,10 @@ function withParams(Component) {
   />;
 }
   class ProductCart extends Component {
-    parameterHandler = (parametresName, item) => e => {
-      e.preventDefault()
-      this.setState((prevState) => ({currentProperty: {...prevState.currentProperty , [parametresName]: item.value}}))
+    parameterHandler = (id, parametresName, item) => (e) => {
+      e.stopPropagation();
+      const {currentProperty} = this.props.productProperties;
+      this.props.dispatch(changeProperties({ id, currentProperty: {...currentProperty, [parametresName]: item.value}}))
     }
     getProduct = (address) => {
       this.props.navigate(address)
@@ -176,27 +179,37 @@ function withParams(Component) {
         <LeftPart>
           <ProductBrand>{brand}</ProductBrand>
           <ProductName>{name}</ProductName>
-          <ProductPrice>{prices[index].currency.symbol} {prices[index].amount}</ProductPrice>
+          <ProductPrice>
+            {prices[index].currency.symbol} {prices[index].amount}
+          </ProductPrice>
           <ProductPropertiesWrapper>
-          { attributes.map((attr) => {
-            return (
-            <ProductPropertyWrapper key={attr.id}>
-            {attr.items.map((item) => {
-              return <ProductProperty 
-              parametresName={attr.name} //name of characteristic (for example "size")
-              type={attr.type} 
-              key={item.value}
-              data={item.value}
-              selected={(currentProperty && currentProperty[`${attr.name}`]) === `${item.value}`} // current  choice of this characteristic (for example  size "M")
-              onClick={this.parameterHandler(attr.name, item)}
-              >
-                {attr.type !== 'swatch' && item.value}
-                </ProductProperty>; 
+            {attributes.map((attr) => {
+              return (
+                <ProductProperties key={attr.id}>
+                  <ProductPropertyTitle>{attr.name}:</ProductPropertyTitle>
+                  <ProductPropertyWrapper>
+                    {attr.items.map((item) => {
+                      return (
+                        <ProductProperty
+                          parametresName={attr.name} //name of characteristic (for example "size")
+                          type={attr.type}
+                          key={item.value}
+                          data={item.value}
+                          selected={
+                            (currentProperty &&
+                              currentProperty[`${attr.name}`]) ===
+                            `${item.value}`
+                          } // current  choice of this characteristic (for example  size "M")
+                          onClick={this.parameterHandler(id, attr.name, item)}
+                        >
+                          {attr.type !== 'swatch' && item.value}
+                        </ProductProperty>
+                      );
+                    })}
+                  </ProductPropertyWrapper>
+                </ProductProperties>
+              );
             })}
-            </ProductPropertyWrapper>
-          )
-          })
-          }
           </ProductPropertiesWrapper>
         </LeftPart>
         <RightPart>
@@ -205,15 +218,11 @@ function withParams(Component) {
             <QuantityValue>{quantity}</QuantityValue>
             <DecreaseQuantity onClick={this.decrease(id)}>-</DecreaseQuantity>
           </Quantity>
-          <ImageWrapper>
-            <Carousel >
-              {gallery.map(image => {
-                return (
-                     <ProductImage src={image} key={image}/>
-                )
+            <Carousel>
+              {gallery.map((image) => {
+                return <ProductImage src={image} key={image} />;
               })}
             </Carousel>
-          </ImageWrapper>
         </RightPart>
       </ProductItem>
     );
