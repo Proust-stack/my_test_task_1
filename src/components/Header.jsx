@@ -32,6 +32,7 @@ const StyledLink = styled(NavLink)`
   font-size: 16px;
   text-transform: uppercase;
   margin-right: 16px;
+  padding: 10px;
   &.active {
     padding-bottom: 30px;
     color: green;

@@ -8,37 +8,37 @@ import { addItem } from '../store/cartSlice';
 const ProductItem = styled.div`
   display: flex;
   justify-content: flex-start;
-  align-items: flex-start;
+  height: 513px;
 `;
 
 const ProductImageWrapper = styled.div`
-  height: 500px;
-  margin-right: 100px;
+  height: 513px;
   width: 600px;
   position: relative;
   overflow: hidden;
+  margin-right: 50px;
 `;
 const ProductImageSmallContainer = styled.div`
-  margin-right: 40px;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   flex-wrap: wrap;
-  width: 200px;
+  height: 100%;
+  width: 200px; 
 `;
 const ProductImageSmallWrapper = styled.div`
   height: 80px;
-  margin-bottom: 40px;
   width: 80px;
   position: relative;
   overflow: hidden;
   cursor: pointer;
- 
 `;
 const ProductImageSmall = styled.img`
   position: absolute;
-  left: 0%;
-  top: 0%;
+  left: 0;
+  top: 0;
   width: 100%;
+  height: 100%;
   object-fit: cover;
   cursor: pointer;  
   transition: all 300ms 0ms ease-in-out;
@@ -58,6 +58,8 @@ const ProductImageBig = styled.img.attrs(
   left: 0;
   top: 0;
   object-fit: auto;
+  width: 100%;
+  height: 100%;
   object-position: center;
   transition: all 300ms 0 linear;
   &:hover {
@@ -68,43 +70,36 @@ const ProductImageBig = styled.img.attrs(
 const ProductInfo = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
+  justify-content: flex-start;
   margin: 16px;
-  color: #1D1F22;
+  height: 100%;
+  width: 300px;
 `;
 const ProductInfoBrand = styled.div`
-  width: 100%;
   height: 27px;
   font-weight: 600;
   font-size: 30px;
-  line-height: 27px;
   margin-bottom: 16px;
 `;
 const ProductInfoName = styled.div`
-  width: 100%;
   height: 27px;
   font-style: normal;
   font-weight: 400;
   font-size: 30px;
-  line-height: 27px;
   margin-bottom: 43px;
 `;
 const ProductInfoProperties = styled.div`
-  width: 100%;
   display: flex;
   justify-content: flex-start;
   flex-direction: column;
-  margin-bottom: 50px;
+  margin-bottom: 20px;
 `;
 const ProductInfoPropertyTitle = styled.div`
-  width: 100%;
   height: 18px;
   font-family: 'Roboto Condensed';
   font-style: normal;
   font-weight: 700;
   font-size: 18px;
-  line-height: 18px;
   margin-bottom: 15px;
 `;
 
@@ -120,7 +115,6 @@ const ProductParametr = styled.div`
   min-width: 43px;
   min-height: 25px;
   text-align: center;
-  line-height: 1.25;
   font-size: 18px;
   font-style: normal;
   font-weight: 400;
@@ -133,31 +127,26 @@ const ProductParametr = styled.div`
 `;
 
 const ProductInfoPrice = styled.div`
-  width: 100%;
   display: flex;
   justify-content: flex-start;
   flex-direction: column;
   margin-bottom: 20px;
 `;
 const ProductInfoPriceTitle = styled.div`
-  width: 100%;
   font-family: 'Roboto Condensed';
   font-style: normal;
   font-weight: 700;
   font-size: 18px;
-  line-height: 18px;
   margin-bottom: 10px;
 `;
 const ProductInfoPriceValue = styled.div`
-  font-family: 'Raleway';
   font-style: normal;
   font-weight: 700;
   font-size: 24px;
-  line-height: 24px;
 `;
 const Button = styled.button`
-  width: 100%;
   height: 50px;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -167,7 +156,6 @@ const Button = styled.button`
   font-style: normal;
   font-weight: 600;
   font-size: 16px;
-  line-height: 16px;
   color: #ffffff;
   text-transform: uppercase;
   margin-bottom: 40px;
@@ -182,12 +170,11 @@ const Button = styled.button`
 `;
 const ProductFooter = styled.div`
   height: 100px;
-  width: 100%;
-  font-family: 'Roboto';
   font-style: normal;
   font-weight: 400;
   font-size: 16px;
-  line-height: 16px;
+  overflow-y: auto;
+  width: 100%;
 `;
 
 function withParams(Component) {
@@ -230,8 +217,8 @@ class Product extends Component {
   componentDidCatch(error) {
     console.log(error.message);
   }
-  adjustHTML() {
-    return {__html: this.state.description};
+  adjustHTML(description) {
+    return {__html: description};
   }
 
   changeImage = (e) => {
@@ -256,7 +243,7 @@ class Product extends Component {
 
   render() {
     if (!this.props.productProperties) return <p>loading...</p>;
-    const { gallery, brand, name, prices, attributes, id, inStock } =
+    const { gallery, brand, name, prices, attributes, id, inStock, description } =
     this.props.productProperties;
     const index = this.props.currentCurrencyIndex;
     const {currentProperty, quantity} = this.state
@@ -313,7 +300,7 @@ class Product extends Component {
           onClick={this.addToCart({id, gallery, prices, brand, name, attributes, currentProperty, quantity})}
           
           >ADD TO CART</Button>}
-          <ProductFooter dangerouslySetInnerHTML={this.adjustHTML()}></ProductFooter>
+          <ProductFooter dangerouslySetInnerHTML={this.adjustHTML(description)}></ProductFooter>
         </ProductInfo>
       </ProductItem>
     );

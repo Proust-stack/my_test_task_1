@@ -23,6 +23,9 @@ export default createGlobalStyle`
   padding: 0;
   font-family: 'Raleway', 'Roboto Condensed', sans-serif;
   color: #1D1F22;
+  ::-webkit-scrollbar {
+  width: 0;
+}
 }
 
 a {

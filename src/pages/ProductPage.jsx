@@ -5,11 +5,8 @@ import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchProduct } from '../store/productSlice';
 
-const Wrapper = styled.main`
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  margin-top: 80px;
+const Container = styled.main`
+  margin: 80px auto;
 `;
 
 function withParams(Component) {
@@ -36,9 +33,9 @@ class ProductPageWithData extends Component {
     if (loading) return <p>loading...</p>;
     if (error) return <p>error...</p>;
     return (
-      <Wrapper>
+      <Container>
         <Product productProperties={product} />
-      </Wrapper>
+      </Container>
     );
   }
 }

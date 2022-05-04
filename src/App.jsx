@@ -13,8 +13,9 @@ import Modal from './components/Modal';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCurrencies } from './store/currencySlice';
 
-const AppWrapper = styled.div`
-  max-width: 1440px;
+const Container = styled.div`
+   width: 1440px;
+   margin: 0 auto;
 `;
 
 function withParams(Component) {
@@ -36,6 +37,11 @@ class App extends Component {
   }
   toggleModal = () => {
     this.setState(prevState => ({ cartModalOpened: !prevState.cartModalOpened}));
+    if (!this.state.cartModalOpened) {
+      document.body.style.overflow = "hidden"
+    } else {
+      document.body.style.overflow = ""
+    }
   }
   setCurrencyIndex = (currencyIndex) => {
     this.setState({ currency: currencyIndex});
@@ -43,7 +49,7 @@ class App extends Component {
 
   render() {
     return (
-      <AppWrapper>
+      <Container>
         <HeaderWithData toggleModal={this.toggleModal} />
         {/* <AppRouter /> */}
         <Routes>
@@ -58,7 +64,7 @@ class App extends Component {
         </Routes>
         {this.state.cartModalOpened && <Modal toggleModal={this.toggleModal} />}
         <GlobalStyles />
-      </AppWrapper>
+      </Container>
     );  
   }
 }

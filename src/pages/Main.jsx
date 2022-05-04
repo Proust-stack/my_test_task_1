@@ -6,23 +6,23 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchCategory } from '../store/categorySlice';
 
 
-const Wrapper = styled.main`
+const Container = styled.main`
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
   margin-top: 80px;
 `;
 const ItemsWrapper = styled.main`
   display: flex;
-  flex-wrap: wrap;
   margin-top: 50px;
+  flex-wrap: wrap;
+  justify-content: flex-start;
 `;
 
 const Title = styled.div`
   font-style: normal;
   font-weight: 400;
   font-size: 42px;
-  line-height: 1.25;
+  flex: 1 1 auto;
 `;
 
 function withParams(Component) {
@@ -51,7 +51,7 @@ class MainWithData extends Component {
     if (loading) return <p>loading...</p>;
     if (error) return <p>error...</p>;
     return (
-      <Wrapper>
+      <Container>
         <Title>{this.props.params.categoryId}</Title>
         <ItemsWrapper>
           {category.products &&
@@ -59,7 +59,7 @@ class MainWithData extends Component {
               return <ProductItem product={product} key={product.id} />;
             })}
         </ItemsWrapper>
-      </Wrapper>
+      </Container>
     );
   }
 }

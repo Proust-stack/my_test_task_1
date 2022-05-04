@@ -13,7 +13,6 @@ const ProductItem = styled.div`
   justify-content: space-between;
   cursor: pointer;
   margin-bottom: 40px;
-  position: relative;
 `;
 
 const LeftPart = styled.div`
@@ -99,6 +98,7 @@ const RightPart = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  position: relative;
 `;
 const Quantity = styled.div`
   display: flex;
@@ -153,8 +153,8 @@ const ProductImage = styled.img`
 
 const Close = styled.div`
     position: absolute;
-    top: 5px;
-    right: 5px;
+    top: -10px;
+    right: -17px;
     border-radius: 50%;
     width: 32px;
     height: 32px;
@@ -280,8 +280,9 @@ class ProductModal extends Component {
           <ImageWrapper>
             <ProductImage src={gallery[0]} />
           </ImageWrapper>
+          <Close onClick={this.remove(id)} />
         </RightPart>
-        <Close onClick={this.remove(id)} />
+        
       </ProductItem>
     );
   }

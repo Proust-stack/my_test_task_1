@@ -16,6 +16,7 @@ const ItemCart = styled.div`
   background-image: url(${cartIcon});
   bottom: 70px;
   left: 60%;
+  flex: 1 1 auto;
 `;
 
 const ProductItem = styled.div`
@@ -29,6 +30,7 @@ const ProductItem = styled.div`
   margin-right: 40px;
   margin-bottom: 100px;
   padding: 16px;
+  flex: 0 1 auto;
   cursor: pointer;
   &:hover  ${ItemCart} {
       display: flex;

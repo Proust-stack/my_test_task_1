@@ -12,6 +12,7 @@ const Wrapper = styled.div`
   position: fixed;
   top: 80px;
   left: 0;
+  overflow-y: hidden;
 `;
 const Content = styled.div`
   display: flex;
@@ -24,6 +25,9 @@ const Content = styled.div`
   padding: 16px;
   overflow-y: auto;
   max-height: 540px;
+  ::-webkit-scrollbar {
+  width: 0;
+}
 `;
 
 const TitleWrapper = styled.div`
