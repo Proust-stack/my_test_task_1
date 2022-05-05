@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
-import { client } from '../index';
 import myImage from '../assets/icons/header/Brand_icon.png';
 import emptyCart from '../assets/icons/header/svg/Vector.svg';
-import { GET_CATEGORY_NAME } from '../utils/graphQLqueries';
 import { useParams } from "react-router-dom";
 import CustomSelect from './CustomSelect';
 import { useDispatch, useSelector } from 'react-redux';
@@ -12,7 +10,7 @@ import { fetchCategoriesNames } from '../store/categorySlice';
 
 const Nav = styled.nav`
   background: #fff;
-  padding: 17px 0;
+  padding: 17px 20px;
   min-height: 80px;
 `;
 const NavbarItem = styled.div`
@@ -99,7 +97,7 @@ class Header extends Component {
           <LeftPart>
             {Array.from(this.props.categories).map(({ name }) => {
               return (
-                <StyledLink key={name} to={`category/${name}`}>
+                <StyledLink key={name} to={`/${name}`}>
                   {name}
                 </StyledLink>
               );

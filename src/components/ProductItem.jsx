@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import cartIcon from '../assets/icons/cart_green.png';
 import { useDispatch, useSelector } from 'react-redux';
 import { addItem } from '../store/cartSlice';
+import ProductProperties from './ProductProperties';
 
 const ItemCart = styled.div`
   height: 50px;
@@ -25,8 +26,6 @@ const ProductItem = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
   margin-right: 40px;
   margin-bottom: 100px;
   padding: 16px;
@@ -43,11 +42,9 @@ const ProductItem = styled.div`
 const ProductImageWrapper = styled.div`
   height: 330px;
   width: 100%;
-  background: #C4C4C4;
   position: relative;
   overflow: hidden;
   margin-bottom: 24px;
-  
 `;
 
 const ProductImage = styled.img`
@@ -73,11 +70,10 @@ const ProductOutOfStock = styled.div`
 `;
 
 const ProductFooter = styled.div`
-  height: 50px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  justify-content: center;
+  justify-content: space-between;
   
 `;
 const ProductTitle = styled.div`
@@ -85,15 +81,17 @@ const ProductTitle = styled.div`
   font-weight: 300;
   font-size: 18px;
   color: #1D1F22;
-  line-height: 18px;
-  margin-bottom: 2px;
+  margin-bottom: 20px;
 `;
 const ProductPrice = styled.div`
   font-style: normal;
   font-weight: 500;
   font-size: 18px;
   line-height: 18px;
+  margin-bottom: 10px;
 `;
+
+
 
 function withParams(Component) {
   return props => <Component 
@@ -143,6 +141,11 @@ class ProductWithData extends Component {
         <ProductFooter>
           <ProductTitle>{name}</ProductTitle>
           <ProductPrice>{prices[index].currency.symbol}{Math.trunc(prices[index].amount).toFixed(2)}</ProductPrice>
+          <ProductProperties 
+          attributes={attributes} 
+          parameterHandler={() => null}
+          currentProperty = {() => null}
+          />
         </ProductFooter>
         {inStock && <ItemCart  onClick={this.addToCart({id, gallery, prices, brand, name, attributes, ...this.state})}/>}
       </ProductItem>

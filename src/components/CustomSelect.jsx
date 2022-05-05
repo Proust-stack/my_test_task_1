@@ -35,18 +35,30 @@ const DropDownListContainer = styled('div')`
 `;
 
 const DropDownList = styled('ul')`
-  padding-left: 1em;
-  font-size: 1.3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  font-size: 16px;
   font-weight: 500;
   &:first-child {
-    padding-top: 0.8em;
+    padding-top: 14px;
+  }
+  &:last-child {
+    margin-bottom: 0;
   }
 `;
 
+
 const ListItem = styled('li')`
   list-style: none;
-  margin-bottom: 0.8em;
+  margin-bottom: 14px;
   cursor: pointer;
+  &:hover {
+    box-shadow: 0px 4px 35px rgba(168, 172, 176, 0.19);
+    transform: scale(1.1);
+  }
 `;
 
 function withParams(Component) {

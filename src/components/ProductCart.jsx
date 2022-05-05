@@ -6,6 +6,7 @@ import {increaseQuantity} from '../store/cartSlice';
 import {decreaseQuantity} from '../store/cartSlice';
 import {changeProperties} from '../store/cartSlice';
 import { useNavigate } from 'react-router-dom';
+import { removeItem } from '../store/cartSlice';
 
 const ProductItem = styled.div`
   padding: 20px;
@@ -13,6 +14,7 @@ const ProductItem = styled.div`
   flex-direction: row;
   justify-content: space-between;
   cursor: pointer;
+  flex: 1 1 auto;
   &:hover {
     box-shadow: 0px 4px 35px rgba(168, 172, 176, 0.19);
   }
@@ -23,6 +25,7 @@ const LeftPart = styled.div`
   flex-direction: column;
   align-items: flex-start;
   justify-content: space-around;
+  flex: 0 1 auto;
 `;
 
 const ProductBrand = styled.div`
@@ -69,6 +72,7 @@ const ProductPropertyTitle = styled.div`
 const ProductPropertyWrapper = styled.div`
   display: flex;
   justify-content: flex-start;
+  margin-bottom: 20px;
 `;
 
 const ProductProperty = styled.div`
@@ -80,9 +84,8 @@ const ProductProperty = styled.div`
   font-style: normal;
   font-weight: 400;
   margin-right: 12px;
-  margin-bottom: 20px;
   background-color: ${(props) => (props.type === 'swatch' ? props.data : '')};
-  transform: ${(props) => (props.selected  ? 'scale(1.2)' : '')};
+  transform: ${(props) => (props.selected  ? 'scale(1.1)' : '')};
   box-shadow:  ${(props) => (props.selected  ? '4px 4px 8px rgba(168, 172, 176, 0.8)' : '')};
   cursor: pointer;
 `;
@@ -94,6 +97,8 @@ const RightPart = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  flex: 0 1 auto;
+  position: relative;
 `;
 const Quantity = styled.div`
   display: flex;
@@ -129,6 +134,37 @@ const DecreaseQuantity = styled.div`
   border: 1px solid black;
 `;
 
+const Close = styled.div`
+    position: absolute;
+    top: -10px;
+    right: -17px;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+
+&:before {
+  content: "";
+    position: absolute;
+    top: 2px;
+    left: 15px;
+    width: 15px;
+    height: 2px;
+    background: #1D1F22;
+    transform: rotate(45deg);
+}
+&:after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 15px;
+    width: 15px;
+    height: 2px;
+    background: #555;
+    transform: rotate(-45deg);
+}
+`
+
 const ProductImage = styled.img`
   width: 100%;
   height: 100%;
@@ -161,6 +197,10 @@ function withParams(Component) {
     decrease = (id) => (e) => {
       e.stopPropagation()
       this.props.dispatch(decreaseQuantity({id}))
+    }
+    remove = (id) => (e) => {
+      e.stopPropagation()
+      this.props.dispatch(removeItem({id}))
     }
   render() {
     const {
@@ -223,6 +263,7 @@ function withParams(Component) {
                 return <ProductImage src={image} key={image} />;
               })}
             </Carousel>
+            <Close onClick={this.remove(id)} />
         </RightPart>
       </ProductItem>
     );

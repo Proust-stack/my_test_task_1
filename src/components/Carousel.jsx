@@ -27,6 +27,7 @@ const LeftArrow = styled.div`
   height: 24px;
   left: 24px;
   background: url('${(props) => props.img}') center / cover no-repeat;
+  background-color: rgba(168, 172, 176, 0.5);
 `;
 const RightArrow = styled.div`
   position: absolute;
@@ -37,7 +38,7 @@ const RightArrow = styled.div`
   height: 24px;
   right: 24px;
   background: url('${(props) => props.img}') center / cover no-repeat;
-  
+  background-color: rgba(168, 172, 176, 0.5);
 `;
 
 

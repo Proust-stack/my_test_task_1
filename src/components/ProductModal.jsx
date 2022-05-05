@@ -13,6 +13,7 @@ const ProductItem = styled.div`
   justify-content: space-between;
   cursor: pointer;
   margin-bottom: 40px;
+  width: 100%;
 `;
 
 const LeftPart = styled.div`
@@ -53,6 +54,7 @@ const ProductPropertiesWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   flex-direction: column;
+  align-items: flex-start;
 `;
 
 const ProductProperties = styled.div`
@@ -89,7 +91,10 @@ const ProductProperty = styled.div`
   cursor: pointer;
   box-shadow:  ${(props) => (props.selected  ? '4px 4px 8px rgba(168, 172, 176, 0.8)' : '')};
   padding: 5px;
-  transform: ${(props) => (props.selected  ? 'scale(1.3)' : '')};
+  transform: ${(props) => (props.selected  ? 'scale(1.2)' : '')};
+  &:last-child {
+    margin-right: 0;
+  }
 `;
 
 const RightPart = styled.div`
@@ -97,7 +102,7 @@ const RightPart = styled.div`
   height: 100%;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  justify-content: flex-start;
   position: relative;
 `;
 const Quantity = styled.div`
@@ -149,12 +154,13 @@ const ProductImage = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
 `;
 
 const Close = styled.div`
     position: absolute;
-    top: -10px;
-    right: -17px;
+    top: 5px;
+    right: 0px;
     border-radius: 50%;
     width: 32px;
     height: 32px;

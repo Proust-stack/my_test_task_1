@@ -8,6 +8,7 @@ const Wrapper = styled.div`
   flex-direction: column;
   margin-bottom: 20px;
   justify-content: space-around;
+  flex: 0 1 auto;
 `;
 
 const CartTitle = styled.div`
@@ -70,7 +71,7 @@ function withParams(Component) {
   currentCurrencyIndex={useSelector(state => state.currencies.currentCurrency)}
   />;
 }
-class CartPageWithData extends PureComponent {
+class CartPageWithData extends Component {
   state = {
     totalCost: 0,
     currencySymbol: '$',

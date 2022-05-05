@@ -4,6 +4,7 @@ import { css } from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { addItem } from '../store/cartSlice';
+import ProductProperties from './ProductProperties';
 
 const ProductItem = styled.div`
   display: flex;
@@ -88,43 +89,6 @@ const ProductInfoName = styled.div`
   font-size: 30px;
   margin-bottom: 43px;
 `;
-const ProductInfoProperties = styled.div`
-  display: flex;
-  justify-content: flex-start;
-  flex-direction: column;
-  margin-bottom: 20px;
-`;
-const ProductInfoPropertyTitle = styled.div`
-  height: 18px;
-  font-family: 'Roboto Condensed';
-  font-style: normal;
-  font-weight: 700;
-  font-size: 18px;
-  margin-bottom: 15px;
-`;
-
-const ProductInfoPropertyWrapper = styled.div`
-  display: flex;
-  justify-content: flex-start;
-`;
-
-const ProductParametr = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-width: 43px;
-  min-height: 25px;
-  text-align: center;
-  font-size: 18px;
-  font-style: normal;
-  font-weight: 400;
-  margin-right: 15px;
-  padding: 5px;
-  background-color: ${(props) => (props.type === 'swatch' ? props.data : '')};
-  box-shadow:  ${(props) => (props.selected  ? '0px 4px 15px rgba(168, 172, 176, 0.5)' : '')};
-  transform: ${(props) => (props.selected  ? 'scale(1.3)' : '')};
-  cursor: pointer;
-`;
 
 const ProductInfoPrice = styled.div`
   display: flex;
@@ -162,10 +126,10 @@ const Button = styled.button`
   border: none;
   cursor: pointer;
   &:hover {
-    box-shadow: 0px 4px 35px rgba(168, 172, 176, 0.6);
+    transform: scale(1.1);
   }
   &:active{
-   transform: scale(1.3);
+   transform: scale(.7);
 }
 `;
 const ProductFooter = styled.div`
@@ -272,26 +236,11 @@ class Product extends Component {
         <ProductInfo>
           <ProductInfoBrand>{brand}</ProductInfoBrand>
           <ProductInfoName>{name}</ProductInfoName>
-          { attributes.map((attr) => {
-            return (<ProductInfoProperties key={attr.id}>
-            <ProductInfoPropertyTitle>{attr.name}:</ProductInfoPropertyTitle>
-            <ProductInfoPropertyWrapper>
-            {attr.items.map((item) => {
-              return <ProductParametr 
-              parametresName={attr.name} //name of characteristic (for example "size")
-              type={attr.type} 
-              key={item.value}
-              data={item.value}
-              selected={(this.state.currentProperty && this.state.currentProperty[`${attr.name}`]) === `${item.value}`} // current  choice of this characteristic (for example  size "M")
-              onClick={this.parameterHandler(attr.name, item)}
-              >
-                {attr.type !== 'swatch' && item.value}
-                </ProductParametr>; 
-            })}
-            </ProductInfoPropertyWrapper>
-          </ProductInfoProperties>)
-          })
-          }
+          <ProductProperties 
+          attributes={attributes} 
+          parameterHandler={this.parameterHandler}
+          currentProperty = {this.state.currentProperty}
+          />
           <ProductInfoPrice>
             <ProductInfoPriceTitle>PRICE</ProductInfoPriceTitle>
             <ProductInfoPriceValue>{prices[index].currency.symbol} {Math.trunc(prices[index].amount).toFixed(2)}</ProductInfoPriceValue>
