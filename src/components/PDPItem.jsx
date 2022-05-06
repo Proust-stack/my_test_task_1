@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import { css } from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { addItem } from '../store/cartSlice';
@@ -10,6 +9,7 @@ const ProductItem = styled.div`
   display: flex;
   justify-content: flex-start;
   height: 513px;
+  padding: 20px;
 `;
 
 const ProductImageWrapper = styled.div`
@@ -17,7 +17,8 @@ const ProductImageWrapper = styled.div`
   width: 600px;
   position: relative;
   overflow: hidden;
-  margin-right: 50px;
+  margin-right: 20px;
+  flex: 0 1 auto;
 `;
 const ProductImageSmallContainer = styled.div`
   display: flex;
@@ -26,6 +27,7 @@ const ProductImageSmallContainer = styled.div`
   flex-wrap: wrap;
   height: 100%;
   width: 200px; 
+  flex: 0 1 auto;
 `;
 const ProductImageSmallWrapper = styled.div`
   height: 80px;
@@ -58,13 +60,12 @@ const ProductImageBig = styled.img.attrs(
   position: absolute;
   left: 0;
   top: 0;
-  object-fit: auto;
+  object-fit: cover;
   width: 100%;
   height: 100%;
-  object-position: center;
   transition: all 300ms 0 linear;
   &:hover {
-    transform: scale(1.5);
+    transform: scale(1.8);
   }
 `;
 
@@ -75,6 +76,7 @@ const ProductInfo = styled.div`
   margin: 16px;
   height: 100%;
   width: 300px;
+  flex: 1 1 auto;
 `;
 const ProductInfoBrand = styled.div`
   height: 27px;
@@ -149,7 +151,7 @@ function withParams(Component) {
   currentCurrencyIndex={useSelector(state => state.currencies.currentCurrency)} 
   />;
 }
-class Product extends Component {
+class PDPItem extends Component {
   constructor(props) {
     super(props)
      this.state = {
@@ -256,4 +258,4 @@ class Product extends Component {
   }
 }
 
-export default withParams(Product);
+export default withParams(PDPItem);

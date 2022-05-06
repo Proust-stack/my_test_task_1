@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import ProductModal from './ProductModal';
+import ModalItem from './ModalItem';
 
 const Wrapper = styled.div`
   height: 100%;
@@ -20,7 +20,7 @@ const Content = styled.div`
   justify-content: space-between;
   background: white;
   top: 0;
-  right: 250px;
+  left: 70%;
   position: absolute;
   padding: 16px;
   overflow-y: auto;
@@ -163,7 +163,7 @@ class Modal extends Component {
           </TitleWrapper>
           <PropertiesWrapper>
             {this.props.items.map((item) => (
-              <ProductModal productProperties={item} key={item.id} />
+              <ModalItem productProperties={item} key={item.id} />
             ))}
           </PropertiesWrapper>
           <Total>

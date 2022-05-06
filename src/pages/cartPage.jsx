@@ -1,7 +1,7 @@
-import React, { Component, PureComponent } from 'react';
+import React, { Component } from 'react';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
-import ProductCart from '../components/ProductCart';
+import CartItem from '../components/CartItem';
 
 const Wrapper = styled.div`
   display: flex;
@@ -71,7 +71,7 @@ function withParams(Component) {
   currentCurrencyIndex={useSelector(state => state.currencies.currentCurrency)}
   />;
 }
-class CartPageWithData extends Component {
+class CartPage extends Component {
   state = {
     totalCost: 0,
     currencySymbol: '$',
@@ -100,8 +100,16 @@ class CartPageWithData extends Component {
       this.getTotalCost();
     }
   }
+  componentDidCatch(error) {
+    this.setState({
+      error
+    });
+    console.log(error)
+  }
+
   render() {
     if (!this.state) return <p>loading</p>;
+    if (this.state?.error) return <p>ups, error occured</p>;
     const items = this.props.items;
     if (items.length === 0) return <p>Nothing is added yet..</p>;
     return (
@@ -111,7 +119,7 @@ class CartPageWithData extends Component {
             {items.map((item) => (
               <div  key={item.id}>
               <Divider/>
-              <ProductCart productProperties={item} />
+              <CartItem productProperties={item} />
               </div>
             ))}
           </ItemsWrapper>
@@ -126,4 +134,4 @@ class CartPageWithData extends Component {
   }
 }
 
-export default withParams(CartPageWithData);
+export default withParams(CartPage);

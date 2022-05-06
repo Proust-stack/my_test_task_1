@@ -196,7 +196,7 @@ function withParams(Component) {
   currentCurrencyIndex={useSelector(state => state.currencies.currentCurrency)}
   />;
 }
-class ProductModal extends Component {
+class ModalItem extends Component {
 
   componentDidMount() {}
   
@@ -237,7 +237,7 @@ class ProductModal extends Component {
     } = this.props.productProperties;
     const index = this.props.currentCurrencyIndex;
     return (
-      <ProductItem onClick={() => this.toProduct(`/product/${id}`)}>
+      <ProductItem onClick={() => this.toProduct(`/products/${id}`)}>
         <LeftPart>
           <ProductBrand>{brand}</ProductBrand>
           <ProductName>{name}</ProductName>
@@ -294,4 +294,4 @@ class ProductModal extends Component {
   }
 }
 
-export default withParams(ProductModal);
+export default withParams(ModalItem);

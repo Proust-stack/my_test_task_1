@@ -84,6 +84,7 @@ const ProductProperty = styled.div`
   font-style: normal;
   font-weight: 400;
   margin-right: 12px;
+  border-radius: 5px;
   background-color: ${(props) => (props.type === 'swatch' ? props.data : '')};
   transform: ${(props) => (props.selected  ? 'scale(1.1)' : '')};
   box-shadow:  ${(props) => (props.selected  ? '4px 4px 8px rgba(168, 172, 176, 0.8)' : '')};
@@ -180,7 +181,7 @@ function withParams(Component) {
   currentCurrencyIndex={useSelector(state => state.currencies.currentCurrency)}
   />;
 }
-  class ProductCart extends Component {
+  class CartItem extends Component {
     parameterHandler = (id, parametresName, item) => (e) => {
       e.stopPropagation();
       const {currentProperty} = this.props.productProperties;
@@ -215,7 +216,7 @@ function withParams(Component) {
     } = this.props.productProperties;
     const index = this.props.currentCurrencyIndex;
     return (
-      <ProductItem onClick={() => this.getProduct(`/product/${id}`)}>
+      <ProductItem onClick={() => this.getProduct(`/products/${id}`)}>
         <LeftPart>
           <ProductBrand>{brand}</ProductBrand>
           <ProductName>{name}</ProductName>
@@ -270,4 +271,4 @@ function withParams(Component) {
   }
 }
 
-export default withParams(ProductCart);
+export default withParams(CartItem);

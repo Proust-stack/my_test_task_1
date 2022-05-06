@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 import myImage from '../assets/icons/header/Brand_icon.png';
 import emptyCart from '../assets/icons/header/svg/Vector.svg';
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import CustomSelect from './CustomSelect';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCategoriesNames } from '../store/categorySlice';
@@ -80,15 +80,19 @@ function withParams(Component) {
   dispatch={useDispatch()}
   categories={useSelector(state => state.category.categoriesNames)}
   items={useSelector(state => state.cart.items)}
+  navigate={useNavigate()}
   />;
 }
 class Header extends Component {
-  constructor(props) {
-    super(props);
-    this.props.dispatch(fetchCategoriesNames())
-  }
-  componentDidMount = () => {
 
+  componentDidMount = () => {
+    this.props.dispatch(fetchCategoriesNames())
+}
+
+componentDidUpdate(prevProps) {
+  if (this.props.categories !== prevProps.categories) {
+    this.props.navigate('/categories/all')
+  }
 }
   render() {
     return (
@@ -97,7 +101,7 @@ class Header extends Component {
           <LeftPart>
             {Array.from(this.props.categories).map(({ name }) => {
               return (
-                <StyledLink key={name} to={`/${name}`}>
+                <StyledLink key={name} to={`categories/${name}`}>
                   {name}
                 </StyledLink>
               );

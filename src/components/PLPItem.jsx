@@ -15,7 +15,7 @@ const ItemCart = styled.div`
   justify-content: center;
   align-items: center;
   background-image: url(${cartIcon});
-  bottom: 70px;
+  top: 320px;
   left: 60%;
   flex: 1 1 auto;
 `;
@@ -102,7 +102,7 @@ function withParams(Component) {
   navigate={useNavigate()}
   />;
 }
-class ProductWithData extends Component {
+class PLPItem extends Component {
 
   fetchInitialProperties = () => {
     const { attributes} = this.props.product;
@@ -133,7 +133,7 @@ class ProductWithData extends Component {
     const {id, name, gallery, brand, inStock, prices, attributes} = this.props.product;
     const index = this.props.currentCurrencyIndex
     return (
-      <ProductItem key={id} onClick={() => this.getProduct(`/product/${id}`)}>
+      <ProductItem key={id} onClick={() => this.getProduct(`/products/${id}`)}>
         <ProductImageWrapper >
           <ProductImage src={gallery[0]} inStock/>
           {!inStock && <ProductOutOfStock>OUT OF STOCK</ProductOutOfStock>}
@@ -153,4 +153,4 @@ class ProductWithData extends Component {
   }
 }
 
-export default withParams(ProductWithData);
+export default withParams(PLPItem);

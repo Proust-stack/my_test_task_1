@@ -39,6 +39,7 @@ const ProductProperty = styled.div`
   font-weight: 400;
   margin-right: 15px;
   padding: 5px;
+  border-radius: 5px;
   background-color: ${(props) => (props.type === 'swatch' ? props.data : '')};
   box-shadow:  ${(props) => (props.selected  ? '0px 4px 15px rgba(168, 172, 176, 0.5)' : '')};
   transform: ${(props) => (props.selected  ? 'scale(1.3)' : '')};

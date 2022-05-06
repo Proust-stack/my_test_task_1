@@ -1,44 +1,17 @@
 import React, { Component } from 'react';
-import styled from 'styled-components';
-import Product from '../components/Product';
-import { useParams } from "react-router-dom";
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchProduct } from '../store/productSlice';
+import { Outlet} from "react-router-dom";
 
-const Container = styled.main`
-  margin: 80px auto;
-`;
 
-function withParams(Component) {
-  return props => <Component 
-  {...props} 
-  params={useParams()} 
-  product={useSelector(state => state.product)}
-  dispatch={useDispatch()}
-  />;
-}
-
-class ProductPageWithData extends Component {
-
-  componentDidMount() {
-    this.props.dispatch(fetchProduct(this.props.params.productId));
-  }
-  componentDidUpdate(prevProps) {
-    if (this.props.params !== prevProps.params || this.props.product.product !== prevProps.product.product) {
-      this.props.dispatch(fetchProduct(this.props.params.productId));
-    }
+export default class ProductPage extends Component {
+  componentDidCatch(error) {
+    this.setState({
+      error
+    });
+    console.log(error)
   }
   render() {
-    const { product, error, loading } = this.props.product;
-    if (loading) return <p>loading...</p>;
-    if (error) return <p>error...</p>;
-    return (
-      <Container>
-        <Product productProperties={product} />
-      </Container>
-    );
+    if (this.state?.error) return <p>ups, error occured</p>;
+    return <Outlet/>
   }
 }
-
-export default withParams(ProductPageWithData);
 
