@@ -182,6 +182,10 @@ function withParams(Component) {
   />;
 }
   class CartItem extends Component {
+
+    componentDidCatch(error) {
+      console.log(error.message);
+    }
     parameterHandler = (id, parametresName, item) => (e) => {
       e.stopPropagation();
       const {currentProperty} = this.props.productProperties;
@@ -221,7 +225,7 @@ function withParams(Component) {
           <ProductBrand>{brand}</ProductBrand>
           <ProductName>{name}</ProductName>
           <ProductPrice>
-            {prices[index].currency.symbol} {prices[index].amount}
+            {prices[index].currency.symbol} {Math.trunc(prices[index].amount).toFixed(2)}
           </ProductPrice>
           <ProductPropertiesWrapper>
             {attributes.map((attr) => {

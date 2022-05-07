@@ -39,7 +39,7 @@ class PDP extends Component {
     if (this.state?.error) return <p>ups, error occured</p>;
     const { product, error, loading } = this.props.product;
     if (loading) return <p>loading...</p>;
-    if (error) return <p>error...</p>;
+    if (error) return null;
     return (
       <Container>
         <PDPItem productProperties={product} />

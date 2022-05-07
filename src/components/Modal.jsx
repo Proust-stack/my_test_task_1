@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -8,7 +7,7 @@ import ModalItem from './ModalItem';
 const Wrapper = styled.div`
   height: 100%;
   width: 100%;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(0, 0, 0, 0.5);
   position: fixed;
   top: 80px;
   left: 0;
@@ -145,6 +144,11 @@ class Modal extends Component {
       this.getTotalCost();
     }
   }
+
+  componentDidCatch(error) {
+    console.log(error.message);
+  }
+  
   toLink = (address) => (e) => {
     e.preventDefault()
     e.stopPropagation()
@@ -177,7 +181,7 @@ class Modal extends Component {
             <Button primary="true" onClick={this.toLink(`/cart`)}>
               VIEW BAG
             </Button>
-            <Button onClick={this.toLink(`/`)}>CHECK OUT</Button>
+            <Button onClick={this.toLink(`/categories/all`)}>CHECK OUT</Button>
           </ButonsWrapper>
         </Content>
       </Wrapper>

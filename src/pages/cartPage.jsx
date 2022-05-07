@@ -126,7 +126,7 @@ class CartPage extends Component {
           <Total>
             <TotalTitle>total</TotalTitle>
             <TotalPrice>
-              {this.state.currencySymbol} {this.state.totalCost}
+              {this.state.currencySymbol} {Math.trunc(this.state.totalCost).toFixed(2)}
             </TotalPrice>
           </Total>
         </Wrapper>

@@ -198,8 +198,10 @@ function withParams(Component) {
 }
 class ModalItem extends Component {
 
-  componentDidMount() {}
-  
+  componentDidCatch(error) {
+    console.log(error.message);
+  }
+
   parameterHandler = (id, parametresName, item) => (e) => {
 
     e.stopPropagation();

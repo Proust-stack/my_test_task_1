@@ -54,6 +54,11 @@ export default class Carousel extends Component {
         length: this.props.children.length
     });
   }
+
+  componentDidCatch(error) {
+    console.log(error.message);
+  }
+  
   next = (e) => {
     e.stopPropagation();
     if (this.state.currentIndex < (this.state.length - 1)) {

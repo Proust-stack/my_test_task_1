@@ -55,7 +55,7 @@ class PLP extends Component {
     const {category, error, loading} = this.props.category
     if (this.state?.error) return <p>ups, error occured</p>;
     if (loading) return <p>loading...</p>;
-    if (error) return <p>error...</p>;
+    if (error) return null;
     return (
         <Container>
         <Title>{this.props.params.categoryId}</Title>

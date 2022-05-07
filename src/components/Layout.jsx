@@ -5,7 +5,7 @@ import { fetchCurrencies } from '../store/currencySlice';
 import Header from './Header';
 import Modal from './Modal';
 import { Outlet } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 
 const Container = styled.div`
@@ -18,15 +18,12 @@ const Container = styled.div`
 function withParams(Component) {
   return props => <Component 
   {...props} 
-  category={useSelector(state => state.category)}
   dispatch={useDispatch()}
-  
   />;
 }
 class Layout extends Component {
   constructor(props) {
     super(props);
-    
     this.state = {
       cartModalOpened: false,
       currenciesModalOpened: false,
@@ -35,6 +32,10 @@ class Layout extends Component {
   }
   componentDidMount() {
     this.props.dispatch(fetchCurrencies())
+  }
+
+  componentDidCatch(error) {
+    console.log(error.message);
   }
 
   toggleModal = () => {

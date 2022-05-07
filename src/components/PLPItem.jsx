@@ -31,6 +31,7 @@ const ProductItem = styled.div`
   padding: 16px;
   flex: 0 1 auto;
   cursor: pointer;
+  opacity: ${props => (props.inStock ? '1' : '.5')};
   &:hover  ${ItemCart} {
       display: flex;
   }
@@ -54,7 +55,7 @@ const ProductImage = styled.img`
   width: 100%;
 	height: 100%;
   object-fit: cover;
-  opacity: ${props => (props.inStock ? '1' : '.5')};
+  
 `;
 const ProductOutOfStock = styled.div`
   position: absolute;
@@ -133,9 +134,9 @@ class PLPItem extends Component {
     const {id, name, gallery, brand, inStock, prices, attributes} = this.props.product;
     const index = this.props.currentCurrencyIndex
     return (
-      <ProductItem key={id} onClick={() => this.getProduct(`/products/${id}`)}>
+      <ProductItem key={id} onClick={() => this.getProduct(`/products/${id}`)} inStock={inStock}>
         <ProductImageWrapper >
-          <ProductImage src={gallery[0]} inStock/>
+          <ProductImage src={gallery[0]} />
           {!inStock && <ProductOutOfStock>OUT OF STOCK</ProductOutOfStock>}
         </ProductImageWrapper>
         <ProductFooter>

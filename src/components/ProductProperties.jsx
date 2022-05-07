@@ -47,6 +47,10 @@ const ProductProperty = styled.div`
 `;
 
 export default class ProductProperties extends Component {
+  componentDidCatch(error) {
+    console.log(error.message);
+  }
+
   render() {
     return (
       <ProductPropertiesContainer>

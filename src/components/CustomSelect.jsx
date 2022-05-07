@@ -77,8 +77,10 @@ class CustomSelect extends Component {
     };
   }
 
-  componentDidMount = () => {
-  };
+  componentDidCatch(error) {
+    console.log(error.message);
+  }
+
   toggling = () =>
     this.setState({
       isOpen: !this.state.isOpen,

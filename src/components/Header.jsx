@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 import myImage from '../assets/icons/header/Brand_icon.png';
-import emptyCart from '../assets/icons/header/svg/Vector.svg';
+import cartIcon from '../assets/icons/header/svg/header_cart.svg';
 import { useParams, useNavigate } from "react-router-dom";
 import CustomSelect from './CustomSelect';
 import { useDispatch, useSelector } from 'react-redux';
@@ -51,7 +51,7 @@ const RightPart = styled.div`
 `;
 
 const ItemIconCart = styled.div`
-  background-image: url(${emptyCart});
+  background-image: url(${cartIcon});
   width: 20px;
   height: 20px;
   cursor: pointer;
@@ -93,6 +93,10 @@ componentDidUpdate(prevProps) {
   if (this.props.categories !== prevProps.categories) {
     this.props.navigate('/categories/all')
   }
+}
+
+componentDidCatch(error) {
+  console.log(error.message);
 }
   render() {
     return (
