@@ -18,6 +18,7 @@ const ItemsWrapper = styled.main`
 `;
 
 const Title = styled.div`
+  font-family: 'Raleway';
   font-style: normal;
   font-weight: 400;
   font-size: 42px;

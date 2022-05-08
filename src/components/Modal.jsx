@@ -118,43 +118,49 @@ function withParams(Component) {
   />;
 }
 class Modal extends Component {
-  state = {
-    totalCost: 0,
-    currencySymbol: '$',
+  constructor(props) {
+    super(props);
+    this.state = {
+      totalCost: 0,
+      currencySymbol: '$',
+    };
+  }
+
+  getTotalCost = (currencies, currentCurrencyIndex) => {
+    let totalCost = 0;
+    this.props.items.forEach((item) => {
+      totalCost += item.prices[currentCurrencyIndex].amount * item.quantity;
+    });
+    this.setState({
+      totalCost: totalCost.toFixed(2),
+      currencySymbol: currencies[currentCurrencyIndex].symbol,
+    });
   };
 
-  getTotalCost = () => {
-      const currencies = this.props.currencies; // array of currencies
-      const currencyIndex = this.props.currentCurrencyIndex; // get index current currency (number)
-      let totalCost = 0;
-      this.props.items.forEach((item) => {
-        totalCost += item.prices[currencyIndex].amount * item.quantity;
-      });
-      this.setState({
-        totalCost: totalCost.toFixed(2),
-        currencySymbol: currencies[currencyIndex].symbol,
-      });
-  }
-
   componentDidMount() {
-    this.getTotalCost();
+    const { currencies, currentCurrencyIndex } = this.props;
+    this.getTotalCost(currencies, currentCurrencyIndex);
   }
   componentDidUpdate(prevProps) {
-    if (this.props.currentCurrencyIndex !== prevProps.currentCurrencyIndex || this.props.items !== prevProps.items) {
-      this.getTotalCost();
+    if (
+      this.props.currentCurrencyIndex !== prevProps.currentCurrencyIndex ||
+      this.props.items !== prevProps.items
+    ) {
+      const { currencies, currentCurrencyIndex } = this.props;
+      this.getTotalCost(currencies, currentCurrencyIndex);
     }
   }
 
   componentDidCatch(error) {
     console.log(error.message);
   }
-  
+
   toLink = (address) => (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-    this.props.navigate(address)
-    this.props.toggleModal()
-  }
+    e.preventDefault();
+    e.stopPropagation();
+    this.props.navigate(address);
+    this.props.toggleModal();
+  };
 
   render() {
     const itemsQuantity = this.props.items.length;
@@ -163,7 +169,9 @@ class Modal extends Component {
         <Content onMouseLeave={() => this.props.toggleModal()}>
           <TitleWrapper>
             <Title>My bag,</Title>
-            <ItemsTitle>{itemsQuantity} {itemsQuantity === 1 ? 'item' : 'items'}</ItemsTitle>
+            <ItemsTitle>
+              {itemsQuantity} {itemsQuantity === 1 ? 'item' : 'items'}
+            </ItemsTitle>
           </TitleWrapper>
           <PropertiesWrapper>
             {this.props.items.map((item) => (

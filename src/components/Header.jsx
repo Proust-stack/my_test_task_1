@@ -31,6 +31,7 @@ const StyledLink = styled(NavLink)`
   text-transform: uppercase;
   margin-right: 16px;
   padding: 10px;
+  padding-bottom: 30px;
   &.active {
     padding-bottom: 30px;
     color: green;
@@ -62,13 +63,12 @@ const Badge = styled.div`
   border-radius: 100%;
   width: 15px;
   height: 15px;
+  line-height: 10px;
+  text-align: center;
   top: -5px;
   left: 10px;
   background-color: black;
   color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   padding: 2px;
   font-size: 10px;
 `;

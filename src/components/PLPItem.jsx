@@ -105,7 +105,7 @@ function withParams(Component) {
 }
 class PLPItem extends Component {
 
-  fetchInitialProperties = () => {
+  setInitialProperties = () => {
     const { attributes} = this.props.product;
     const obj = {}
     attributes.forEach(attr => {
@@ -115,7 +115,7 @@ class PLPItem extends Component {
   }
 
   componentDidMount() {
-      this.fetchInitialProperties()
+      this.setInitialProperties()
   }
 
   componentDidCatch(error) {

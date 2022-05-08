@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { client } from '../index';
-import { GET_CURRENCIES } from "../utils/graphQLqueries";
+import { GET_CURRENCIES } from "../queries/graphQLqueries";
 
 
 export const fetchCurrencies = createAsyncThunk(

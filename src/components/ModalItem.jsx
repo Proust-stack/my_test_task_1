@@ -79,6 +79,7 @@ const ProductPropertyWrapper = styled.div`
 `;
 
 const ProductProperty = styled.div`
+  font-family: 'Source Sans Pro';
   min-width: 24px;
   min-height: 24px;
   text-align: center;

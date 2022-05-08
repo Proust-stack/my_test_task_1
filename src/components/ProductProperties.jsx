@@ -28,6 +28,7 @@ const ProductPropertyWrapper = styled.div`
 `;
 
 const ProductProperty = styled.div`
+  font-family: 'Source Sans Pro';
   display: flex;
   justify-content: center;
   align-items: center;

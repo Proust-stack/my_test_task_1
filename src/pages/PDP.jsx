@@ -7,6 +7,10 @@ import { fetchProduct } from '../store/productSlice';
 
 const Container = styled.main`
   margin: 80px auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  flex: 0 1 auto;
 `;
 
 function withParams(Component) {

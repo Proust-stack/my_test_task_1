@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { client } from '../index';
-import { GET_PRODUCT } from "../utils/graphQLqueries";
+import { GET_PRODUCT } from "../queries/graphQLqueries";
 
 
 export const fetchProduct = createAsyncThunk(

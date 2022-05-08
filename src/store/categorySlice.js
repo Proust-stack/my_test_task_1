@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { client } from '../index';
-import { GET_CATEGORY, GET_CATEGORY_NAME } from "../utils/graphQLqueries";
+import { GET_CATEGORY, GET_CATEGORY_NAME } from "../queries/graphQLqueries";
 
 export const fetchCategory = createAsyncThunk(
     'category/fetchCategory',

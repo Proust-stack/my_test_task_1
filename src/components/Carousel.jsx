@@ -78,11 +78,15 @@ export default class Carousel extends Component {
         <Content currentIndex={this.state.currentIndex}>
           {this.props.children}
         </Content>
+        {this.props.children.length > 1 ? 
+        (<>
         <LeftArrow img={leftArrowIcon} onClick={this.prev}></LeftArrow>
         <RightArrow
           img={rightArrowIcon}
           onClick={this.next}
         ></RightArrow>
+        </>) : null
+        }
       </ContentWrapper>
     );
   }

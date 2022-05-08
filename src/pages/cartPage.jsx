@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import CartItem from '../components/CartItem';
 
-const Wrapper = styled.div`
+const Container = styled.div`
   display: flex;
   flex-direction: column;
   margin-bottom: 20px;
@@ -113,7 +113,7 @@ class CartPage extends Component {
     const items = this.props.items;
     if (items.length === 0) return <p>Nothing is added yet..</p>;
     return (
-        <Wrapper>
+        <Container>
           <CartTitle>Cart</CartTitle>
           <ItemsWrapper>
             {items.map((item) => (
@@ -129,7 +129,7 @@ class CartPage extends Component {
               {this.state.currencySymbol} {Math.trunc(this.state.totalCost).toFixed(2)}
             </TotalPrice>
           </Total>
-        </Wrapper>
+        </Container>
     );
   }
 }

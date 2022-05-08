@@ -32,20 +32,21 @@ const ProductBrand = styled.div`
   font-size: 30px;
   font-style: normal;
   font-weight: 600;
+  margin-bottom: 16px;
 `;
 const ProductName = styled.div`
   font-size: 18px;
-  color: black;
   font-style: normal;
   font-weight: 400;
+  margin-bottom: 16px;
 `;
 
 const ProductPrice = styled.div`
   font-size: 18px;
-  color: black;
   font-style: normal;
   font-weight: 700;
   display: flex;
+  margin-bottom: 16px;
 `;
 
 const ProductPropertiesWrapper = styled.div`

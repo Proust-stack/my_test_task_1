@@ -10,6 +10,8 @@ const ProductItem = styled.div`
   justify-content: flex-start;
   height: 513px;
   padding: 20px;
+  flex: 0 1 auto;
+  flex-wrap: wrap;
 `;
 
 const ProductImageWrapper = styled.div`
@@ -41,28 +43,25 @@ const ProductImageSmall = styled.img`
   left: 0;
   top: 0;
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  height: auto;
   cursor: pointer;  
   transition: all 300ms 0ms ease-in-out;
   &:hover {
     transform: scale(1.1);
 }
 `;
-const ProductImageBig = styled.img.attrs(
-  (props) => ({
-    style: {
-      left: 150 -props.coord.x / 1.2 + 'px',
-      top:  150 -props.coord.y / 1.2 + 'px',
-    }
-  })
-)`
+const ProductImageBig = styled.img.attrs((props) => ({
+  style: {
+    left: 150 - props.coord.x / 1.2 + 'px',
+    top: 150 - props.coord.y / 1.2 + 'px',
+  },
+}))`
   position: absolute;
   left: 0;
   top: 0;
-  object-fit: cover;
-  width: 100%;
-  height: 100%;
+  height: auto;
+  max-width: 100%;
+  display: block;
   transition: all 300ms 0 linear;
   &:hover {
     transform: scale(1.8);
@@ -76,7 +75,7 @@ const ProductInfo = styled.div`
   margin: 16px;
   height: 100%;
   width: 300px;
-  flex: 1 1 auto;
+  flex: 0 1 auto;
 `;
 const ProductInfoBrand = styled.div`
   height: 27px;
@@ -159,7 +158,7 @@ class PDPItem extends Component {
     imageCoord: {x: 0, y: 0}
   }
   }
-  fetchInitialProperties = () => {
+  setInitialProperties = () => {
     const { attributes} = this.props.productProperties;
     const obj = {}
     attributes.forEach(attr => {
@@ -170,13 +169,13 @@ class PDPItem extends Component {
  
   componentDidMount() {
     if (this.props.productProperties) {
-      this.fetchInitialProperties()
+      this.setInitialProperties()
     }
   }
 
   componentDidUpdate(prevProps) {
     if (this.props.productProperties !== prevProps.productProperties) {
-      this.fetchInitialProperties()
+      this.setInitialProperties()
     }
   }
 
