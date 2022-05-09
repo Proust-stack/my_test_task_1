@@ -111,7 +111,7 @@ class CartPage extends Component {
     if (!this.state) return <p>loading</p>;
     if (this.state?.error) return <p>ups, error occured</p>;
     const items = this.props.items;
-    if (items.length === 0) return <p>Nothing is added yet..</p>;
+    if (items.length === 0) return <p>Nothing is added yet...</p>;
     return (
         <Container>
           <CartTitle>Cart</CartTitle>
