@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Main from './pages/Main';
 import ProductPage from './pages/ProductPage';
-import CartPage from './pages/CartPage';
+import CartPage from './pages/cartPage';
 import Layout from './components/Layout';
 import PLP from './pages/PLP';
 import PDP from './pages/PDP';
