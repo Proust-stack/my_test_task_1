@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { removeItem } from '../store/cartSlice';
 
 const ProductItem = styled.div`
-  padding: 20px;
+  padding: 5px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -77,18 +77,18 @@ const ProductPropertyWrapper = styled.div`
 `;
 
 const ProductProperty = styled.div`
+  display: flex; 
+  justify-content: center;
+  align-items: center; 
   min-width: 63px;
   height: 45px;
-  text-align: center;
-  line-height: 45px;
   font-size: 16px;
   font-style: normal;
   font-weight: 400;
   margin-right: 12px;
-  border-radius: 5px;
   background-color: ${(props) => (props.type === 'swatch' ? props.data : '')};
-  transform: ${(props) => (props.selected  ? 'scale(1.1)' : '')};
-  box-shadow:  ${(props) => (props.selected  ? '4px 4px 8px rgba(168, 172, 176, 0.8)' : '')};
+  opacity:  ${(props) => (props.selected  ? '1' : '.3')};
+  border: 1px solid black;
   cursor: pointer;
 `;
 

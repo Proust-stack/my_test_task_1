@@ -89,10 +89,10 @@ const ProductProperty = styled.div`
   font-weight: 400;
   margin-right: 12px;
   background-color: ${(props) => (props.type === 'swatch' ? props.data : '')};
+  opacity:  ${(props) => (props.selected  ? '1' : '.3')};
+  border: 1px solid black;
   cursor: pointer;
-  box-shadow:  ${(props) => (props.selected  ? '4px 4px 8px rgba(168, 172, 176, 0.8)' : '')};
   padding: 5px;
-  transform: ${(props) => (props.selected  ? 'scale(1.2)' : '')};
   &:last-child {
     margin-right: 0;
   }

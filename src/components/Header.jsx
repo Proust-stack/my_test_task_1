@@ -115,7 +115,7 @@ componentDidCatch(error) {
           <RightPart>
             <CustomSelect />
             <ItemIconCart onMouseEnter={() => this.props.toggleModal()}>
-              <Badge>{this.props.items.length}</Badge>
+              {this.props.items.length ? <Badge>{this.props.items.length}</Badge> : null}
             </ItemIconCart>
           </RightPart>
         </NavbarItem>

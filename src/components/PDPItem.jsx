@@ -126,11 +126,8 @@ const Button = styled.button`
   margin-bottom: 40px;
   border: none;
   cursor: pointer;
-  &:hover {
-    transform: scale(1.1);
-  }
   &:active{
-   transform: scale(.7);
+   transform: scale(.9);
 }
 `;
 const ProductFooter = styled.div`
