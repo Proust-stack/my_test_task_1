@@ -34,12 +34,11 @@ const DropDownListContainer = styled('div')`
   box-shadow: 0px 4px 35px rgba(168, 172, 176, 0.19);
 `;
 
-const DropDownList = styled('ul')`
+const DropDownList = styled('div')`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
-  padding: 10px;
+  text-align: center;
   font-size: 16px;
   font-weight: 500;
   &:first-child {
@@ -51,13 +50,11 @@ const DropDownList = styled('ul')`
 `;
 
 
-const ListItem = styled('li')`
-  list-style: none;
-  margin-bottom: 14px;
+const ListItem = styled('div')`
+  padding: 10px 0 10px 0;
   cursor: pointer;
   &:hover {
-    box-shadow: 0px 4px 35px rgba(168, 172, 176, 0.19);
-    transform: scale(1.1);
+    background-color: grey;
   }
 `;
 
@@ -75,37 +72,55 @@ class CustomSelect extends Component {
     this.state = {
       isOpen: false,
     };
+    this.dropDown = React.createRef();
   }
 
   componentDidCatch(error) {
     console.log(error.message);
   }
 
-  toggling = () =>
+  toggling = () => {
     this.setState({
       isOpen: !this.state.isOpen,
     });
+  }
+  closeDropDownFromOuter = (e) => {
+      this.setState({
+        isOpen: false
+      });
+  }
+
+  onOpenDropDown = (e) => {
+    e.stopPropagation();
+    this.toggling();
+  };
 
   onOptionClicked = (index) => (e) => {
     e.stopPropagation();
     this.toggling();
-    this.props.dispatch(changeCurrency({index}))
+    this.props.dispatch(changeCurrency({index}));
   };
 
+  componentDidMount() {
+    document.addEventListener('click', this.closeDropDownFromOuter)
+  }
+  componentWillUnmount() {
+    document.removeEventListener('click', this.closeDropDownFromOuter)
+  }
+
   render() {
-    
+    console.log(this.state);
     const {currencies, currentCurrency} = this.props.currencies
     return (
       <DropDownContainer>
         <DropDownHeader
-          onClick={this.toggling}
+          onClick={this.onOpenDropDown}
           img={arrowDown}
           isOpen={this.state.isOpen}
         >
           {currencies[currentCurrency].symbol}
         </DropDownHeader>
-        {this.state.isOpen && (
-          <DropDownListContainer onMouseLeave={this.toggling}>
+          {this.state.isOpen && <DropDownListContainer ref={this.dropDown}>
             <DropDownList>
               {currencies &&
                 currencies.map(
@@ -121,8 +136,7 @@ class CustomSelect extends Component {
                   }
                 )}
             </DropDownList>
-          </DropDownListContainer>
-        )}
+          </DropDownListContainer>}
       </DropDownContainer>
     );
   }
