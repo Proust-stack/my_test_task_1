@@ -45,27 +45,18 @@ const ProductImageSmall = styled.img`
   width: 100%;
   height: auto;
   cursor: pointer;  
-  transition: all 300ms 0ms ease-in-out;
-  &:hover {
-    transform: scale(1.1);
-}
 `;
 const ProductImageBig = styled.img.attrs((props) => ({
   style: {
-    left: 150 - props.coord.x / 1.2 + 'px',
-    top: 150 - props.coord.y / 1.2 + 'px',
   },
 }))`
   position: absolute;
   left: 0;
   top: 0;
   height: auto;
-  max-width: 100%;
+  width: 100%;
+  object-fit: cover;
   display: block;
-  transition: all 300ms 0 linear;
-  &:hover {
-    transform: scale(1.8);
-  }
 `;
 
 const ProductInfo = styled.div`
@@ -149,105 +140,134 @@ function withParams(Component) {
 }
 class PDPItem extends Component {
   constructor(props) {
-    super(props)
-     this.state = {
-    quantity: 1,
-    imageCoord: {x: 0, y: 0}
-  }
+    super(props);
+    this.state = {
+      quantity: 1,
+    };
+    this.description = React.createRef();
   }
   setInitialProperties = () => {
-    const { attributes} = this.props.productProperties;
-    const obj = {}
-    attributes.forEach(attr => {
-      obj[attr.name] = attr.items[0].value
-    })
-    this.setState({ currentProperty: obj, currentImageSrc: this.props.productProperties.gallery[0]});
-  }
- 
+    const { attributes } = this.props.productProperties;
+    const obj = {};
+    attributes.forEach((attr) => {
+      obj[attr.name] = attr.items[0].value;
+    });
+    this.setState({
+      currentProperty: obj,
+      currentImageSrc: this.props.productProperties.gallery[0],
+    });
+  };
+
   componentDidMount() {
     if (this.props.productProperties) {
-      this.setInitialProperties()
+      this.setInitialProperties();
+      this.setDescription()
     }
+   
   }
 
   componentDidUpdate(prevProps) {
     if (this.props.productProperties !== prevProps.productProperties) {
-      this.setInitialProperties()
+      this.setInitialProperties();
+      this.setDescription()
     }
   }
 
   componentDidCatch(error) {
     console.log(error.message);
   }
-  adjustHTML(description) {
-    return {__html: description};
-  }
 
   changeImage = (e) => {
-    e.stopPropagation()
+    e.stopPropagation();
     this.setState({
       currentImageSrc: e.target.src,
-  });
-  }
+    });
+  };
 
-  _onMouseMove = (e) => {
-    this.setState({ imageCoord: {x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY}});
-  }
-  addToCart = (item) => e => {
-    e.stopPropagation()
-    return this.props.dispatch(addItem(item))
-  }
+  addToCart = (item) => (e) => {
+    e.stopPropagation();
+    return this.props.dispatch(addItem(item));
+  };
 
-  parameterHandler = (parameterName, item) => e => {
-    e.stopPropagation()
-    this.setState((prevState) => ({currentProperty: {...prevState.currentProperty , [parameterName]: item.value}}))
+  parameterHandler = (parameterName, item) => (e) => {
+    e.stopPropagation();
+    this.setState((prevState) => ({
+      currentProperty: {
+        ...prevState.currentProperty,
+        [parameterName]: item.value,
+      },
+    }));
+  };
+
+  setDescription = () => {
+    this.description.current.innerHTML = this.props.description
   }
 
   render() {
     if (!this.props.productProperties) return <p>loading...</p>;
-    const { gallery, brand, name, prices, attributes, id, inStock, description } =
-    this.props.productProperties;
+    const {
+      gallery,
+      brand,
+      name,
+      prices,
+      attributes,
+      id,
+      inStock,
+      description,
+    } = this.props.productProperties;
     const index = this.props.currentCurrencyIndex;
-    const {currentProperty, quantity} = this.state
+    const { currentProperty, quantity } = this.state;
     return (
       <ProductItem>
         <ProductImageSmallContainer>
-          {gallery && gallery.map((image) => {
-            return (
-              <ProductImageSmallWrapper  key={image} >
-                <ProductImageSmall 
-                src={image} 
-                onClick={this.changeImage}
-                current={this.state.currentImageSrc}
-                />
-              </ProductImageSmallWrapper>
-            );
-          })}
+          {gallery &&
+            gallery.map((image) => {
+              return (
+                <ProductImageSmallWrapper key={image}>
+                  <ProductImageSmall
+                    src={image}
+                    onClick={this.changeImage}
+                    current={this.state.currentImageSrc}
+                  />
+                </ProductImageSmallWrapper>
+              );
+            })}
         </ProductImageSmallContainer>
         <ProductImageWrapper>
-          <ProductImageBig 
-          src={this.state.currentImageSrc || gallery[0]} 
-          coord={this.state.imageCoord}
-          onMouseMove={this._onMouseMove}
-          />
+          <ProductImageBig src={this.state.currentImageSrc || gallery[0]} />
         </ProductImageWrapper>
         <ProductInfo>
           <ProductInfoBrand>{brand}</ProductInfoBrand>
           <ProductInfoName>{name}</ProductInfoName>
-          <ProductProperties 
-          attributes={attributes} 
-          parameterHandler={this.parameterHandler}
-          currentProperty = {this.state.currentProperty}
+          <ProductProperties
+            attributes={attributes}
+            parameterHandler={this.parameterHandler}
+            currentProperty={this.state.currentProperty}
           />
           <ProductInfoPrice>
             <ProductInfoPriceTitle>PRICE</ProductInfoPriceTitle>
-            <ProductInfoPriceValue>{prices[index].currency.symbol} {Math.trunc(prices[index].amount).toFixed(2)}</ProductInfoPriceValue>
+            <ProductInfoPriceValue>
+              {prices[index].currency.symbol}{' '}
+              {Math.trunc(prices[index].amount).toFixed(2)}
+            </ProductInfoPriceValue>
           </ProductInfoPrice>
-          { inStock && <Button 
-          onClick={this.addToCart({id, gallery, prices, brand, name, attributes, currentProperty, quantity})}
-          
-          >ADD TO CART</Button>}
-          <ProductFooter dangerouslySetInnerHTML={this.adjustHTML(description)}></ProductFooter>
+          {inStock && (
+            <Button
+              onClick={this.addToCart({
+                id,
+                gallery,
+                prices,
+                brand,
+                name,
+                attributes,
+                currentProperty,
+                quantity,
+              })}
+            >
+              ADD TO CART
+            </Button>
+          )}
+          <ProductFooter ref={this.description}>{description}</ProductFooter>
         </ProductInfo>
       </ProductItem>
     );

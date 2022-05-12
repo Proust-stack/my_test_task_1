@@ -1,6 +1,6 @@
 import { createGlobalStyle } from 'styled-components';
 
-import Raleway from "../assets/fonts/Raleway-VariableFont_wght.ttf";
+import Raleway from "../assets/fonts/static/Raleway-Regular.ttf";
 import RalewayLight from "../assets/fonts/static/Raleway-Light.ttf";
 import RalewayMedium from "../assets/fonts/static/Raleway-Medium.ttf";
 import CondensedLight from "../assets/fonts/condensed/RobotoCondensed-Light.ttf";
@@ -26,7 +26,7 @@ export default createGlobalStyle`
     font-family: "Raleway";
     src: url(${RalewayMedium}) format('truetype');
     font-style: normal;
-    font-weight: 400;
+    font-weight: 600;
 }
 
 @font-face {

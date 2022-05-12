@@ -7,6 +7,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import CustomSelect from './CustomSelect';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCategoriesNames } from '../store/categorySlice';
+import { fetchCurrencies } from '../store/currencySlice';
 
 const Nav = styled.nav`
   background: #fff;
@@ -79,14 +80,19 @@ function withParams(Component) {
   params={useParams()} 
   dispatch={useDispatch()}
   categories={useSelector(state => state.category.categoriesNames)}
+  currencies={useSelector(state => state.currencies)}
   items={useSelector(state => state.cart.items)}
   navigate={useNavigate()}
   />;
 }
 class Header extends Component {
+  constructor(props) {
+    super(props);
+    this.props.dispatch(fetchCurrencies())
+    this.props.dispatch(fetchCategoriesNames())
+  }
 
   componentDidMount = () => {
-    this.props.dispatch(fetchCategoriesNames())
 }
 
 componentDidUpdate(prevProps) {
@@ -113,7 +119,7 @@ componentDidCatch(error) {
           </LeftPart>
           <ItemIconCompany />
           <RightPart>
-            <CustomSelect />
+            <CustomSelect currencies={this.props.currencies}/>
             <ItemIconCart onMouseEnter={() => this.props.toggleModal()}>
               {this.props.items.length ? <Badge>{this.props.items.length}</Badge> : null}
             </ItemIconCart>

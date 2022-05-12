@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import GlobalStyles from '../styles/global';
-import { fetchCurrencies } from '../store/currencySlice';
 import Header from './Header';
 import Modal from './Modal';
 import { Outlet } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-
 
 const Container = styled.div`
    max-width: 1440px;
@@ -16,7 +13,6 @@ const Container = styled.div`
 function withParams(Component) {
   return props => <Component 
   {...props} 
-  dispatch={useDispatch()}
   />;
 }
 class Layout extends Component {
@@ -24,12 +20,7 @@ class Layout extends Component {
     super(props);
     this.state = {
       cartModalOpened: false,
-      currenciesModalOpened: false,
-      currency: null
     };
-  }
-  componentDidMount() {
-    this.props.dispatch(fetchCurrencies())
   }
 
   componentDidCatch(error) {

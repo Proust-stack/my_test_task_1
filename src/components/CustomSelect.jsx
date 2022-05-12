@@ -62,7 +62,7 @@ function withParams(Component) {
   return props => <Component 
   {...props}  
   dispatch={useDispatch()}
-  currencies={useSelector(state => state.currencies)}
+  
   />;
 }
 
@@ -104,12 +104,12 @@ class CustomSelect extends Component {
   componentDidMount() {
     document.addEventListener('click', this.closeDropDownFromOuter)
   }
+
   componentWillUnmount() {
     document.removeEventListener('click', this.closeDropDownFromOuter)
   }
 
   render() {
-    console.log(this.state);
     const {currencies, currentCurrency} = this.props.currencies
     return (
       <DropDownContainer>
@@ -118,7 +118,7 @@ class CustomSelect extends Component {
           img={arrowDown}
           isOpen={this.state.isOpen}
         >
-          {currencies[currentCurrency].symbol}
+          {currencies.length > 0 ? currencies[currentCurrency].symbol : null}
         </DropDownHeader>
           {this.state.isOpen && <DropDownListContainer ref={this.dropDown}>
             <DropDownList>
