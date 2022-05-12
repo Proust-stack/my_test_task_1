@@ -117,7 +117,7 @@ class CartPage extends Component {
           <CartTitle>Cart</CartTitle>
           <ItemsWrapper>
             {items.map((item) => (
-              <div  key={item.id}>
+              <div  key={item.cartId}>
               <Divider/>
               <CartItem productProperties={item} />
               </div>

@@ -5,6 +5,7 @@ import cartIcon from '../assets/icons/cart_green.png';
 import { useDispatch, useSelector } from 'react-redux';
 import { addItem } from '../store/cartSlice';
 import ProductProperties from './ProductProperties';
+import { uniqueCartId } from '../utils/uniqueCartId';
 
 const ItemCart = styled.div`
   height: 50px;
@@ -129,6 +130,8 @@ class PLPItem extends Component {
 
   addToCart = (item) => e => {
     e.stopPropagation()
+    const cartId = uniqueCartId(item.id, item.currentProperty);
+    item.cartId = cartId;
     return this.props.dispatch(addItem(item))
   }
   getProduct = (address) => {

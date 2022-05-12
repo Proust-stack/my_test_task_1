@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { addItem } from '../store/cartSlice';
 import ProductProperties from './ProductProperties';
+import { uniqueCartId } from '../utils/uniqueCartId';
 
 const ProductItem = styled.div`
   display: flex;
@@ -186,6 +187,9 @@ class PDPItem extends Component {
 
   addToCart = (item) => (e) => {
     e.stopPropagation();
+    const cartId = uniqueCartId(item.id, item.currentProperty);
+    console.log(cartId);
+    item.cartId = cartId;
     return this.props.dispatch(addItem(item));
   };
 

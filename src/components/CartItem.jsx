@@ -178,7 +178,6 @@ function withParams(Component) {
   return props => <Component 
   {...props}  
   dispatch={useDispatch()}
-  navigate={useNavigate()}
   currentCurrencyIndex={useSelector(state => state.currencies.currentCurrency)}
   />;
 }
@@ -187,30 +186,23 @@ function withParams(Component) {
     componentDidCatch(error) {
       console.log(error.message);
     }
-    parameterHandler = (id, parametresName, item) => (e) => {
-      e.stopPropagation();
-      const {currentProperty} = this.props.productProperties;
-      this.props.dispatch(changeProperties({ id, currentProperty: {...currentProperty, [parametresName]: item.value}}))
-    }
-    getProduct = (address) => {
-      this.props.navigate(address)
-    }
 
-    increase = (id) => (e) => {
+    increase = (cartId) => (e) => {
       e.stopPropagation()
-      this.props.dispatch(increaseQuantity({id}))
+      this.props.dispatch(increaseQuantity({cartId}))
     }
-    decrease = (id) => (e) => {
+    decrease = (cartId) => (e) => {
       e.stopPropagation()
-      this.props.dispatch(decreaseQuantity({id}))
+      this.props.dispatch(decreaseQuantity({cartId}))
     }
-    remove = (id) => (e) => {
+    remove = (cartId) => (e) => {
       e.stopPropagation()
-      this.props.dispatch(removeItem({id}))
+      this.props.dispatch(removeItem({cartId}))
     }
   render() {
     const {
       id,
+      cartId,
       gallery,
       prices,
       brand,
@@ -221,7 +213,7 @@ function withParams(Component) {
     } = this.props.productProperties;
     const index = this.props.currentCurrencyIndex;
     return (
-      <ProductItem onClick={() => this.getProduct(`/products/${id}`)}>
+      <ProductItem>
         <LeftPart>
           <ProductBrand>{brand}</ProductBrand>
           <ProductName>{name}</ProductName>
@@ -246,7 +238,6 @@ function withParams(Component) {
                               currentProperty[`${attr.name}`]) ===
                             `${item.value}`
                           } // current  choice of this characteristic (for example  size "M")
-                          onClick={this.parameterHandler(id, attr.name, item)}
                         >
                           {attr.type !== 'swatch' && item.value}
                         </ProductProperty>
@@ -260,16 +251,16 @@ function withParams(Component) {
         </LeftPart>
         <RightPart>
           <Quantity>
-            <IncreaseQuantity onClick={this.increase(id)}>+</IncreaseQuantity>
+            <IncreaseQuantity onClick={this.increase(cartId)}>+</IncreaseQuantity>
             <QuantityValue>{quantity}</QuantityValue>
-            <DecreaseQuantity onClick={this.decrease(id)}>-</DecreaseQuantity>
+            <DecreaseQuantity onClick={this.decrease(cartId)}>-</DecreaseQuantity>
           </Quantity>
             <Carousel>
               {gallery.map((image) => {
                 return <ProductImage src={image} key={image} />;
               })}
             </Carousel>
-            <Close onClick={this.remove(id)} />
+            <Close onClick={this.remove(cartId)} />
         </RightPart>
       </ProductItem>
     );

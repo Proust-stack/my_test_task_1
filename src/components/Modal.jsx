@@ -175,7 +175,7 @@ class Modal extends Component {
           </TitleWrapper>
           <PropertiesWrapper>
             {this.props.items.map((item) => (
-              <ModalItem productProperties={item} key={item.id} />
+              <ModalItem productProperties={item} key={item.cartId} />
             ))}
           </PropertiesWrapper>
           <Total>
