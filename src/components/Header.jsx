@@ -92,7 +92,13 @@ class Header extends Component {
     this.props.dispatch(fetchCategoriesNames())
   }
 
+  getTotalQuantity = (items) => {
+    const totalQuantity = items.reduce((prev, next) => prev + next.quantity, 0)
+    return totalQuantity
+  }
+
   componentDidMount = () => {
+    
 }
 
 componentDidUpdate(prevProps) {
@@ -105,6 +111,7 @@ componentDidCatch(error) {
   console.log(error.message);
 }
   render() {
+    const {items} = this.props
     return (
       <Nav>
         <NavbarItem>
@@ -121,7 +128,7 @@ componentDidCatch(error) {
           <RightPart>
             <CustomSelect currencies={this.props.currencies}/>
             <ItemIconCart onMouseEnter={() => this.props.toggleModal()}>
-              {this.props.items.length ? <Badge>{this.props.items.length}</Badge> : null}
+              {this.props.items.length ? <Badge>{this.getTotalQuantity(items)}</Badge> : null}
             </ItemIconCart>
           </RightPart>
         </NavbarItem>
