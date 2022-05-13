@@ -78,18 +78,13 @@ const ProductFooter = styled.div`
   justify-content: space-between;
   
 `;
-const ProductName = styled.div`
+const ProductInfo = styled.div`
   font-style: normal;
   font-weight: 300;
   font-size: 18px;
   margin-bottom: 20px;
 `;
 
-const ProductBrand = styled.div`
-  font-weight: 400;
-  font-size: 18px;
-  margin-bottom: 20px;
-`;
 const ProductPrice = styled.div`
   font-style: normal;
   font-weight: 500;
@@ -148,8 +143,7 @@ class PLPItem extends Component {
           {!inStock && <ProductOutOfStock>OUT OF STOCK</ProductOutOfStock>}
         </ProductImageWrapper>
         <ProductFooter>
-          <ProductBrand>{brand}</ProductBrand>
-          <ProductName>{name}</ProductName>
+          <ProductInfo>{brand} {name}</ProductInfo>
           <ProductPrice>{prices[index].currency.symbol}{Math.trunc(prices[index].amount).toFixed(2)}</ProductPrice>
           <ProductProperties 
           attributes={attributes} 

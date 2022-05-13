@@ -2,16 +2,19 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { Interweave } from 'interweave';
+
 import { addItem } from '../store/cartSlice';
 import ProductProperties from './ProductProperties';
 import { uniqueCartId } from '../utils/uniqueCartId';
+
 
 const ProductItem = styled.div`
   display: flex;
   justify-content: flex-start;
   height: 513px;
   padding: 20px;
-  flex: 0 1 auto;
+  flex: 1 1 auto;
   flex-wrap: wrap;
 `;
 
@@ -20,17 +23,17 @@ const ProductImageWrapper = styled.div`
   width: 600px;
   position: relative;
   overflow: hidden;
-  margin-right: 20px;
+  margin-right: 100px;
   flex: 0 1 auto;
+  opacity: ${props => (props.inStock ? '1' : '.5')};
 `;
 const ProductImageSmallContainer = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
   flex-wrap: wrap;
-  height: 100%;
-  width: 200px; 
   flex: 0 1 auto;
+  margin-right: 40px;
 `;
 const ProductImageSmallWrapper = styled.div`
   height: 80px;
@@ -38,6 +41,7 @@ const ProductImageSmallWrapper = styled.div`
   position: relative;
   overflow: hidden;
   cursor: pointer;
+  margin-bottom: 40px;
 `;
 const ProductImageSmall = styled.img`
   position: absolute;
@@ -47,10 +51,7 @@ const ProductImageSmall = styled.img`
   height: auto;
   cursor: pointer;  
 `;
-const ProductImageBig = styled.img.attrs((props) => ({
-  style: {
-  },
-}))`
+const ProductImageBig = styled.img`
   position: absolute;
   left: 0;
   top: 0;
@@ -59,15 +60,29 @@ const ProductImageBig = styled.img.attrs((props) => ({
   object-fit: cover;
   display: block;
 `;
+const ProductOutOfStock = styled.div`
+  position: absolute;
+  left: 0%;
+  top: 0%;
+  width: 100%;
+	height: 100%;
+  object-fit: cover;
+  color: #8D8F9A;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 
 const ProductInfo = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: space-between;
+  align-items: stretch;
   margin: 16px;
   height: 100%;
-  width: 300px;
+  max-width: 400px;
   flex: 0 1 auto;
+  max-width: 300px;
 `;
 const ProductInfoBrand = styled.div`
   height: 27px;
@@ -122,13 +137,11 @@ const Button = styled.button`
    transform: scale(.9);
 }
 `;
-const ProductFooter = styled.div`
-  height: 100px;
+const ProductDescription = styled.div`
   font-style: normal;
   font-weight: 400;
   font-size: 16px;
-  overflow-y: auto;
-  width: 100%;
+  flex: 1 1 auto;
 `;
 
 function withParams(Component) {
@@ -145,7 +158,6 @@ class PDPItem extends Component {
     this.state = {
       quantity: 1,
     };
-    this.description = React.createRef();
   }
   setInitialProperties = () => {
     const { attributes } = this.props.productProperties;
@@ -162,7 +174,6 @@ class PDPItem extends Component {
   componentDidMount() {
     if (this.props.productProperties) {
       this.setInitialProperties();
-      this.setDescription()
     }
    
   }
@@ -170,7 +181,6 @@ class PDPItem extends Component {
   componentDidUpdate(prevProps) {
     if (this.props.productProperties !== prevProps.productProperties) {
       this.setInitialProperties();
-      this.setDescription()
     }
   }
 
@@ -194,6 +204,8 @@ class PDPItem extends Component {
   };
 
   parameterHandler = (parameterName, item) => (e) => {
+    const {inStock} = this.props.productProperties
+    if (!inStock) return;
     e.stopPropagation();
     this.setState((prevState) => ({
       currentProperty: {
@@ -202,11 +214,6 @@ class PDPItem extends Component {
       },
     }));
   };
-
-  setDescription = () => {
-    this.description.current.innerHTML = this.props.description
-  }
-
   render() {
     if (!this.props.productProperties) return <p>loading...</p>;
     const {
@@ -222,7 +229,7 @@ class PDPItem extends Component {
     const index = this.props.currentCurrencyIndex;
     const { currentProperty, quantity } = this.state;
     return (
-      <ProductItem>
+      <ProductItem >
         <ProductImageSmallContainer>
           {gallery &&
             gallery.map((image) => {
@@ -237,8 +244,9 @@ class PDPItem extends Component {
               );
             })}
         </ProductImageSmallContainer>
-        <ProductImageWrapper>
+        <ProductImageWrapper inStock={inStock}>
           <ProductImageBig src={this.state.currentImageSrc || gallery[0]} />
+          {!inStock && <ProductOutOfStock>OUT OF STOCK</ProductOutOfStock>}
         </ProductImageWrapper>
         <ProductInfo>
           <ProductInfoBrand>{brand}</ProductInfoBrand>
@@ -271,7 +279,9 @@ class PDPItem extends Component {
               ADD TO CART
             </Button>
           )}
-          <ProductFooter ref={this.description}>{description}</ProductFooter>
+          <ProductDescription >
+            <Interweave content={description} />
+          </ProductDescription>
         </ProductInfo>
       </ProductItem>
     );

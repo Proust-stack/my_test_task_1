@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import PDPItem from '../components/PDPItem';
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
+
+import PDPItem from '../components/PDPItem';
 import { fetchProduct } from '../store/productSlice';
 
 const Container = styled.main`
