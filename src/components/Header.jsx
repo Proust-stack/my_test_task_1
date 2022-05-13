@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import myImage from '../assets/icons/header/Brand_icon.png';
 import cartIcon from '../assets/icons/header/svg/header_cart.svg';
@@ -83,35 +83,34 @@ function withParams(Component) {
   currencies={useSelector(state => state.currencies)}
   items={useSelector(state => state.cart.items)}
   navigate={useNavigate()}
+  location={useLocation()}
   />;
 }
-class Header extends Component {
+class Header extends React.PureComponent {
   constructor(props) {
     super(props);
-    this.props.dispatch(fetchCurrencies())
-    this.props.dispatch(fetchCategoriesNames())
+    this.props.dispatch(fetchCurrencies());
+    this.props.dispatch(fetchCategoriesNames());
   }
 
   getTotalQuantity = (items) => {
-    const totalQuantity = items.reduce((prev, next) => prev + next.quantity, 0)
-    return totalQuantity
+    const totalQuantity = items.reduce((prev, next) => prev + next.quantity, 0);
+    return totalQuantity;
+  };
+  componentDidMount() {
   }
 
-  componentDidMount = () => {
-    
-}
-
-componentDidUpdate(prevProps) {
-  if (this.props.categories !== prevProps.categories) {
-    this.props.navigate('/categories/all')
+  componentDidUpdate(prevProps) {
+    if (prevProps.location.pathname === '/' ) {
+      this.props.navigate('categories/all')
+    }
   }
-}
 
-componentDidCatch(error) {
-  console.log(error.message);
-}
+  componentDidCatch(error) {
+    console.log(error.message);
+  }
   render() {
-    const {items} = this.props
+    const { items } = this.props;
     return (
       <Nav>
         <NavbarItem>
@@ -126,9 +125,11 @@ componentDidCatch(error) {
           </LeftPart>
           <ItemIconCompany />
           <RightPart>
-            <CustomSelect currencies={this.props.currencies}/>
+            <CustomSelect currencies={this.props.currencies} />
             <ItemIconCart onMouseEnter={() => this.props.toggleModal()}>
-              {this.props.items.length ? <Badge>{this.getTotalQuantity(items)}</Badge> : null}
+              {this.props.items.length ? (
+                <Badge>{this.getTotalQuantity(items)}</Badge>
+              ) : null}
             </ItemIconCart>
           </RightPart>
         </NavbarItem>

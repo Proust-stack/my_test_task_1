@@ -4,7 +4,7 @@ import { GET_CATEGORY, GET_CATEGORY_NAME } from "../queries/graphQLqueries";
 
 export const fetchCategory = createAsyncThunk(
     'category/fetchCategory',
-    async (title = 'all', {rejectWithValue}) => {
+    async (title, {rejectWithValue}) => {
         try {
             const response = await client.query({
                 query:GET_CATEGORY,

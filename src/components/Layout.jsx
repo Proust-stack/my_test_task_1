@@ -23,6 +23,8 @@ class Layout extends Component {
     };
   }
 
+  
+
   componentDidCatch(error) {
     console.log(error.message);
   }

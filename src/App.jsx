@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Main from './pages/Main';
 import ProductPage from './pages/ProductPage';
 import CartPage from './pages/cartPage';
@@ -13,13 +13,13 @@ export default class App extends Component {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route path="categories" element={<Main />}>
-            <Route path=":categoryId" element={<PLP />} />
+            <Route  path=":categoryId" element={<PLP />} />
           </Route>
           <Route path="products" element={<ProductPage />}>
             <Route path=":productId" element={<PDP />} />
           </Route>
           <Route path="/cart" element={<CartPage />} />
-          <Route path="*" element={<Main />} />
+          <Route path="*" element={<Navigate to="categories/all" />} />
         </Route>
       </Routes>
     );
