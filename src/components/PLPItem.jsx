@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { connect} from 'react-redux';
+
 import cartIcon from '../assets/icons/cart_green.png';
-import { useDispatch, useSelector } from 'react-redux';
 import { addItem } from '../store/cartSlice';
-import ProductProperties from './ProductProperties';
 import { uniqueCartId } from '../utils/uniqueCartId';
+import withHooks from '../hoc/withHooks';
+import { setInitialProperties } from '../utils/setInitialProperties';
 
 const ItemCart = styled.div`
   height: 50px;
@@ -93,34 +94,20 @@ const ProductPrice = styled.div`
   margin-bottom: 10px;
 `;
 
-
-
-function withParams(Component) {
-  return props => <Component 
-  {...props}  
-  cart={useSelector(state => state.cart)} 
-  currentCurrencyIndex={useSelector(state => state.currencies.currentCurrency)} 
-  dispatch={useDispatch()}
-  navigate={useNavigate()}
-  />;
-}
+const mapStateToProps = (state) => ({
+  currentCurrencyIndex: state.currencies.currentCurrency,
+});
 class PLPItem extends Component {
 
-  setInitialProperties = () => {
-    const { attributes} = this.props.product;
-    const obj = {}
-    attributes.forEach(attr => {
-      obj[attr.name] = attr.items[0].value
-    })
-    this.setState({ currentProperty: obj, quantity: 1});
-  }
-
+  
   componentDidMount() {
-      this.setInitialProperties()
+    const { attributes} = this.props.product;
+    this.setState({ quantity: 1, currentProperty: setInitialProperties(attributes)});
+    
   }
 
-  componentDidCatch(error) {
-    console.log(error.message);
+  componentDidCatch(error, info) {
+    console.log(error, info);
   }
 
   addToCart = (item) => e => {
@@ -145,11 +132,6 @@ class PLPItem extends Component {
         <ProductFooter>
           <ProductInfo>{brand} {name}</ProductInfo>
           <ProductPrice>{prices[index].currency.symbol}{Math.trunc(prices[index].amount).toFixed(2)}</ProductPrice>
-          <ProductProperties 
-          attributes={attributes} 
-          parameterHandler={() => null}
-          currentProperty = {() => null}
-          />
         </ProductFooter>
         {inStock && <ItemCart  onClick={this.addToCart({id, gallery, prices, brand, name, attributes, ...this.state})}/>}
       </ProductItem>
@@ -157,4 +139,4 @@ class PLPItem extends Component {
   }
 }
 
-export default withParams(PLPItem);
+export default withHooks(connect(mapStateToProps)(PLPItem));

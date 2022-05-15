@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
+import { connect } from 'react-redux';
+
 import PLPItem from '../components/PLPItem';
-import { useParams } from "react-router-dom";
-import { useDispatch, useSelector } from 'react-redux';
 import { fetchCategory } from '../store/categorySlice';
+import withHooks from '../hoc/withHooks';
 
 const Container = styled.main`
   display: flex;
@@ -24,15 +25,6 @@ const Title = styled.div`
   font-size: 42px;
   flex: 1 1 auto;
 `;
-
-function withParams(Component) {
-    return props => <Component 
-    {...props} 
-    params={useParams()} 
-    category={useSelector(state => state.category)}
-    dispatch={useDispatch()}
-    />;
-  }
 
 class PLP extends Component {
     update = () => {
@@ -71,4 +63,8 @@ class PLP extends Component {
   }
 }
 
-export default withParams(PLP);
+const mapStateToProps = (state) => ({
+  category: state.category
+});
+
+export default withHooks(connect(mapStateToProps)(PLP));

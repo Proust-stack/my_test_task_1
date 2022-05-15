@@ -1,11 +1,10 @@
-import React, { Component } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import { useDispatch, useSelector } from 'react-redux';
+import { connect,} from 'react-redux';
 import {increaseQuantity} from '../store/cartSlice';
 import {decreaseQuantity} from '../store/cartSlice';
-import {changeProperties} from '../store/cartSlice';
 import { removeItem } from '../store/cartSlice';
-import { useNavigate } from 'react-router-dom';
+import withHooks from '../hoc/withHooks';
 
 const ProductItem = styled.div`
   display: flex;
@@ -88,9 +87,26 @@ const ProductProperty = styled.div`
   font-style: normal;
   font-weight: 400;
   margin-right: 12px;
-  background-color: ${(props) => (props.type === 'swatch' ? props.data : '')};
-  opacity:  ${(props) => (props.selected  ? '1' : '.3')};
-  border: 1px solid black;
+  background-color: ${(props) => {
+    if (props.selected)  {
+      return props.type === 'swatch' ? props.data : 'white'
+    } else {
+      return props.type === 'swatch' ? props.data : 'rgba(166, 166, 166, 0.2)'
+    }
+  }};
+  opacity:  ${(props) => {
+    if (!props.selected)  {
+       return props.type === 'swatch' ? '.15' : '1'
+    } 
+  }};
+  border:   ${(props) => {
+    if (props.selected)  {
+      return props.type === 'swatch' ? 'none' : '1px solid black'
+    } else {
+      return props.type === 'swatch' ? 'none' : '1px solid #A6A6A6'
+    }
+  }};
+  color: ${props => (props.selected ? '#1D1F22' : '#A6A6A6')};
   cursor: pointer;
   padding: 5px;
   &:last-child {
@@ -131,6 +147,7 @@ const IncreaseQuantity = styled.div`
   width: 100%;
   height: 24px;
   border: 1px solid black;
+  position: relative;
 `;
 const DecreaseQuantity = styled.div`
   display: flex;
@@ -141,6 +158,19 @@ const DecreaseQuantity = styled.div`
   height: 24px;
   border: 1px solid black;
 `;
+
+const HorLine = styled.div`
+  border-bottom: 1px solid #1D1F22;
+  width: 8px;
+  height: 1px;
+`;
+const VerLine = styled.div`
+  border-right: 1px solid #1D1F22;
+  width: 1px;
+  height: 8px;
+  position: absolute;
+`;
+
 const ImageWrapper = styled.div`
   position: relative;
   width: 105px;
@@ -189,14 +219,11 @@ const Close = styled.div`
 }
 `
 
-function withParams(Component) {
-  return props => <Component 
-  {...props}  
-  dispatch={useDispatch()}
-  currentCurrencyIndex={useSelector(state => state.currencies.currentCurrency)}
-  />;
-}
-class ModalItem extends Component {
+const mapStateToProps = (state) => ({
+  currentCurrencyIndex: state.currencies.currentCurrency,
+});
+
+class ModalItem extends React.PureComponent {
 
   componentDidCatch(error) {
     console.log(error.message);
@@ -270,9 +297,14 @@ class ModalItem extends Component {
         </LeftPart>
         <RightPart>
           <Quantity>
-            <IncreaseQuantity onClick={this.increase(cartId)}>+</IncreaseQuantity>
+            <IncreaseQuantity onClick={this.increase(cartId)}>
+              <HorLine/>
+              <VerLine/>
+            </IncreaseQuantity>
             <QuantityValue>{quantity}</QuantityValue>
-            <DecreaseQuantity onClick={this.decrease(cartId)}>-</DecreaseQuantity>
+            <DecreaseQuantity onClick={this.decrease(cartId)}>
+              <HorLine/>
+            </DecreaseQuantity>
           </Quantity>
           <ImageWrapper>
             <ProductImage src={gallery[0]} />
@@ -285,4 +317,4 @@ class ModalItem extends Component {
   }
 }
 
-export default withParams(ModalItem);
+export default withHooks(connect(mapStateToProps)(ModalItem));

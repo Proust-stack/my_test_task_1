@@ -3,11 +3,11 @@ import { Outlet} from "react-router-dom";
 
 
 export default class ProductPage extends Component {
-  componentDidCatch(error) {
+  componentDidCatch(error, info) {
     this.setState({
       error
     });
-    console.log(error)
+    console.log(error, info)
   }
   render() {
     if (this.state?.error) return <p>ups, error occured</p>;

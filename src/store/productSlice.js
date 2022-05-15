@@ -29,7 +29,7 @@ const setError =  (state, action) => {
 const productSlice = createSlice({
     name: 'product',
     initialState: {
-        product: null,
+        product: {},
         loading: false,
         error: null
     },
@@ -38,7 +38,7 @@ const productSlice = createSlice({
     extraReducers: {
         [fetchProduct.pending]: (state) => {
             state.loading = true;
-            state = null;
+            state.error = null;
         },
         [fetchProduct.fulfilled]: (state, action) => {
             state.loading = false;

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
+
 import leftArrowIcon from '../assets/icons/carousel/chevron-left.png';
 import rightArrowIcon from '../assets/icons/carousel/chevron-right.png';
 

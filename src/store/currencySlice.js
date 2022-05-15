@@ -39,7 +39,7 @@ const currencySlice = createSlice({
     extraReducers: {
         [fetchCurrencies.pending]: (state) => {
             state.loading = true;
-            state = null;
+            state.error = null;
         },
         [fetchCurrencies.fulfilled]: (state, action) => {
             state.loading = false;

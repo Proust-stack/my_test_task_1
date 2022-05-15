@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
+import { connect } from 'react-redux';
+
 import Carousel from './Carousel';
-import { useDispatch, useSelector } from 'react-redux';
 import {increaseQuantity} from '../store/cartSlice';
 import {decreaseQuantity} from '../store/cartSlice';
-import {changeProperties} from '../store/cartSlice';
-import { useNavigate } from 'react-router-dom';
 import { removeItem } from '../store/cartSlice';
+import ProductProperties from './ProductProperties';
+import withHooks from '../hoc/withHooks';
 
 const ProductItem = styled.div`
   padding: 5px;
@@ -49,49 +50,6 @@ const ProductPrice = styled.div`
   margin-bottom: 16px;
 `;
 
-const ProductPropertiesWrapper = styled.div`
-  display: flex;
-  justify-content: flex-start;
-  flex-direction: column;
-`;
-
-const ProductProperties = styled.div`
-  display: flex;
-  justify-content: space-between;
-  flex-direction: column;
-`;
-
-const ProductPropertyTitle = styled.div`
-  font-family: 'Roboto Condensed';
-  font-style: normal;
-  font-weight: 600;
-  font-size: 18px;
-  line-height: 1.25;
-  margin-bottom: 10px;
-`;
-
-const ProductPropertyWrapper = styled.div`
-  display: flex;
-  justify-content: flex-start;
-  margin-bottom: 20px;
-`;
-
-const ProductProperty = styled.div`
-  display: flex; 
-  justify-content: center;
-  align-items: center; 
-  min-width: 63px;
-  height: 45px;
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 400;
-  margin-right: 12px;
-  background-color: ${(props) => (props.type === 'swatch' ? props.data : '')};
-  opacity:  ${(props) => (props.selected  ? '1' : '.3')};
-  border: 1px solid black;
-  cursor: pointer;
-`;
-
 const RightPart = styled.div`
   width: 300px;
   height: 100%;
@@ -125,7 +83,21 @@ const IncreaseQuantity = styled.div`
   width: 45px;
   height: 45px;
   border: 1px solid black;
+  font-size: 36px;
+  position: relative;
 `;
+const HorLine = styled.div`
+  border-bottom: 1px solid #1D1F22;
+  width: 15px;
+  height: 1px;
+`;
+const VerLine = styled.div`
+  border-right: 1px solid #1D1F22;
+  width: 1px;
+  height: 15px;
+  position: absolute;
+`;
+
 const DecreaseQuantity = styled.div`
   display: flex;
   flex-direction: column;
@@ -174,13 +146,10 @@ const ProductImage = styled.img`
   object-position: center;
 `;
 
-function withParams(Component) {
-  return props => <Component 
-  {...props}  
-  dispatch={useDispatch()}
-  currentCurrencyIndex={useSelector(state => state.currencies.currentCurrency)}
-  />;
-}
+const mapStateToProps = (state) => ({
+  currentCurrencyIndex: state.currencies.currentCurrency
+});
+
   class CartItem extends Component {
 
     componentDidCatch(error) {
@@ -201,7 +170,6 @@ function withParams(Component) {
     }
   render() {
     const {
-      id,
       cartId,
       gallery,
       prices,
@@ -220,40 +188,22 @@ function withParams(Component) {
           <ProductPrice>
             {prices[index].currency.symbol} {Math.trunc(prices[index].amount).toFixed(2)}
           </ProductPrice>
-          <ProductPropertiesWrapper>
-            {attributes.map((attr) => {
-              return (
-                <ProductProperties key={attr.id}>
-                  <ProductPropertyTitle>{attr.name}:</ProductPropertyTitle>
-                  <ProductPropertyWrapper>
-                    {attr.items.map((item) => {
-                      return (
-                        <ProductProperty
-                          parametresName={attr.name} //name of characteristic (for example "size")
-                          type={attr.type}
-                          key={item.value}
-                          data={item.value}
-                          selected={
-                            (currentProperty &&
-                              currentProperty[`${attr.name}`]) ===
-                            `${item.value}`
-                          } // current  choice of this characteristic (for example  size "M")
-                        >
-                          {attr.type !== 'swatch' && item.value}
-                        </ProductProperty>
-                      );
-                    })}
-                  </ProductPropertyWrapper>
-                </ProductProperties>
-              );
-            })}
-          </ProductPropertiesWrapper>
+          <ProductProperties
+            attributes={attributes}
+            parameterHandler={() => null}
+            currentProperty={currentProperty}
+          />
         </LeftPart>
         <RightPart>
           <Quantity>
-            <IncreaseQuantity onClick={this.increase(cartId)}>+</IncreaseQuantity>
+            <IncreaseQuantity onClick={this.increase(cartId)}>
+              <HorLine/>
+              <VerLine/>
+            </IncreaseQuantity>
             <QuantityValue>{quantity}</QuantityValue>
-            <DecreaseQuantity onClick={this.decrease(cartId)}>-</DecreaseQuantity>
+            <DecreaseQuantity onClick={this.decrease(cartId)}>
+              <HorLine/>
+            </DecreaseQuantity>
           </Quantity>
             <Carousel>
               {gallery.map((image) => {
@@ -267,4 +217,4 @@ function withParams(Component) {
   }
 }
 
-export default withParams(CartItem);
+export default withHooks(connect(mapStateToProps)(CartItem));

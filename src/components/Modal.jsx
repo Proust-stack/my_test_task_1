@@ -1,13 +1,15 @@
-import React, { Component } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { connect} from 'react-redux';
 import ModalItem from './ModalItem';
+import withHooks from '../hoc/withHooks';
+import { getTotalCost } from '../utils/getTotalCost';
+import { getTotalQuantity } from '../utils/getTotalQuantity';
 
 const Wrapper = styled.div`
   height: 100%;
   width: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(57, 55, 72, 0.22);;
   position: fixed;
   top: 80px;
   left: 0;
@@ -107,28 +109,24 @@ const Button = styled.button`
   cursor: pointer;
 `;
 
-function withParams(Component) {
-  return props => <Component 
-  {...props}  
-  dispatch={useDispatch()}
-  items={useSelector(state => state.cart.items)}
-  currencies={useSelector(state => state.currencies.currencies)}
-  currentCurrencyIndex={useSelector(state => state.currencies.currentCurrency)}
-  navigate={useNavigate()}
-  />;
-}
-class Modal extends Component {
+const mapStateToProps = (state) => ({
+  currentCurrencyIndex: state.currencies.currentCurrency,
+  currencies: state.currencies.currencies,
+  items: state.cart.items
+});
+class Modal extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       totalCost: 0,
       currencySymbol: '$',
+      quantity: 0
     };
   }
 
-  getTotalCost = (currencies, currentCurrencyIndex) => {
+  getTotalCost = (currencies, currentCurrencyIndex, items) => {
     let totalCost = 0;
-    this.props.items.forEach((item) => {
+    items.forEach((item) => {
       totalCost += item.prices[currentCurrencyIndex].amount * item.quantity;
     });
     this.setState({
@@ -138,21 +136,36 @@ class Modal extends Component {
   };
 
   componentDidMount() {
-    const { currencies, currentCurrencyIndex } = this.props;
-    this.getTotalCost(currencies, currentCurrencyIndex);
+    const { currencies, currentCurrencyIndex, items } = this.props;
+    this.setState(prev => {
+      return {...prev, ...getTotalCost(currencies, currentCurrencyIndex, items)}
+    }
+    );
+    this.setState(prev => {
+      return {...prev, ...getTotalQuantity(items)}
+    }
+    );
+    
   }
   componentDidUpdate(prevProps) {
     if (
       this.props.currentCurrencyIndex !== prevProps.currentCurrencyIndex ||
       this.props.items !== prevProps.items
     ) {
-      const { currencies, currentCurrencyIndex } = this.props;
-      this.getTotalCost(currencies, currentCurrencyIndex);
+      const { currencies, currentCurrencyIndex, items } = this.props;
+      this.setState(prev => {
+        return {...prev, ...getTotalCost(currencies, currentCurrencyIndex, items)}
+      }
+      );
+      this.setState(prev => {
+        return {...prev, ...getTotalQuantity(items)}
+      }
+      );
     }
   }
 
-  componentDidCatch(error) {
-    console.log(error.message);
+  componentDidCatch(error, info) {
+    console.log(error, info);
   }
 
   toLink = (address) => (e) => {
@@ -162,15 +175,23 @@ class Modal extends Component {
     this.props.toggleModal();
   };
 
+  getTotalQuantity = (items) => {
+    const totalQuantity = items.reduce((prev, next) => prev + next.quantity, 0);
+    this.setState(prev => {
+      return {...prev, quantity: totalQuantity}
+    }
+    );
+  };
+
   render() {
-    const itemsQuantity = this.props.items.length;
+    const {quantity} = this.state;
     return (
       <Wrapper>
         <Content onMouseLeave={() => this.props.toggleModal()}>
           <TitleWrapper>
             <Title>My bag,</Title>
             <ItemsTitle>
-              {itemsQuantity} {itemsQuantity === 1 ? 'item' : 'items'}
+              {quantity} {quantity === 1 ? 'item' : 'items'}
             </ItemsTitle>
           </TitleWrapper>
           <PropertiesWrapper>
@@ -197,4 +218,5 @@ class Modal extends Component {
   }
 }
 
-export default withParams(Modal);
+
+export default withHooks(connect(mapStateToProps)(Modal));

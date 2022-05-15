@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
+
 import CartItem from '../components/CartItem';
 
 const Container = styled.div`

@@ -54,7 +54,7 @@ const categorySlice = createSlice({
     extraReducers: {
         [fetchCategory.pending]: (state) => {
             state.loading = true;
-            state = null;
+            state.error = null;
         },
         [fetchCategory.fulfilled]: (state, action) => {
             state.loading = false;
@@ -64,7 +64,7 @@ const categorySlice = createSlice({
         [fetchCategory.rejected]: setError,
         [fetchCategoriesNames.pending]: (state) => {
             state.loading = true;
-            state = null;
+            state.error = null;
         },
         [fetchCategoriesNames.fulfilled]: (state, action) => {
             state.loading = false;

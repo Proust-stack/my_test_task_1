@@ -1,7 +1,8 @@
-import React, { Component } from 'react';
+import React from 'react';
 import styled from 'styled-components';
+import { connect } from 'react-redux';
+
 import arrowDown from '../assets/icons/header/svg/options.svg';
-import { useDispatch, useSelector } from 'react-redux';
 import {changeCurrency} from '../store/currencySlice';
 
 const DropDownContainer = styled('div')``;
@@ -58,21 +59,12 @@ const ListItem = styled('div')`
   }
 `;
 
-function withParams(Component) {
-  return props => <Component 
-  {...props}  
-  dispatch={useDispatch()}
-  
-  />;
-}
-
-class CustomSelect extends Component {
+class CustomSelect extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       isOpen: false,
     };
-    this.dropDown = React.createRef();
   }
 
   componentDidCatch(error) {
@@ -120,7 +112,7 @@ class CustomSelect extends Component {
         >
           {currencies.length > 0 ? currencies[currentCurrency].symbol : null}
         </DropDownHeader>
-          {this.state.isOpen && <DropDownListContainer ref={this.dropDown}>
+          {this.state.isOpen && <DropDownListContainer>
             <DropDownList>
               {currencies &&
                 currencies.map(
@@ -142,4 +134,4 @@ class CustomSelect extends Component {
   }
 }
 
-export default withParams(CustomSelect);
+export default connect(null, null)(CustomSelect);

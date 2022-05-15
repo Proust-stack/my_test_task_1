@@ -1,13 +1,13 @@
-import React, { Component } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import React from 'react';
+import { NavLink} from 'react-router-dom';
 import styled from 'styled-components';
 import myImage from '../assets/icons/header/Brand_icon.png';
 import cartIcon from '../assets/icons/header/svg/header_cart.svg';
-import { useParams, useNavigate } from "react-router-dom";
 import CustomSelect from './CustomSelect';
-import { useDispatch, useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 import { fetchCategoriesNames } from '../store/categorySlice';
 import { fetchCurrencies } from '../store/currencySlice';
+import withHooks from '../hoc/withHooks';
 
 const Nav = styled.nav`
   background: #fff;
@@ -74,18 +74,11 @@ const Badge = styled.div`
   font-size: 10px;
 `;
 
-function withParams(Component) {
-  return props => <Component 
-  {...props} 
-  params={useParams()} 
-  dispatch={useDispatch()}
-  categories={useSelector(state => state.category.categoriesNames)}
-  currencies={useSelector(state => state.currencies)}
-  items={useSelector(state => state.cart.items)}
-  navigate={useNavigate()}
-  location={useLocation()}
-  />;
-}
+const mapStateToProps = (state) => ({
+  categories: state.category.categoriesNames,
+  currencies: state.currencies,
+  items: state.cart.items
+});
 class Header extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -97,8 +90,6 @@ class Header extends React.PureComponent {
     const totalQuantity = items.reduce((prev, next) => prev + next.quantity, 0);
     return totalQuantity;
   };
-  componentDidMount() {
-  }
 
   componentDidUpdate(prevProps) {
     if (prevProps.location.pathname === '/' ) {
@@ -106,8 +97,8 @@ class Header extends React.PureComponent {
     }
   }
 
-  componentDidCatch(error) {
-    console.log(error.message);
+  componentDidCatch(error, info) {
+    console.log(error, info);
   }
   render() {
     const { items } = this.props;
@@ -138,5 +129,6 @@ class Header extends React.PureComponent {
   }
 }
 
-export default withParams(Header);
+
+export default withHooks(connect(mapStateToProps)(Header));
 

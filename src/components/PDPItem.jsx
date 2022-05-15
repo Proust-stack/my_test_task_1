@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import { useDispatch, useSelector } from 'react-redux';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Interweave } from 'interweave';
 
 import { addItem } from '../store/cartSlice';
 import ProductProperties from './ProductProperties';
 import { uniqueCartId } from '../utils/uniqueCartId';
+import withHooks from '../hoc/withHooks';
 
 
 const ProductItem = styled.div`
@@ -144,48 +145,42 @@ const ProductDescription = styled.div`
   flex: 1 1 auto;
 `;
 
-function withParams(Component) {
-  return props => <Component 
-  {...props}  
-  dispatch={useDispatch()}
-  navigate={useNavigate()}
-  currentCurrencyIndex={useSelector(state => state.currencies.currentCurrency)} 
-  />;
-}
-class PDPItem extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      quantity: 1,
-    };
-  }
-  setInitialProperties = () => {
-    const { attributes } = this.props.productProperties;
+const mapStateToProps = (state) => ({
+  currentCurrencyIndex: state.currencies.currentCurrency,
+  productProperties: state.product
+});
+
+class PDPItem extends React.PureComponent {
+
+  setInitialProperties = (attributes, gallery) => {
     const obj = {};
     attributes.forEach((attr) => {
       obj[attr.name] = attr.items[0].value;
     });
-    this.setState({
+    return {
       currentProperty: obj,
-      currentImageSrc: this.props.productProperties.gallery[0],
-    });
+      currentImageSrc: gallery[0],
+      quantity: 1,
+    };
   };
 
-  componentDidMount() {
-    if (this.props.productProperties) {
-      this.setInitialProperties();
+  componentDidUpdate( prevProps, prevState) {
+    if (prevProps.productProperties !== this.props.productProperties) {
+      const { product, error, loading } = this.props.productProperties;
+    if (!loading && !error) {
+      const { attributes, gallery } = product;
+      if (attributes) {
+        this.setState((prevState) => ({
+          ...prevState, 
+          ...this.setInitialProperties(attributes, gallery)
+        }));
+      }
     }
-   
+    }
   }
 
-  componentDidUpdate(prevProps) {
-    if (this.props.productProperties !== prevProps.productProperties) {
-      this.setInitialProperties();
-    }
-  }
-
-  componentDidCatch(error) {
-    console.log(error.message);
+  componentDidCatch(error, info) {
+    console.log(error, info);
   }
 
   changeImage = (e) => {
@@ -198,13 +193,13 @@ class PDPItem extends Component {
   addToCart = (item) => (e) => {
     e.stopPropagation();
     const cartId = uniqueCartId(item.id, item.currentProperty);
-    console.log(cartId);
-    item.cartId = cartId;
+    if (item.cartId !== cartId) {
+      item.cartId = cartId;
+    }
     return this.props.dispatch(addItem(item));
   };
 
-  parameterHandler = (parameterName, item) => (e) => {
-    const {inStock} = this.props.productProperties
+  parameterHandler = (parameterName, item, inStock) => (e) => {
     if (!inStock) return;
     e.stopPropagation();
     this.setState((prevState) => ({
@@ -215,7 +210,10 @@ class PDPItem extends Component {
     }));
   };
   render() {
-    if (!this.props.productProperties) return <p>loading...</p>;
+    const { product, error, loading } = this.props.productProperties;
+    if (loading) return <p>loading...</p>;
+    if (error) return null;
+    if (!this.state) return null;
     const {
       gallery,
       brand,
@@ -225,11 +223,11 @@ class PDPItem extends Component {
       id,
       inStock,
       description,
-    } = this.props.productProperties;
+    } = product;
     const index = this.props.currentCurrencyIndex;
     const { currentProperty, quantity } = this.state;
     return (
-      <ProductItem >
+      <ProductItem>
         <ProductImageSmallContainer>
           {gallery &&
             gallery.map((image) => {
@@ -255,6 +253,7 @@ class PDPItem extends Component {
             attributes={attributes}
             parameterHandler={this.parameterHandler}
             currentProperty={this.state.currentProperty}
+            inStock={inStock}
           />
           <ProductInfoPrice>
             <ProductInfoPriceTitle>PRICE</ProductInfoPriceTitle>
@@ -279,7 +278,7 @@ class PDPItem extends Component {
               ADD TO CART
             </Button>
           )}
-          <ProductDescription >
+          <ProductDescription>
             <Interweave content={description} />
           </ProductDescription>
         </ProductInfo>
@@ -288,4 +287,4 @@ class PDPItem extends Component {
   }
 }
 
-export default withParams(PDPItem);
+export default withHooks(connect(mapStateToProps)(PDPItem));

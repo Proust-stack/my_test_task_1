@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import { useParams } from "react-router-dom";
-import { useDispatch, useSelector } from 'react-redux';
+import { connect } from "react-redux";
 
 import PDPItem from '../components/PDPItem';
 import { fetchProduct } from '../store/productSlice';
+import withHooks from '../hoc/withHooks';
 
 const Container = styled.main`
   margin: 80px auto;
@@ -14,43 +14,28 @@ const Container = styled.main`
   flex: 0 1 auto;
 `;
 
-function withParams(Component) {
-  return props => <Component 
-  {...props} 
-  params={useParams()} 
-  product={useSelector(state => state.product)}
-  dispatch={useDispatch()}
-  />;
-}
 
 class PDP extends Component {
-
-  componentDidMount() {
+  constructor(props) {
+    super(props);
     this.props.dispatch(fetchProduct(this.props.params.productId));
   }
-  componentDidUpdate(prevProps) {
-    if (this.props.params !== prevProps.params || this.props.product.product !== prevProps.product.product) {
-      this.props.dispatch(fetchProduct(this.props.params.productId));
-    }
-  }
-  componentDidCatch(error) {
+
+  componentDidCatch(error, info) {
     this.setState({
       error
     });
-    console.log(error)
+    console.log(error, info)
   }
 
   render() {
-    if (this.state?.error) return <p>ups, error occured</p>;
-    const { product, error, loading } = this.props.product;
-    if (loading) return <p>loading...</p>;
-    if (error) return null;
+    
     return (
       <Container>
-        <PDPItem productProperties={product} />
+        <PDPItem/>
       </Container>
     );
   }
 }
 
-export default withParams(PDP);
+export default withHooks(connect(null, null)(PDP));

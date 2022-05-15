@@ -40,8 +40,19 @@ const ProductProperty = styled.div`
   font-weight: 400;
   margin-right: 15px;
   padding: 5px;
-  background-color: ${(props) => (props.type === 'swatch' ? props.data : '')};
-  opacity:  ${(props) => (props.selected  ? '1' : '.3')};
+  color: ${props => (props.selected ? 'white' : '#1D1F22')};
+  background-color:  ${(props) => {
+    if (props.selected)  {
+      return props.type === 'swatch' ? props.data : 'black'
+    } else {
+      return props.type === 'swatch' ? props.data : 'white'
+    }
+  }};
+  opacity:  ${(props) => {
+    if (!props.selected)  {
+       return props.type === 'swatch' ? '.3' : '1'
+    } 
+  }};
   cursor: pointer;
   border: 1px solid black;
 `;
@@ -52,9 +63,10 @@ export default class ProductProperties extends Component {
   }
 
   render() {
+    const {attributes, currentProperty, inStock} = this.props
     return (
       <ProductPropertiesContainer>
-      { this.props.attributes.map((attr) => {
+      { attributes.map((attr) => {
             return (<ProductPropertiesWrapper key={attr.id}>
             <ProductPropertyTitle>{attr.name}:</ProductPropertyTitle>
             <ProductPropertyWrapper>
@@ -64,8 +76,8 @@ export default class ProductProperties extends Component {
               type={attr.type} 
               key={item.value}
               data={item.value}
-              selected={(this.props.currentProperty && this.props.currentProperty[`${attr.name}`]) === `${item.value}`} // current  choice of this characteristic (for example  size "M")
-              onClick={this.props.parameterHandler(attr.name, item)}
+              selected={(currentProperty && currentProperty[`${attr.name}`]) === `${item.value}`} // current  choice of this characteristic (for example  size "M")
+              onClick={this.props.parameterHandler(attr.name, item, inStock)}
               >
                 {attr.type !== 'swatch' && item.value}
                 </ProductProperty>; 

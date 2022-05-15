@@ -10,12 +10,8 @@ const Container = styled.div`
    margin: 0 auto;
 `;
 
-function withParams(Component) {
-  return props => <Component 
-  {...props} 
-  />;
-}
-class Layout extends Component {
+
+export default class Layout extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -23,10 +19,8 @@ class Layout extends Component {
     };
   }
 
-  
-
-  componentDidCatch(error) {
-    console.log(error.message);
+  componentDidCatch(error, info) {
+    console.log(error, info);
   }
 
   toggleModal = () => {
@@ -48,5 +42,3 @@ class Layout extends Component {
     )
   }
 }
-
-export default withParams(Layout);
