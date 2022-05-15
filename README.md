@@ -1,14 +1,14 @@
-#### Test task using  [create React App](https://github.com/facebook/create-react-app).
+## **Test task re-doing**
 
-#### available Scripts
+![fixed bugs](/src/assets/chance.jpg)
 
-#### `npm start`
+connect from react-redux to get to store
 
-using: 
+interwave to insert html
+
 redux-toolkit, 
+
 styled-components, 
-redux-persist for saving in local storage
 
-
-
+redux-persist for saving in local storage,
 
