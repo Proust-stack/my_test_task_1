@@ -1,16 +1,17 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
+import { Outlet } from 'react-router-dom';
+
 import GlobalStyles from '../styles/global';
+
 import Header from './Header';
 import Modal from './Modal';
-import { Outlet } from 'react-router-dom';
+
 
 const Container = styled.div`
    max-width: 1440px;
    margin: 0 auto;
 `;
-
-
 export default class Layout extends Component {
   constructor(props) {
     super(props);

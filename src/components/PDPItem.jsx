@@ -1,7 +1,6 @@
-import React, { Component } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import { connect, useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { connect} from 'react-redux';
 import { Interweave } from 'interweave';
 
 import { addItem } from '../store/cartSlice';

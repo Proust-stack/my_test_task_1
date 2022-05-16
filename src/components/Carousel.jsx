@@ -16,30 +16,24 @@ const Content = styled.div`
   -ms-overflow-style: none; /* hide scrollbar in IE and Edge */
   scrollbar-width: none;
   transform: ${props => `translateX(-${props.currentIndex * 100}%)`};
-  
 `;
 
-const LeftArrow = styled.div`
-  position: absolute;
-  z-index: 1;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 24px;
-  height: 24px;
-  left: 24px;
-  background: url('${(props) => props.img}') center / cover no-repeat;
-  background-color: rgba(168, 172, 176, 0.5);
-`;
+
 const RightArrow = styled.div`
   position: absolute;
   z-index: 1;
-  top: 50%;
+  bottom: 10px;
   transform: translateY(-50%);
   width: 24px;
   height: 24px;
-  right: 24px;
+  right: 10px;
   background: url('${(props) => props.img}') center / cover no-repeat;
-  background-color: rgba(168, 172, 176, 0.5);
+  background-color: rgba(0, 0, 0, 0.73);
+`;
+const LeftArrow = styled(RightArrow)`
+  transform: rotateY('180%');
+  right: 32px;
+  margin-right: 8px;
 `;
 
 

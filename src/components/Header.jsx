@@ -1,10 +1,12 @@
 import React from 'react';
 import { NavLink} from 'react-router-dom';
 import styled from 'styled-components';
+import { connect } from 'react-redux';
+
 import myImage from '../assets/icons/header/Brand_icon.png';
 import cartIcon from '../assets/icons/header/svg/header_cart.svg';
+
 import CustomSelect from './CustomSelect';
-import { connect } from 'react-redux';
 import { fetchCategoriesNames } from '../store/categorySlice';
 import { fetchCurrencies } from '../store/currencySlice';
 import withHooks from '../hoc/withHooks';

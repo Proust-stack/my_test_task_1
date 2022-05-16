@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { connect} from 'react-redux';
 
 import cartIcon from '../assets/icons/cart_green.png';
+
 import { addItem } from '../store/cartSlice';
 import { uniqueCartId } from '../utils/uniqueCartId';
 import withHooks from '../hoc/withHooks';

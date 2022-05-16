@@ -28,12 +28,14 @@ const ProductPropertyWrapper = styled.div`
 `;
 
 const ProductProperty = styled.div`
+  cursor: pointer;
+  padding: 1px;
   font-family: 'Source Sans Pro';
   display: flex;
   justify-content: center;
   align-items: center;
-  min-width: 43px;
-  min-height: 25px;
+  width:  ${props => props.type === 'swatch' ? '32px' : '63px'};
+  height: ${props => props.type === 'swatch' ? '32px' : '45px'};
   text-align: center;
   font-size: 18px;
   font-style: normal;
@@ -48,18 +50,24 @@ const ProductProperty = styled.div`
       return props.type === 'swatch' ? props.data : 'white'
     }
   }};
-  opacity:  ${(props) => {
-    if (!props.selected)  {
-       return props.type === 'swatch' ? '.3' : '1'
+  outline:  ${(props) => {
+    if (props.selected)  {
+      return props.type === 'swatch' ? '2px solid #5ECE7B' : 'none'
     } 
   }};
-  cursor: pointer;
-  border: 1px solid black;
+  border:   ${(props) => {
+    if (props.selected)  {
+      return props.type === 'swatch' ? '2px solid white' : '1px solid #A6A6A6'
+    } else {
+      return props.type === 'swatch' ? 'none' : '1px solid #A6A6A6'
+    }
+  }};
 `;
 
 export default class ProductProperties extends Component {
-  componentDidCatch(error) {
-    console.log(error.message);
+  
+  componentDidCatch(error, info) {
+    console.log(error, info);
   }
 
   render() {

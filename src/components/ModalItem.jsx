@@ -1,23 +1,24 @@
 import React from 'react';
 import styled from 'styled-components';
 import { connect,} from 'react-redux';
+
 import {increaseQuantity} from '../store/cartSlice';
 import {decreaseQuantity} from '../store/cartSlice';
-import { removeItem } from '../store/cartSlice';
 import withHooks from '../hoc/withHooks';
 
 const ProductItem = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
+  flex: 0 1 auto;
   cursor: pointer;
   margin-bottom: 40px;
-  width: 100%;
+  height: 100%;
 `;
 
 const LeftPart = styled.div`
-  width: 40%;
-  height: 100%;
+  width: 45%;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -54,6 +55,7 @@ const ProductPropertiesWrapper = styled.div`
   justify-content: space-between;
   flex-direction: column;
   align-items: flex-start;
+  margin-bottom: -10px;
 `;
 
 const ProductProperties = styled.div`
@@ -74,39 +76,45 @@ const ProductPropertyTitle = styled.div`
 const ProductPropertyWrapper = styled.div`
   display: flex;
   justify-content: flex-start;
-  margin-bottom: 10px;
 `;
 
 const ProductProperty = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1px;
   font-family: 'Source Sans Pro';
-  min-width: 24px;
-  min-height: 24px;
+  width:  ${props => props.type === 'swatch' ? '20px' : '30px'};
+  height: ${props => props.type === 'swatch' ? '20px' : '30px'};
   text-align: center;
-  line-height: 1.25;
   font-size: 14px;
   font-style: normal;
   font-weight: 400;
-  margin-right: 12px;
+  margin-right: 8px;
+  &:last-child {
+    margin-right: 0;
+  }
   background-color: ${(props) => {
     if (props.selected)  {
-      return props.type === 'swatch' ? props.data : 'white'
+      return props.type === 'swatch' ? props.data : '#1D1F22'
     } else {
-      return props.type === 'swatch' ? props.data : 'rgba(166, 166, 166, 0.2)'
+      return props.type === 'swatch' ? props.data : 'rgba(255, 255, 255, 0.2)'
     }
-  }};
-  opacity:  ${(props) => {
-    if (!props.selected)  {
-       return props.type === 'swatch' ? '.15' : '1'
-    } 
   }};
   border:   ${(props) => {
     if (props.selected)  {
-      return props.type === 'swatch' ? 'none' : '1px solid black'
+      return props.type === 'swatch' ? '2px solid white' : '1px solid #1D1F22'
     } else {
-      return props.type === 'swatch' ? 'none' : '1px solid #A6A6A6'
+      return props.type === 'swatch' ? 'none' : '1px solid #1D1F22'
     }
   }};
-  color: ${props => (props.selected ? '#1D1F22' : '#A6A6A6')};
+  outline:  ${(props) => {
+    if (props.selected)  {
+      return props.type === 'swatch' ? '2px solid #5ECE7B' : 'none'
+    } 
+  }};
+  
+  color: ${props => (props.selected ? 'white' : '#1D1F22')};
   cursor: pointer;
   padding: 5px;
   &:last-child {
@@ -115,17 +123,15 @@ const ProductProperty = styled.div`
 `;
 
 const RightPart = styled.div`
-  width: 40%;
+  width: 45%;
   height: 100%;
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
-  position: relative;
 `;
 const Quantity = styled.div`
   display: flex;
   width: 24px;
-  height: 137px;
   flex-direction: column;
   justify-content: space-between;
   margin-right: 10px;
@@ -137,7 +143,6 @@ const QuantityValue = styled.div`
   align-items: center;
   font-weight: 500;
   font-size: 16px;
-  line-height: 16%;
 `;
 const IncreaseQuantity = styled.div`
   display: flex;
@@ -188,37 +193,6 @@ const ProductImage = styled.img`
   object-position: center;
 `;
 
-const Close = styled.div`
-    position: absolute;
-    top: 5px;
-    right: 0px;
-    border-radius: 50%;
-    width: 32px;
-    height: 32px;
-    cursor: pointer;
-
-&:before {
-  content: "";
-    position: absolute;
-    top: 2px;
-    left: 15px;
-    width: 15px;
-    height: 2px;
-    background: #1D1F22;
-    transform: rotate(45deg);
-}
-&:after {
-    content: "";
-    position: absolute;
-    top: 2px;
-    left: 15px;
-    width: 15px;
-    height: 2px;
-    background: #555;
-    transform: rotate(-45deg);
-}
-`
-
 const mapStateToProps = (state) => ({
   currentCurrencyIndex: state.currencies.currentCurrency,
 });
@@ -238,13 +212,9 @@ class ModalItem extends React.PureComponent {
     e.stopPropagation()
     this.props.dispatch(decreaseQuantity({cartId}))
   }
-  remove = (cartId) => (e) => {
-    e.stopPropagation()
-    this.props.dispatch(removeItem({cartId}))
-  }
+
   render() {
     const {
-      id,
       cartId,
       gallery,
       prices,
@@ -309,9 +279,7 @@ class ModalItem extends React.PureComponent {
           <ImageWrapper>
             <ProductImage src={gallery[0]} />
           </ImageWrapper>
-          <Close onClick={this.remove(cartId)} />
         </RightPart>
-        
       </ProductItem>
     );
   }

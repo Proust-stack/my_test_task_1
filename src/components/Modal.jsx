@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { connect} from 'react-redux';
+
 import ModalItem from './ModalItem';
 import withHooks from '../hoc/withHooks';
 import { getTotalCost } from '../utils/getTotalCost';
@@ -16,6 +17,7 @@ const Wrapper = styled.div`
   overflow-y: hidden;
 `;
 const Content = styled.div`
+  max-height: 677px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -25,10 +27,9 @@ const Content = styled.div`
   position: absolute;
   padding: 16px;
   overflow-y: auto;
-  max-height: 540px;
   ::-webkit-scrollbar {
-  width: 0;
-}
+    width: 0;
+  }
 `;
 
 const TitleWrapper = styled.div`
@@ -95,14 +96,13 @@ const Button = styled.button`
   height: 50px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 16px 32px;
+  justify-content: center;
+  padding: 16px 28px;
   background: ${(props) => (props.primary ? 'white' : '#5ECE7B')};
   font-family: 'Raleway';
   font-style: normal;
   font-weight: 600;
-  font-size: 16px;
-  line-height: 16px;
+  font-size: 14px;
   color: ${(props) => (props.primary ? 'black' : 'white')};
   text-transform: uppercase;
   border: ${(props) => (props.primary ? '1px solid black' : 'none')};
@@ -123,17 +123,6 @@ class Modal extends React.PureComponent {
       quantity: 0
     };
   }
-
-  getTotalCost = (currencies, currentCurrencyIndex, items) => {
-    let totalCost = 0;
-    items.forEach((item) => {
-      totalCost += item.prices[currentCurrencyIndex].amount * item.quantity;
-    });
-    this.setState({
-      totalCost: totalCost.toFixed(2),
-      currencySymbol: currencies[currentCurrencyIndex].symbol,
-    });
-  };
 
   componentDidMount() {
     const { currencies, currentCurrencyIndex, items } = this.props;

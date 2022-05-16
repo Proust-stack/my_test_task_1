@@ -31,6 +31,8 @@ const cartSlice = createSlice({
             const item = state.items.find(item => item.cartId === action.payload.cartId)
             if (item.quantity > 1) {
                 item.quantity -= 1
+            } else {
+                state.items = state.items.filter(item => item.cartId !== action.payload.cartId)
             }
         }
     },

@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import Carousel from './Carousel';
 import {increaseQuantity} from '../store/cartSlice';
 import {decreaseQuantity} from '../store/cartSlice';
-import { removeItem } from '../store/cartSlice';
 import ProductProperties from './ProductProperties';
 import withHooks from '../hoc/withHooks';
 
@@ -14,11 +13,10 @@ const ProductItem = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
   cursor: pointer;
-  flex: 1 1 auto;
-  &:hover {
-    box-shadow: 0px 4px 35px rgba(168, 172, 176, 0.19);
-  }
+  flex: 0 1 auto;
+  flex-wrap: wrap;
 `;
 
 const LeftPart = styled.div`
@@ -108,36 +106,6 @@ const DecreaseQuantity = styled.div`
   border: 1px solid black;
 `;
 
-const Close = styled.div`
-    position: absolute;
-    top: -10px;
-    right: -17px;
-    border-radius: 50%;
-    width: 32px;
-    height: 32px;
-    cursor: pointer;
-
-&:before {
-  content: "";
-    position: absolute;
-    top: 2px;
-    left: 15px;
-    width: 15px;
-    height: 2px;
-    background: #1D1F22;
-    transform: rotate(45deg);
-}
-&:after {
-    content: "";
-    position: absolute;
-    top: 2px;
-    left: 15px;
-    width: 15px;
-    height: 2px;
-    background: #555;
-    transform: rotate(-45deg);
-}
-`
 
 const ProductImage = styled.img`
   width: 100%;
@@ -164,10 +132,7 @@ const mapStateToProps = (state) => ({
       e.stopPropagation()
       this.props.dispatch(decreaseQuantity({cartId}))
     }
-    remove = (cartId) => (e) => {
-      e.stopPropagation()
-      this.props.dispatch(removeItem({cartId}))
-    }
+  
   render() {
     const {
       cartId,
@@ -210,7 +175,6 @@ const mapStateToProps = (state) => ({
                 return <ProductImage src={image} key={image} />;
               })}
             </Carousel>
-            <Close onClick={this.remove(cartId)} />
         </RightPart>
       </ProductItem>
     );
