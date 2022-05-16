@@ -62,6 +62,7 @@ const ProductProperties = styled.div`
   display: flex;
   justify-content: space-between;
   flex-direction: column;
+  margin-bottom: 8px;
 `;
 
 const ProductPropertyTitle = styled.div`
