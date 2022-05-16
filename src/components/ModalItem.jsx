@@ -84,8 +84,8 @@ const ProductProperty = styled.div`
   align-items: center;
   padding: 1px;
   font-family: 'Source Sans Pro';
-  width:  ${props => props.type === 'swatch' ? '20px' : '30px'};
-  height: ${props => props.type === 'swatch' ? '20px' : '30px'};
+  width:  ${props => props.type === 'swatch' ? '20px' : ''};
+  height: ${props => props.type === 'swatch' ? '20px' : '24px'};
   text-align: center;
   font-size: 14px;
   font-style: normal;
@@ -149,7 +149,7 @@ const IncreaseQuantity = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 100%;
+  width: 24px;
   height: 24px;
   border: 1px solid black;
   position: relative;
@@ -159,7 +159,7 @@ const DecreaseQuantity = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 100%;
+  width: 24px;
   height: 24px;
   border: 1px solid black;
 `;

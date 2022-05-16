@@ -38,7 +38,7 @@ export default class CartFooter extends React.PureComponent {
     const {currencySymbol, quantity, totalCost} = this.props
     return (
       <Container>
-      <TotalItem title={'Tax 21%:'} value={12} symbol={currencySymbol}/>
+      <TotalItem title={'Tax 21%:'} value={Math.trunc(totalCost*0.21).toFixed(2)} symbol={currencySymbol}/>
       <TotalItem title={'Quantity:'} value={quantity}/>
       <TotalItem title={'Total'} value={totalCost} symbol={currencySymbol}/>
       <Button>order</Button>
