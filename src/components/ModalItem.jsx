@@ -15,6 +15,7 @@ const ProductItem = styled.div`
   cursor: pointer;
   margin-bottom: 40px;
   height: 100%;
+  width: 100%;
 `;
 
 const LeftPart = styled.div`

@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import { useDispatch, useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 
 import CartItem from '../components/CartItem';
 import { getTotalCost } from '../utils/getTotalCost';
 import { getTotalQuantity } from '../utils/getTotalQuantity';
 import CartFooter from '../components/CartFooter';
+import withHooks from '../hoc/withHooks';
 
 const Container = styled.div`
   display: flex;
@@ -37,16 +38,11 @@ const Divider = styled.div`
     margin-bottom: 10px;
 `;
 
-
-function withParams(Component) {
-  return props => <Component 
-  {...props}  
-  dispatch={useDispatch()}
-  items={useSelector(state => state.cart.items)}
-  currencies={useSelector(state => state.currencies.currencies)}
-  currentCurrencyIndex={useSelector(state => state.currencies.currentCurrency)}
-  />;
-}
+const mapStateToProps = (state) => ({
+  items: state.cart.items,
+  currencies: state.currencies.currencies,
+  currentCurrencyIndex: state.currencies.currentCurrency
+});
 class CartPage extends Component {
   state = {
     totalCost: 0,
@@ -111,4 +107,4 @@ class CartPage extends Component {
   }
 }
 
-export default withParams(CartPage);
+export default withHooks(connect(mapStateToProps)(CartPage));

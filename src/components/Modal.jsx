@@ -25,6 +25,7 @@ const Content = styled.div`
   top: 0;
   left: 70%;
   position: absolute;
+  z-index: 2;
   padding: 16px;
   overflow-y: auto;
   ::-webkit-scrollbar {

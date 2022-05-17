@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
+
 import Main from './pages/Main';
 import ProductPage from './pages/ProductPage';
 import CartPage from './pages/cartPage';

@@ -26,6 +26,9 @@ const Title = styled.div`
   flex: 1 1 auto;
 `;
 
+const mapStateToProps = (state) => ({
+  category: state.category
+});
 class PLP extends Component {
     update = () => {
         this.props.dispatch(fetchCategory(this.props.params.categoryId))
@@ -38,11 +41,11 @@ class PLP extends Component {
         if (this.props.params.categoryId !== prevProps.params.categoryId) this.update();
       }
     
-      componentDidCatch(error) {
+      componentDidCatch(error, info) {
         this.setState({
           error
         });
-        console.log(error)
+        console.log(error, info)
       }
   render() {
     const {category, error, loading} = this.props.category
@@ -62,9 +65,5 @@ class PLP extends Component {
     )
   }
 }
-
-const mapStateToProps = (state) => ({
-  category: state.category
-});
 
 export default withHooks(connect(mapStateToProps)(PLP));

@@ -21,7 +21,6 @@ const Content = styled.div`
 
 const RightArrow = styled.div`
   position: absolute;
-  z-index: 1;
   bottom: 10px;
   transform: translateY(-50%);
   width: 24px;
