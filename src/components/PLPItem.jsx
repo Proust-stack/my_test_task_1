@@ -103,8 +103,13 @@ class PLPItem extends Component {
   
   componentDidMount() {
     const { attributes} = this.props.product;
-    this.setState({ quantity: 1, currentProperty: setInitialProperties(attributes)});
-    
+    if (attributes) {
+      this.setState((prevState) => ({
+        ...prevState,
+        quantity: 1, 
+        currentProperty: setInitialProperties(attributes)
+      }));
+    }
   }
 
   componentDidCatch(error, info) {
@@ -114,7 +119,9 @@ class PLPItem extends Component {
   addToCart = (item) => e => {
     e.stopPropagation()
     const cartId = uniqueCartId(item.id, item.currentProperty);
-    item.cartId = cartId;
+    if (item.cartId !== cartId) {
+      item.cartId = cartId;
+    }
     return this.props.dispatch(addItem(item))
   }
   getProduct = (address) => {
