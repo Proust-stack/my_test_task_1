@@ -12,10 +12,13 @@ const Container = styled.main`
   margin-top: 80px;
 `;
 const ItemsWrapper = styled.main`
-  display: flex;
-  margin-top: 50px;
+
+  display: grid;
+  grid-template: repeat(2, 1fr) / repeat(3, 1fr);
+  gap: 40px 100px;
+  /* margin-top: 50px;
   flex-wrap: wrap;
-  justify-content: flex-start;
+  justify-content: flex-start; */
 `;
 
 const Title = styled.div`

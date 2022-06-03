@@ -1,6 +1,6 @@
-## **Test task re-doing**
+## **Test task from scratch my own code**
 
-![fixed bugs](/src/assets/chance.jpg)
+Using:
 
 connect from react-redux to get to store
 

@@ -29,8 +29,7 @@ const ProductItem = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
-  margin-right: 40px;
-  margin-bottom: 100px;
+  margin: auto;
   padding: 16px;
   flex: 0 1 auto;
   cursor: pointer;
