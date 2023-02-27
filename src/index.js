@@ -12,7 +12,7 @@ import store, {persistor} from './store';
 import { PersistGate } from 'redux-persist/integration/react';
 
 export const client = new ApolloClient({
-  uri: 'http://localhost:4000',
+  uri: 'https://backforscandi-production.up.railway.app',
   cache: new InMemoryCache(),
   connectToDevTools: true,
 });
