@@ -1,11 +1,11 @@
-import React from 'react';
-import styled from 'styled-components';
-import { connect } from 'react-redux';
+import React from 'react'
+import styled from 'styled-components'
+import { connect } from 'react-redux'
 
-import arrowDown from '../assets/icons/header/svg/options.svg';
-import {changeCurrency} from '../store/currencySlice';
+import arrowDown from '../assets/icons/header/svg/options.svg'
+import { changeCurrency } from '../store/currencySlice'
 
-const DropDownContainer = styled('div')``;
+const DropDownContainer = styled('div')``
 
 const DropDownHeader = styled('div')`
   padding: 0.4em 2em 0.4em 1em;
@@ -27,13 +27,13 @@ const DropDownHeader = styled('div')`
     display: block;
     transition: 0.2s ease-in;
   }
-`;
+`
 
 const DropDownListContainer = styled('div')`
   position: absolute;
   width: 114px;
   box-shadow: 0px 4px 35px rgba(168, 172, 176, 0.19);
-`;
+`
 
 const DropDownList = styled('div')`
   display: flex;
@@ -48,8 +48,7 @@ const DropDownList = styled('div')`
   &:last-child {
     margin-bottom: 0;
   }
-`;
-
+`
 
 const ListItem = styled('div')`
   padding: 10px 0 10px 0;
@@ -57,41 +56,41 @@ const ListItem = styled('div')`
   &:hover {
     background-color: grey;
   }
-`;
+`
 
 class CustomSelect extends React.PureComponent {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       isOpen: false,
-    };
+    }
   }
 
   componentDidCatch(error) {
-    console.log(error.message);
+    console.log(error.message)
   }
 
   toggling = () => {
     this.setState({
       isOpen: !this.state.isOpen,
-    });
+    })
   }
   closeDropDownFromOuter = (e) => {
-      this.setState({
-        isOpen: false
-      });
+    this.setState({
+      isOpen: false,
+    })
   }
 
   onOpenDropDown = (e) => {
-    e.stopPropagation();
-    this.toggling();
-  };
+    e.stopPropagation()
+    this.toggling()
+  }
 
   onOptionClicked = (index) => (e) => {
-    e.stopPropagation();
-    this.toggling();
-    this.props.dispatch(changeCurrency({index}));
-  };
+    e.stopPropagation()
+    this.toggling()
+    this.props.dispatch(changeCurrency({ index }))
+  }
 
   componentDidMount() {
     document.addEventListener('click', this.closeDropDownFromOuter)
@@ -102,7 +101,7 @@ class CustomSelect extends React.PureComponent {
   }
 
   render() {
-    const {currencies, currentCurrency} = this.props.currencies
+    const { currencies, currentCurrency } = this.props.currencies
     return (
       <DropDownContainer>
         <DropDownHeader
@@ -112,26 +111,26 @@ class CustomSelect extends React.PureComponent {
         >
           {currencies.length > 0 ? currencies[currentCurrency].symbol : null}
         </DropDownHeader>
-          {this.state.isOpen && <DropDownListContainer>
+        {this.state.isOpen && (
+          <DropDownListContainer>
             <DropDownList>
               {currencies &&
-                currencies.map(
-                  (item, index) => {
-                    return (
-                      <ListItem
-                        key={item.symbol}
-                        onClick={this.onOptionClicked(index)}
-                      >
-                        {item.symbol} {item.label}
-                      </ListItem>
-                    );
-                  }
-                )}
+                currencies.map((item, index) => {
+                  return (
+                    <ListItem
+                      key={item.symbol}
+                      onClick={this.onOptionClicked(index)}
+                    >
+                      {item.symbol} {item.label}
+                    </ListItem>
+                  )
+                })}
             </DropDownList>
-          </DropDownListContainer>}
+          </DropDownListContainer>
+        )}
       </DropDownContainer>
-    );
+    )
   }
 }
 
-export default connect(null, null)(CustomSelect);
+export default connect(null, null)(CustomSelect)

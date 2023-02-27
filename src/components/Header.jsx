@@ -1,31 +1,31 @@
-import React from 'react';
-import { NavLink} from 'react-router-dom';
-import styled from 'styled-components';
-import { connect } from 'react-redux';
+import React from 'react'
+import { NavLink } from 'react-router-dom'
+import styled from 'styled-components'
+import { connect } from 'react-redux'
 
-import myImage from '../assets/icons/header/Brand_icon.png';
-import cartIcon from '../assets/icons/header/svg/header_cart.svg';
+import myImage from '../assets/icons/header/Brand_icon.png'
+import cartIcon from '../assets/icons/header/svg/header_cart.svg'
 
-import CustomSelect from './CustomSelect';
-import { fetchCategoriesNames } from '../store/categorySlice';
-import { fetchCurrencies } from '../store/currencySlice';
-import withHooks from '../hoc/withHooks';
+import CustomSelect from './CustomSelect'
+import { fetchCategoriesNames } from '../store/categorySlice'
+import { fetchCurrencies } from '../store/currencySlice'
+import withHooks from '../hoc/withHooks'
 
 const Nav = styled.nav`
   background: #fff;
   padding: 17px 20px;
   min-height: 80px;
-`;
+`
 const NavbarItem = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-`;
+`
 const LeftPart = styled.div`
   text-decoration: none;
   display: flex;
   justify-content: flex-start;
-`;
+`
 
 const StyledLink = styled(NavLink)`
   text-decoration: none;
@@ -40,19 +40,19 @@ const StyledLink = styled(NavLink)`
     color: green;
     border-bottom: 2px solid green;
   }
-`;
+`
 
 const ItemIconCompany = styled.div`
   background-image: url(${myImage});
   width: 40px;
   height: 40px;
-`;
+`
 
 const RightPart = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
-`;
+`
 
 const ItemIconCart = styled.div`
   background-image: url(${cartIcon});
@@ -60,7 +60,7 @@ const ItemIconCart = styled.div`
   height: 20px;
   cursor: pointer;
   position: relative;
-`;
+`
 const Badge = styled.div`
   position: absolute;
   border-radius: 100%;
@@ -74,36 +74,42 @@ const Badge = styled.div`
   color: white;
   padding: 2px;
   font-size: 10px;
-`;
+`
 
 const mapStateToProps = (state) => ({
   categories: state.category.categoriesNames,
   currencies: state.currencies,
-  items: state.cart.items
-});
+  items: state.cart.items,
+})
 class Header extends React.PureComponent {
   constructor(props) {
-    super(props);
-    this.props.dispatch(fetchCurrencies());
-    this.props.dispatch(fetchCategoriesNames());
+    super(props)
+    //this.props.dispatch(fetchCurrencies())
+    //this.props.dispatch(fetchCategoriesNames())
   }
 
   getTotalQuantity = (items) => {
-    const totalQuantity = items.reduce((prev, next) => prev + next.quantity, 0);
-    return totalQuantity;
-  };
+    const totalQuantity = items.reduce((prev, next) => prev + next.quantity, 0)
+    return totalQuantity
+  }
+
+  componentDidMount() {
+    console.log('header did mount')
+    this.props.navigate('categories/all')
+  }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.location.pathname === '/' ) {
+    console.log('updated')
+    if (prevProps.location.pathname === '/') {
       this.props.navigate('categories/all')
     }
   }
 
   componentDidCatch(error, info) {
-    console.log(error, info);
+    console.log(error, info)
   }
   render() {
-    const { items } = this.props;
+    const { items } = this.props
     return (
       <Nav>
         <NavbarItem>
@@ -113,7 +119,7 @@ class Header extends React.PureComponent {
                 <StyledLink key={name} to={`categories/${name}`}>
                   {name}
                 </StyledLink>
-              );
+              )
             })}
           </LeftPart>
           <ItemIconCompany />
@@ -127,10 +133,8 @@ class Header extends React.PureComponent {
           </RightPart>
         </NavbarItem>
       </Nav>
-    );
+    )
   }
 }
 
-
-export default withHooks(connect(mapStateToProps)(Header));
-
+export default withHooks(connect(mapStateToProps)(Header))

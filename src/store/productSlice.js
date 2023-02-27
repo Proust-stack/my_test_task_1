@@ -14,6 +14,7 @@ export const fetchProduct = createAsyncThunk(
                   }
               })
               const { product } = await response.data;
+              console.log(product)
               return product
         } catch (error) {
             return rejectWithValue(error.message)
