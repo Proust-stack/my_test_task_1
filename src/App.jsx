@@ -12,7 +12,6 @@ export default class App extends Component {
   render() {
     return (
       <Routes>
-        <Route path="/" element={<Navigate to="categories/all" />} />
         <Route path="/" element={<Layout />}>
           <Route path="categories" element={<Main />}>
             <Route path=":categoryId" element={<PLP />} />

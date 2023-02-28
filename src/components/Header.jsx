@@ -84,8 +84,8 @@ const mapStateToProps = (state) => ({
 class Header extends React.PureComponent {
   constructor(props) {
     super(props)
-    //this.props.dispatch(fetchCurrencies())
-    //this.props.dispatch(fetchCategoriesNames())
+    this.props.dispatch(fetchCurrencies())
+    this.props.dispatch(fetchCategoriesNames())
   }
 
   getTotalQuantity = (items) => {

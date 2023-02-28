@@ -6,9 +6,10 @@ connect from react-redux to get to store
 
 interwave to insert html
 
-redux-toolkit, 
+redux-toolkit,
 
-styled-components, 
+styled-components,
 
 redux-persist for saving in local storage,
 
+https://incandescent-smakager-81cc3d.netlify.app/
